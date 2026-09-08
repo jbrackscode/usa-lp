@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { productReviews } from "@/lib/verticalRackReviews";
 import { reviewStats } from "@/lib/bikeRacks";
 
@@ -84,6 +84,18 @@ function ReviewCard({ review }: { review: (typeof productReviews)[number] }) {
 
 export function ReviewsCarousel() {
   const trackRef = useRef<HTMLDivElement>(null);
+  // Only one of the two layouts is ever actually mounted — rendering both
+  // simultaneously (one CSS-hidden) doubled ~70 review cards' worth of text
+  // in the DOM, bloating the page for no visible benefit.
+  const [layout, setLayout] = useState<"mobile" | "desktop" | null>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setLayout(mq.matches ? "desktop" : "mobile");
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   function scrollByCards(direction: 1 | -1) {
     const track = trackRef.current;
@@ -106,45 +118,47 @@ export function ReviewsCarousel() {
         </p>
       </div>
 
-      {/* Mobile / tablet: swipeable carousel */}
-      <div className="relative mx-auto max-w-[1100px] lg:hidden">
-        <div
-          ref={trackRef}
-          className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-6 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        >
-          {productReviews.map((r, i) => (
-            <div key={i} className="w-[270px] shrink-0 snap-start sm:w-[300px]">
-              <ReviewCard review={r} />
-            </div>
-          ))}
-        </div>
+      {layout === "mobile" && (
+        <div className="relative mx-auto max-w-[1100px]">
+          <div
+            ref={trackRef}
+            className="flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-6 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          >
+            {productReviews.map((r, i) => (
+              <div key={i} className="w-[270px] shrink-0 snap-start sm:w-[300px]">
+                <ReviewCard review={r} />
+              </div>
+            ))}
+          </div>
 
-        <button
-          type="button"
-          onClick={() => scrollByCards(-1)}
-          aria-label="Scroll reviews left"
-          className="absolute -left-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-lg text-brand-black shadow-md hover:bg-brand-cream sm:flex"
-        >
-          ‹
-        </button>
-        <button
-          type="button"
-          onClick={() => scrollByCards(1)}
-          aria-label="Scroll reviews right"
-          className="absolute -right-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-lg text-brand-black shadow-md hover:bg-brand-cream sm:flex"
-        >
-          ›
-        </button>
-      </div>
-
-      {/* Desktop: full-width wall of testimonials, masonry-packed */}
-      <div className="hidden w-full px-6 lg:block xl:px-10">
-        <div className="columns-3 gap-5 xl:columns-4 [&>*]:mb-5 [&>*]:break-inside-avoid">
-          {productReviews.map((r, i) => (
-            <ReviewCard key={i} review={r} />
-          ))}
+          <button
+            type="button"
+            onClick={() => scrollByCards(-1)}
+            aria-label="Scroll reviews left"
+            className="absolute -left-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-lg text-brand-black shadow-md hover:bg-brand-cream sm:flex"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollByCards(1)}
+            aria-label="Scroll reviews right"
+            className="absolute -right-2 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white text-lg text-brand-black shadow-md hover:bg-brand-cream sm:flex"
+          >
+            ›
+          </button>
         </div>
-      </div>
+      )}
+
+      {layout === "desktop" && (
+        <div className="w-full px-6 xl:px-10">
+          <div className="columns-3 gap-5 xl:columns-4 [&>*]:mb-5 [&>*]:break-inside-avoid">
+            {productReviews.map((r, i) => (
+              <ReviewCard key={i} review={r} />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
