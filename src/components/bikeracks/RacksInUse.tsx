@@ -8,6 +8,8 @@ import { reviewPhotos } from "@/lib/reviewPhotos";
 // line up into a flat grid — a real "wall" rather than a uniform table.
 const aspectByIndex = ["aspect-[3/4]", "aspect-square", "aspect-[4/5]", "aspect-[3/4]"];
 
+const INITIAL_VISIBLE = 4;
+
 export function RacksInUse() {
   const trackRef = useRef<HTMLDivElement>(null);
   // Only one of the two layouts is ever actually mounted — rendering both
@@ -16,6 +18,13 @@ export function RacksInUse() {
   // Starts null so SSR/first paint ships neither (this section isn't the
   // LCP element), then picks the real layout once we know the viewport.
   const [layout, setLayout] = useState<"mobile" | "desktop" | null>(null);
+  // Browsers' native `loading="lazy"` is distance-to-viewport based, which
+  // doesn't account for horizontal scroll position inside a track — so in a
+  // 41-wide horizontal carousel it was firing all 41 image requests at once
+  // as soon as the section neared the viewport vertically. This tracks which
+  // tiles have actually scrolled near horizontally and only mounts <Image>
+  // for those (plus a small initial batch so the carousel isn't empty).
+  const [loadedIndexes, setLoadedIndexes] = useState<Set<number>>(() => new Set(Array.from({ length: INITIAL_VISIBLE }, (_, i) => i)));
 
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 1024px)");
@@ -24,6 +33,36 @@ export function RacksInUse() {
     mq.addEventListener("change", update);
     return () => mq.removeEventListener("change", update);
   }, []);
+
+  useEffect(() => {
+    if (layout !== "mobile") return;
+    const track = trackRef.current;
+    if (!track) return;
+
+    const tiles = track.querySelectorAll<HTMLElement>("[data-photo-index]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        setLoadedIndexes((prev) => {
+          let changed = false;
+          const next = new Set(prev);
+          for (const entry of entries) {
+            if (!entry.isIntersecting) continue;
+            const index = Number((entry.target as HTMLElement).dataset.photoIndex);
+            if (!next.has(index)) {
+              next.add(index);
+              changed = true;
+            }
+            observer.unobserve(entry.target);
+          }
+          return changed ? next : prev;
+        });
+      },
+      { root: track, rootMargin: "0px 400px 0px 400px" }
+    );
+
+    tiles.forEach((tile) => observer.observe(tile));
+    return () => observer.disconnect();
+  }, [layout]);
 
   function scrollByCards(direction: 1 | -1) {
     const track = trackRef.current;
@@ -52,7 +91,9 @@ export function RacksInUse() {
                 data-photo-index={i}
                 className={`rack-photo rack-photo-${i} relative aspect-[3/4] w-[190px] shrink-0 snap-start overflow-hidden rounded-xl bg-brand-cream sm:w-[230px]`}
               >
-                <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 640px) 230px, 190px" className="object-cover" priority={i === 0} />
+                {loadedIndexes.has(i) && (
+                  <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 640px) 230px, 190px" className="object-cover" priority={i === 0} />
+                )}
               </div>
             ))}
           </div>
