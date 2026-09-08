@@ -24,9 +24,18 @@ function pricedPriceOnly(live: Map<number, LiveVariantPrice>, variantId: number,
   return live.get(variantId)?.price ?? fallbackPrice;
 }
 
-export async function getLiveBikeRackData(): Promise<{ rackSizes: RackSize[]; addons: Addons }> {
+export type LiveBikeRackData = {
+  rackSizes: RackSize[];
+  addons: Addons;
+  // Numeric variant IDs the merchant has flagged out_of_stock via the
+  // "stock_status" metafield — checked by BuyBox before allowing a
+  // selection/purchase, regardless of which page renders it.
+  outOfStockVariantIds: Set<number>;
+};
+
+export async function getLiveBikeRackData(): Promise<LiveBikeRackData> {
   if (!isShopifyConfigured) {
-    return { rackSizes: staticRackSizes, addons: staticAddons };
+    return { rackSizes: staticRackSizes, addons: staticAddons, outOfStockVariantIds: new Set() };
   }
 
   const variantIds = [
@@ -43,7 +52,12 @@ export async function getLiveBikeRackData(): Promise<{ rackSizes: RackSize[]; ad
     live = await getVariantPrices(variantIds);
   } catch {
     // Shopify unreachable/misconfigured — keep showing the static snapshot.
-    return { rackSizes: staticRackSizes, addons: staticAddons };
+    return { rackSizes: staticRackSizes, addons: staticAddons, outOfStockVariantIds: new Set() };
+  }
+
+  const outOfStockVariantIds = new Set<number>();
+  for (const [id, v] of live) {
+    if (v.manuallyOutOfStock) outOfStockVariantIds.add(id);
   }
 
   // All three colors share one price per product on the live store, so the
@@ -76,5 +90,5 @@ export async function getLiveBikeRackData(): Promise<{ rackSizes: RackSize[]; ad
     },
   };
 
-  return { rackSizes, addons };
+  return { rackSizes, addons, outOfStockVariantIds };
 }

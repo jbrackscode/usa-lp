@@ -1,6 +1,32 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import { quality } from "@/lib/verticalRackPdp";
 
 export function QualityBlock() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // Don't fetch the video at all until it's about to scroll into view —
+  // it sits well below the fold, so loading it eagerly on page load just
+  // adds dead weight to initial page load time for nothing.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.src = quality.video;
+          video.play().catch(() => {});
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "600px 0px" }
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="border-t border-brand-line py-12 sm:py-14">
       <div className="mx-auto max-w-[1100px] px-6">
@@ -10,9 +36,8 @@ export function QualityBlock() {
 
         <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-2 lg:gap-12">
           <video
+            ref={videoRef}
             className="aspect-video w-full rounded-xl bg-brand-cream object-cover"
-            src={quality.video}
-            autoPlay
             muted
             loop
             playsInline

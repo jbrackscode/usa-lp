@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, type TouchEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type TouchEvent } from "react";
 import Image from "next/image";
 import { colors, toVariantGid, type Color, type RackSize, type Addons } from "@/lib/bikeRacks";
 import { storeUrl } from "@/lib/config";
@@ -18,9 +18,20 @@ type BuyBoxProps = {
   rackSizes: RackSize[];
   addons: Addons;
   showSpecs?: boolean;
+  stickyAddToCart?: boolean;
+  // Numeric variant IDs flagged out_of_stock via the "stock_status"
+  // metafield (see getLiveBikeRackData) — nothing here can be added to
+  // cart, regardless of which page/instance of BuyBox is rendering.
+  outOfStockVariantIds?: Set<number>;
 };
 
-export function BuyBox({ rackSizes, addons, showSpecs = false }: BuyBoxProps) {
+export function BuyBox({
+  rackSizes,
+  addons,
+  showSpecs = false,
+  stickyAddToCart = false,
+  outOfStockVariantIds = new Set(),
+}: BuyBoxProps) {
   const [sizeIndex, setSizeIndex] = useState(1); // default to 5-bike ("Most Popular")
   const [color, setColor] = useState<Color>("Black");
   const [wantStand, setWantStand] = useState(false);
@@ -30,6 +41,20 @@ export function BuyBox({ rackSizes, addons, showSpecs = false }: BuyBoxProps) {
   const [imageIndex, setImageIndex] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const [stickyVisible, setStickyVisible] = useState(false);
+  const ctaRef = useRef<HTMLButtonElement>(null);
+
+  // Sticky bar appears once the real Add to Cart button scrolls out of
+  // view, and shares this exact same handleAddToCart/price/rackLine state
+  // — never a separate, potentially-stale copy of the selection.
+  useEffect(() => {
+    if (!stickyAddToCart) return;
+    const el = ctaRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => setStickyVisible(!entry.isIntersecting), { threshold: 0 });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [stickyAddToCart]);
 
   const rack = rackSizes[sizeIndex];
   const images = rack.imagesByColor[color];
@@ -101,7 +126,20 @@ export function BuyBox({ rackSizes, addons, showSpecs = false }: BuyBoxProps) {
   const compareAtPrice = rackLine.compareAtPrice * qty + extraLines.reduce((sum, e) => sum + e.price, 0);
   const savings = compareAtPrice - price;
 
+  // Which variant a given color would resolve to under the current
+  // bundle selection — used to grey out colors that can't be purchased
+  // before the shopper even reaches the Add to Cart button.
+  function variantIdForColor(c: Color) {
+    if (wantStand && wantStrut) return rack.fullBundle.variants[c];
+    if (wantStand) return rack.standBundle.variants[c];
+    return rack.variants[c];
+  }
+
+  const currentSelectionOutOfStock =
+    outOfStockVariantIds.has(rackLine.variantId) || extraLines.some((e) => outOfStockVariantIds.has(e.variantId));
+
   async function handleAddToCart() {
+    if (currentSelectionOutOfStock) return;
     setLoading(true);
     setError(false);
 
@@ -127,6 +165,7 @@ export function BuyBox({ rackSizes, addons, showSpecs = false }: BuyBoxProps) {
   }
 
   return (
+    <>
     <div id="buy-box" className="mx-auto grid max-w-6xl grid-cols-1 gap-10 px-6 py-12 lg:grid-cols-2 lg:items-start lg:gap-12">
       {/* Gallery */}
       <div className="lg:sticky lg:top-6">
@@ -218,21 +257,23 @@ export function BuyBox({ rackSizes, addons, showSpecs = false }: BuyBoxProps) {
                   setSizeIndex(i);
                   setImageIndex(0);
                 }}
-                className={`relative flex items-center justify-between gap-3 rounded-lg border-2 bg-white px-3.5 py-2.5 text-left transition-colors sm:flex-col sm:justify-center sm:gap-0 sm:px-2 sm:py-2.5 sm:text-center ${
+                className={`flex items-center justify-between gap-3 rounded-lg border-2 bg-white px-3.5 py-2.5 text-left transition-colors sm:flex-col sm:justify-start sm:gap-0 sm:px-2 sm:py-2.5 sm:text-center ${
                   i === sizeIndex ? "border-brand-black shadow-[inset_0_0_0_1px_#1a1a1a]" : "border-brand-line hover:border-brand-black/40"
                 }`}
               >
-                {/* Desktop: badge floats above the centered card */}
-                {s.badge && (
-                  <span className="absolute -top-2.5 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-green px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white sm:block">
-                    {s.badge}
-                  </span>
-                )}
-
-                <div className="flex items-center gap-2 sm:flex-col sm:gap-0">
-                  {/* Mobile: badge sits inline next to the label instead */}
+                {/* Desktop: every card reserves the same badge row, whether it has one or not, so the size label always lines up across all three cards. */}
+                <div className="mb-1.5 hidden h-[18px] items-center justify-center sm:flex">
                   {s.badge && (
-                    <span className="shrink-0 rounded-full bg-brand-green px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white sm:hidden">
+                    <span className="whitespace-nowrap rounded-full bg-brand-green px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+                      {s.badge}
+                    </span>
+                  )}
+                </div>
+
+                <div className={`flex ${s.badge ? "flex-col items-start gap-1" : "items-center"} sm:flex-col sm:items-center sm:gap-0`}>
+                  {/* Mobile: badge sits above the label instead of squeezing beside it (which was forcing "5 Bikes" to wrap) */}
+                  {s.badge && (
+                    <span className="shrink-0 whitespace-nowrap rounded-full bg-brand-green px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white sm:hidden">
                       {s.badge}
                     </span>
                   )}
@@ -255,24 +296,31 @@ export function BuyBox({ rackSizes, addons, showSpecs = false }: BuyBoxProps) {
             Color <small className="font-medium normal-case tracking-normal text-brand-black/50">{color}</small>
           </div>
           <div className="flex flex-wrap gap-2">
-            {colors.map((c) => (
-              <button
-                key={c.name}
-                type="button"
-                onClick={() => {
-                  setColor(c.name);
-                  setImageIndex(0);
-                }}
-                className={`inline-flex items-center gap-2 rounded-full border-2 py-1.5 pl-1.5 pr-3.5 text-sm transition-colors ${
-                  color === c.name
-                    ? "border-brand-orange font-semibold shadow-[0_0_0_3px_rgba(255,96,0,0.18)]"
-                    : "border-brand-line hover:border-brand-black/40"
-                }`}
-              >
-                <span className="h-6 w-6 rounded-full ring-1 ring-black/15" style={{ background: c.hex }} />
-                {c.name}
-              </button>
-            ))}
+            {colors.map((c) => {
+              const outOfStock = outOfStockVariantIds.has(variantIdForColor(c.name));
+              return (
+                <button
+                  key={c.name}
+                  type="button"
+                  disabled={outOfStock}
+                  onClick={() => {
+                    setColor(c.name);
+                    setImageIndex(0);
+                  }}
+                  className={`relative inline-flex items-center gap-2 rounded-full border-2 py-1.5 pl-1.5 pr-3.5 text-sm transition-colors ${
+                    outOfStock
+                      ? "cursor-not-allowed border-brand-line opacity-40"
+                      : color === c.name
+                        ? "border-brand-orange font-semibold shadow-[0_0_0_3px_rgba(255,96,0,0.18)]"
+                        : "border-brand-line hover:border-brand-black/40"
+                  }`}
+                >
+                  <span className="h-6 w-6 rounded-full ring-1 ring-black/15" style={{ background: c.hex }} />
+                  {c.name}
+                  {outOfStock && <span className="text-[11px] font-semibold text-brand-black/50">Sold out</span>}
+                </button>
+              );
+            })}
           </div>
 
           {/* Add-ons */}
@@ -285,6 +333,7 @@ export function BuyBox({ rackSizes, addons, showSpecs = false }: BuyBoxProps) {
               name={addons.garageStand.name}
               note={addons.garageStand.note}
               price={addons.garageStand.price}
+              outOfStock={outOfStockVariantIds.has(addons.garageStand.variantId)}
             />
             <AddonCard
               checked={wantStrut}
@@ -293,6 +342,7 @@ export function BuyBox({ rackSizes, addons, showSpecs = false }: BuyBoxProps) {
               name={addons.slowFoldStrut.name}
               note={addons.slowFoldStrut.note}
               price={addons.slowFoldStrut.price}
+              outOfStock={outOfStockVariantIds.has(addons.slowFoldStrut.variantId)}
             />
             <AddonCard
               checked={wantSwingArm}
@@ -301,6 +351,7 @@ export function BuyBox({ rackSizes, addons, showSpecs = false }: BuyBoxProps) {
               name={addons.swingArm.name}
               note={addons.swingArm.note}
               price={addons.swingArm.price}
+              outOfStock={outOfStockVariantIds.has(addons.swingArm.variantId)}
             />
           </div>
 
@@ -353,12 +404,15 @@ export function BuyBox({ rackSizes, addons, showSpecs = false }: BuyBoxProps) {
                 </button>
               </div>
               <button
+                ref={ctaRef}
                 type="button"
                 onClick={handleAddToCart}
-                disabled={loading}
-                className="flex-1 rounded-full bg-brand-green py-4 text-[19px] font-black uppercase tracking-tight text-white transition-opacity hover:opacity-90 disabled:opacity-70"
+                disabled={loading || currentSelectionOutOfStock}
+                className={`flex-1 rounded-full py-4 text-[19px] font-black uppercase tracking-tight text-white transition-opacity disabled:opacity-70 ${
+                  currentSelectionOutOfStock ? "cursor-not-allowed bg-brand-black/40" : "bg-brand-green hover:opacity-90"
+                }`}
               >
-                {loading ? "Adding…" : error ? "Redirecting to store…" : "Add to Cart"}
+                {currentSelectionOutOfStock ? "Out of Stock" : loading ? "Adding…" : error ? "Redirecting to store…" : "Add to Cart"}
               </button>
             </div>
 
@@ -381,6 +435,34 @@ export function BuyBox({ rackSizes, addons, showSpecs = false }: BuyBoxProps) {
         {showSpecs && <SpecsAccordion />}
       </div>
     </div>
+
+    {stickyAddToCart && (
+      <div
+        className={`fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-brand-line bg-white px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] transition-transform duration-200 sm:hidden ${
+          stickyVisible ? "translate-y-0" : "translate-y-full"
+        }`}
+        aria-hidden={!stickyVisible}
+      >
+        <div className="min-w-0">
+          <div className="truncate text-[12.5px] font-semibold text-brand-black/70">{rackLine.title}</div>
+          <div className="flex items-baseline gap-1.5">
+            <span className="text-lg font-black text-brand-black">${price}</span>
+            {savings > 0 && <span className="text-xs text-brand-black/40 line-through">${compareAtPrice}</span>}
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={loading || currentSelectionOutOfStock}
+          className={`shrink-0 whitespace-nowrap rounded-full px-6 py-3 text-sm font-black uppercase tracking-tight text-white disabled:opacity-70 ${
+            currentSelectionOutOfStock ? "bg-brand-black/40" : "bg-brand-green"
+          }`}
+        >
+          {currentSelectionOutOfStock ? "Out of Stock" : loading ? "Adding…" : error ? "Redirecting…" : "Add to Cart"}
+        </button>
+      </div>
+    )}
+    </>
   );
 }
 
@@ -391,6 +473,7 @@ function AddonCard({
   name,
   note,
   price,
+  outOfStock = false,
 }: {
   checked: boolean;
   onChange: (v: boolean) => void;
@@ -398,13 +481,19 @@ function AddonCard({
   name: string;
   note: string;
   price: number;
+  outOfStock?: boolean;
 }) {
   return (
     <button
       type="button"
+      disabled={outOfStock}
       onClick={() => onChange(!checked)}
       className={`flex items-center gap-3 rounded-lg border-2 p-2.5 text-left transition-colors ${
-        checked ? "border-brand-black shadow-[inset_0_0_0_1px_#1a1a1a]" : "border-brand-line hover:border-brand-black/40"
+        outOfStock
+          ? "cursor-not-allowed border-brand-line opacity-40"
+          : checked
+            ? "border-brand-black shadow-[inset_0_0_0_1px_#1a1a1a]"
+            : "border-brand-line hover:border-brand-black/40"
       }`}
     >
       <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-md bg-white">
@@ -412,7 +501,10 @@ function AddonCard({
       </div>
       <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between gap-2">
-          <strong className="text-sm font-semibold text-brand-black">{name}</strong>
+          <strong className="text-sm font-semibold text-brand-black">
+            {name}
+            {outOfStock && <span className="ml-1.5 font-normal text-brand-black/50">(Sold out)</span>}
+          </strong>
           <span className="shrink-0 text-sm font-bold text-brand-black">+${price}</span>
         </div>
         <p className="mt-0.5 truncate text-xs text-brand-black/60">{note}</p>

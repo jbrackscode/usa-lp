@@ -23,13 +23,15 @@ export const metadata: Metadata = {
   description: "The vertical hitch rack built for what e-bikes actually weigh. Pick your size, color, and add-ons.",
 };
 
-// Prices are fetched fresh from Shopify on every request rather than cached
-// with the rest of this static page, so a price change on the live store
-// shows up here without a redeploy.
-export const dynamic = "force-dynamic";
+// ISR instead of force-dynamic: the page (and its live Shopify price fetch)
+// is cached and served instantly, then regenerated in the background at
+// most every 5 minutes — a price change on the live store still shows up
+// without a redeploy, but visitors aren't blocked on a live API round trip
+// on every single request (that was tanking TTFB/PageSpeed).
+export const revalidate = 300;
 
 export default async function LpBikeRacksPage() {
-  const { rackSizes, addons } = await getLiveBikeRackData();
+  const { rackSizes, addons, outOfStockVariantIds } = await getLiveBikeRackData();
 
   return (
     <>
@@ -51,7 +53,7 @@ export default async function LpBikeRacksPage() {
               </h2>
             </div>
           </div>
-          <BuyBox rackSizes={rackSizes} addons={addons} />
+          <BuyBox rackSizes={rackSizes} addons={addons} outOfStockVariantIds={outOfStockVariantIds} />
           <p className="mx-auto -mt-6 max-w-[1100px] px-6 text-[12.5px] text-brand-black/50">{sizesNote}</p>
         </div>
 

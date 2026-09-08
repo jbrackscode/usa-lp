@@ -17,7 +17,6 @@ import { RacksInUse } from "@/components/bikeracks/RacksInUse";
 import { WarrantyBand } from "@/components/bikeracks/WarrantyBand";
 import { FaqChat } from "@/components/bikeracks/FaqChat";
 import { FinalCta } from "@/components/bikeracks/FinalCta";
-import { StickyBuyBar } from "@/components/bikeracks/StickyBuyBar";
 import { getLiveBikeRackData } from "@/lib/bikeRacksLive";
 
 export const metadata: Metadata = {
@@ -25,13 +24,15 @@ export const metadata: Metadata = {
   description: "The JB 4 Rack is built for hauling four bikes with ease — e-bike rated, 65 lbs per wheel holder, 240 lbs total capacity.",
 };
 
-// Prices are fetched fresh from Shopify on every request rather than cached
-// with the rest of this static page, so a price change on the live store
-// shows up here without a redeploy.
-export const dynamic = "force-dynamic";
+// ISR instead of force-dynamic: the page (and its live Shopify price fetch)
+// is cached and served instantly, then regenerated in the background at
+// most every 5 minutes — a price change on the live store still shows up
+// without a redeploy, but visitors aren't blocked on a live API round trip
+// on every single request (that was tanking TTFB/PageSpeed).
+export const revalidate = 300;
 
 export default async function LpVerticalBikeRacksPage() {
-  const { rackSizes, addons } = await getLiveBikeRackData();
+  const { rackSizes, addons, outOfStockVariantIds } = await getLiveBikeRackData();
 
   return (
     <>
@@ -39,7 +40,7 @@ export default async function LpVerticalBikeRacksPage() {
       <Header />
       <Ticker />
       <main className="bg-white pb-16 sm:pb-0">
-        <BuyBox rackSizes={rackSizes} addons={addons} showSpecs />
+        <BuyBox rackSizes={rackSizes} addons={addons} showSpecs stickyAddToCart outOfStockVariantIds={outOfStockVariantIds} />
         <ProductFeatureBadges />
         {/* <ProductDescription /> */}
         <PressTestimonials />
@@ -56,7 +57,6 @@ export default async function LpVerticalBikeRacksPage() {
         <FinalCta rackSizes={rackSizes} />
       </main>
       <Footer />
-      <StickyBuyBar />
     </>
   );
 }

@@ -137,16 +137,33 @@ const VARIANT_NODES = /* GraphQL */ `
         compareAtPrice {
           amount
         }
+        stockStatus: metafield(namespace: "custom", key: "stock_status") {
+          value
+        }
       }
     }
   }
 `;
 
 type VariantNodesResponse = {
-  nodes: ({ id: string; availableForSale: boolean; price: { amount: string }; compareAtPrice: { amount: string } | null } | null)[];
+  nodes: ({
+    id: string;
+    availableForSale: boolean;
+    price: { amount: string };
+    compareAtPrice: { amount: string } | null;
+    stockStatus: { value: string } | null;
+  } | null)[];
 };
 
-export type LiveVariantPrice = { price: number; compareAtPrice: number | null; availableForSale: boolean };
+export type LiveVariantPrice = {
+  price: number;
+  compareAtPrice: number | null;
+  availableForSale: boolean;
+  // True when the merchant has manually flagged this variant via the
+  // "stock_status" metafield (namespace "custom") — a manual override on
+  // top of Shopify's own inventory-based availableForSale.
+  manuallyOutOfStock: boolean;
+};
 
 /**
  * Fetches live price/compare-at/availability for a batch of variants in one
@@ -168,6 +185,7 @@ export async function getVariantPrices(numericIds: number[]): Promise<Map<number
       price: Math.round(Number(node.price.amount)),
       compareAtPrice: node.compareAtPrice ? Math.round(Number(node.compareAtPrice.amount)) : null,
       availableForSale: node.availableForSale,
+      manuallyOutOfStock: node.stockStatus?.value === "out_of_stock",
     });
   }
   return result;
