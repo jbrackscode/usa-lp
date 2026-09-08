@@ -10,6 +10,14 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "cdn.shopify.com",
       },
+      {
+        protocol: "https",
+        hostname: "jbracks.com",
+      },
+      {
+        protocol: "https",
+        hostname: "media-dynamic.okendo.io",
+      },
     ],
   },
 };

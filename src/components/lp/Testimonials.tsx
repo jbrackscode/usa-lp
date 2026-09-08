@@ -4,11 +4,11 @@ import { testimonials } from "@/lib/config";
 export function Testimonials() {
   return (
     <div
-      className="py-14"
+      className="py-[60px]"
       style={{ background: "linear-gradient(180deg, #F6F5F2 0%, #ffffff 100%)" }}
     >
       <div className="mx-auto max-w-6xl px-5">
-        <h2 className="mb-10 text-center text-3xl font-black text-[#333] sm:text-[2.5rem]">
+        <h2 className="mb-10 text-center text-3xl font-black uppercase tracking-tighter leading-[1.14] text-[#333] sm:text-5xl">
           Join 20,000+ Other JB Racks Customers
         </h2>
 

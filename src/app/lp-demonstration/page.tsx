@@ -39,9 +39,9 @@ export default function LpDemonstrationPage() {
         <PricingSection />
         <Testimonials />
 
-        <section className="py-14">
+        <section className="pb-[39px] pt-[30px] sm:pb-[52px] sm:pt-10">
           <div className="mx-auto max-w-[1000px] px-5">
-            <h2 className="mb-6 text-center text-3xl font-extrabold text-brand-black">
+            <h2 className="mb-6 text-center text-3xl font-extrabold uppercase tracking-tighter leading-[1.14] text-brand-black sm:text-5xl">
               Frequently Asked Questions
             </h2>
             <FAQ />

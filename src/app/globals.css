@@ -168,3 +168,52 @@ body {
     transform: translateX(-50%);
   }
 }
+
+/* Subtle attention pulse for urgency/savings badges — matches the same
+   treatment used on jbracks.com.au's product page savings badge. */
+@keyframes pulse-subtle {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.035);
+  }
+}
+
+/* iMessage-style chat bubble tails (FaqChat.tsx) — a small clipped corner
+   in the bubble's own background color, so it works for both the gray
+   "received" bubble and the blue "sent" bubble without separate variants. */
+.imsg-bubble {
+  position: relative;
+}
+.imsg-bubble-left::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -10px;
+  width: 22px;
+  height: 18px;
+  background: inherit;
+  clip-path: polygon(100% 0, 100% 100%, 0% 100%);
+}
+.imsg-bubble-right::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  right: -10px;
+  width: 22px;
+  height: 18px;
+  background: inherit;
+  clip-path: polygon(0 0, 100% 100%, 0% 100%);
+}
+
+/* Racks in Use — specific review photos hidden from the wall/carousel by
+   index (see rack-photo-N classes in RacksInUse.tsx). */
+.rack-photo-17,
+.rack-photo-19,
+.rack-photo-20,
+.rack-photo-22,
+.rack-photo-24 {
+  display: none;
+}

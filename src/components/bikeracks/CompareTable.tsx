@@ -6,7 +6,17 @@ export function CompareTable() {
       <div className="mx-auto max-w-[1100px] px-6">
         <div className="mx-auto mb-10 max-w-[62ch] text-center">
           <div className="mb-2.5 text-sm font-bold text-brand-green-dark">{compare.eyebrow}</div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold uppercase tracking-tighter leading-[1.14] text-brand-black">{compare.headline}</h2>
+          <h2 className="text-3xl sm:text-5xl font-extrabold uppercase tracking-tighter leading-[1.14] text-brand-black">
+            {compare.headline.split(/(For under \$\d+\.?)/).map((part, i) =>
+              part.startsWith("For under") ? (
+                <span key={i} className="text-brand-orange">
+                  {part}
+                </span>
+              ) : (
+                part
+              )
+            )}
+          </h2>
         </div>
 
         <div className="overflow-hidden rounded-xl border border-brand-line bg-white shadow-sm">

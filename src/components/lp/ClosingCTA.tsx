@@ -3,7 +3,7 @@ import { product } from "@/lib/config";
 
 export function ClosingCTA() {
   return (
-    <div className="mx-auto max-w-[520px] px-5 py-10 text-center sm:py-12">
+    <div className="mx-auto max-w-[520px] px-5 pb-[39px] pt-[30px] text-center sm:pb-[52px] sm:pt-10">
       <div className="mb-3.5 flex items-center justify-center gap-2">
         <span className="text-xl tracking-[2px] text-brand-star" aria-hidden>
           ★★★★★

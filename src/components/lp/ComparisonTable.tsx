@@ -3,12 +3,12 @@ import { ClaimRackButton } from "./ClaimRackButton";
 
 export function ComparisonTable() {
   return (
-    <div className="mx-auto max-w-[1100px] px-5 py-10 text-brand-black sm:py-12">
-      <h2 className="mb-6 text-center text-[26px] font-extrabold leading-tight sm:text-[40px]">
+    <div className="mx-auto max-w-[1100px] px-5 pb-[39px] pt-[30px] text-brand-black sm:pb-[52px] sm:pt-10">
+      <h2 className="mb-6 text-center text-3xl font-extrabold uppercase tracking-tighter leading-[1.14] sm:text-5xl">
         Why Riders Go Vertical
       </h2>
 
-      <div className="overflow-hidden rounded-xl border border-brand-line bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-brand-line bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
         <table className="hidden w-full border-collapse text-left sm:table">
           <thead>
             <tr>

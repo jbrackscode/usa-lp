@@ -38,6 +38,19 @@ export type RackSize = {
 
 const CDN = "https://cdn.shopify.com/s/files/1/0694/1117/6660/files";
 
+// Shared "benefit" lifestyle photos — not tied to any specific color, so on
+// the real product page Shopify appends the same set to the end of every
+// variant's gallery (they carry empty variant_ids). Same 6 images/URLs
+// across all three sizes.
+const benefitImages = [
+  `${CDN}/jb-racks_ready_in_seconds.webp?v=1784529004`,
+  `${CDN}/jb-racks_park_and_ride.webp?v=1784528949`,
+  `${CDN}/jb-racks_cheap_adventures.webp?v=1784528956`,
+  `${CDN}/jb-racks_fits_almost_any_vehicle.webp?v=1784528995`,
+  `${CDN}/jb-racks_easy_to_attach.webp?v=1784529021`,
+  `${CDN}/jb-racks_take_the_whole_crew.webp?v=1784528980`,
+];
+
 export const rackSizes: RackSize[] = [
   {
     bikes: 4,
@@ -49,10 +62,12 @@ export const rackSizes: RackSize[] = [
     imagesByColor: {
       Black: [
         `${CDN}/4-bike-rack-black-new-photo-1-1.webp?v=1781659158`,
+        `${CDN}/4-bike-rack-black-new-photo-1.png?v=1772585640`,
         `${CDN}/4-bike-rack-black-new-photo-2.png?v=1773111793`,
         `${CDN}/4-bike-rack-black-new-photo-3.png?v=1773111793`,
-        `${CDN}/4-bike-rack-black-new-photo-4.png?v=1773111793`,
         `${CDN}/4-bike-rack-black-new-photo-5.png?v=1773111793`,
+        `${CDN}/4-bike-rack-black-new-photo-4.png?v=1773111793`,
+        ...benefitImages,
       ],
       "Velo Turquoise": [
         `${CDN}/4-velo-black-plate.webp?v=1773111793`,
@@ -60,13 +75,15 @@ export const rackSizes: RackSize[] = [
         `${CDN}/4-bike-rack-velo-new-photo-3.png?v=1773111793`,
         `${CDN}/4-bike-rack-velo-new-photo-4.png?v=1773111793`,
         `${CDN}/4-bike-rack-velo-new-photo-5.png?v=1773111793`,
+        ...benefitImages,
       ],
       "Leaf Green": [
         `${CDN}/4-bike-leaf-green-velo-straps-black-top-plate.webp?v=1774311053`,
-        `${CDN}/4-bike-leaf-green-2.webp?v=1774311053`,
         `${CDN}/4-bike-leaf-green-3.webp?v=1774311053`,
-        `${CDN}/4-bike-leaf-green-4.webp?v=1774311053`,
+        `${CDN}/4-bike-leaf-green-2.webp?v=1774311053`,
         `${CDN}/4-bike-leaf-green-5.webp?v=1774311053`,
+        `${CDN}/4-bike-leaf-green-4.webp?v=1774311053`,
+        ...benefitImages,
       ],
     },
     variants: { Black: 46385606951124, "Velo Turquoise": 46381230784724, "Leaf Green": 47193324028116 },
@@ -93,11 +110,13 @@ export const rackSizes: RackSize[] = [
     compareAtPrice: 670,
     imagesByColor: {
       Black: [
-        `${CDN}/5-bike-rack-black-new-photo-1_2de2334d-a7a1-4113-9225-3adcaf9e4bd6.webp?v=1772586819`,
-        `${CDN}/5-bike-rack-black-new-photo-2.png?v=1772586819`,
+        `${CDN}/5-bike-rack-black-new-photo-1_2de2334d-a7a1-4113-9225-3adcaf9e4bd6.webp?v=1772584840`,
+        `${CDN}/5-bike-rack-black-new-photo-1.png?v=1772586819`,
         `${CDN}/5-bike-rack-black-new-photo-3.png?v=1772586819`,
-        `${CDN}/5-bike-rack-black-new-photo-4.png?v=1772586819`,
+        `${CDN}/5-bike-rack-black-new-photo-2.png?v=1772586819`,
         `${CDN}/5-bike-rack-black-new-photo-5.png?v=1772586819`,
+        `${CDN}/5-bike-rack-black-new-photo-4.png?v=1772586819`,
+        ...benefitImages,
       ],
       "Velo Turquoise": [
         `${CDN}/5-velo-black-plate_87296b08-1358-4e38-a88c-80a4137b5ddf.webp?v=1772586819`,
@@ -105,13 +124,15 @@ export const rackSizes: RackSize[] = [
         `${CDN}/5-bike-rack-velo-new-photo-3.png?v=1772586819`,
         `${CDN}/5-bike-rack-velo-new-photo-4.png?v=1772586819`,
         `${CDN}/5-bike-rack-velo-new-photo-5.png?v=1772586819`,
+        ...benefitImages,
       ],
       "Leaf Green": [
         `${CDN}/5-bike-leaf-green-velo-straps-black-top-plate.webp?v=1774311079`,
         `${CDN}/5-bike-leaf-green-2.webp?v=1774311079`,
         `${CDN}/5-bike-leaf-green-3.webp?v=1774311079`,
-        `${CDN}/5-bike-leaf-green-4.webp?v=1774311079`,
         `${CDN}/5-bike-leaf-green-5.webp?v=1774311079`,
+        `${CDN}/5-bike-leaf-green-4.webp?v=1774311079`,
+        ...benefitImages,
       ],
     },
     variants: { Black: 46501061165268, "Velo Turquoise": 46501061198036, "Leaf Green": 47193331794132 },
@@ -138,10 +159,12 @@ export const rackSizes: RackSize[] = [
     imagesByColor: {
       Black: [
         `${CDN}/6-bike-rack-black-new-photo-1_43f5e1c9-1783-44b6-b132-7e8c47027995.webp?v=1767759172`,
+        `${CDN}/6-bike-rack-black-new-photo-1a.png?v=1767759172`,
         `${CDN}/6-bike-rack-black-new-photo-2.png?v=1772584719`,
         `${CDN}/6-bike-rack-black-new-photo-3.png?v=1772584719`,
         `${CDN}/6-bike-rack-black-new-photo-4.png?v=1772584719`,
         `${CDN}/6-bike-rack-black-new-photo-5.png?v=1772584719`,
+        ...benefitImages,
       ],
       "Velo Turquoise": [
         `${CDN}/6-velo-black-plate.webp?v=1772584719`,
@@ -149,6 +172,7 @@ export const rackSizes: RackSize[] = [
         `${CDN}/6-bike-rack-velo-new-photo-3.png?v=1772584719`,
         `${CDN}/6-bike-rack-velo-new-photo-4.png?v=1772584719`,
         `${CDN}/6-bike-rack-velo-new-photo-5.png?v=1772584719`,
+        ...benefitImages,
       ],
       "Leaf Green": [
         `${CDN}/6-bike-leaf-green-velo-strap-black-top-plate.webp?v=1774311111`,
@@ -156,6 +180,7 @@ export const rackSizes: RackSize[] = [
         `${CDN}/6-bike-leaf-green-3.webp?v=1774311111`,
         `${CDN}/6-bike-leaf-green-4.webp?v=1774311111`,
         `${CDN}/6-bike-leaf-green-5.webp?v=1774311111`,
+        ...benefitImages,
       ],
     },
     variants: { Black: 46215035060436, "Velo Turquoise": 46215035158740, "Leaf Green": 47193364529364 },
