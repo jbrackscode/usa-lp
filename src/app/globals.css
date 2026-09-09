@@ -57,35 +57,21 @@
 }
 
 /*
- * Tungsten — display/headline typeface. Drop files into /public/fonts/tungsten
- * using these exact names (or update the paths below) and headlines across
- * the site pick it up automatically. Falls back to a bold condensed system
- * stack until the files land, so nothing breaks in the meantime.
+ * Tungsten — display/headline typeface. Only tungsten-bold.woff2 actually
+ * exists in /public/fonts/tungsten (verified on disk) — the previous rules
+ * here referenced Tungsten-Semibold/-Black plus .woff fallbacks that don't
+ * exist, and even the Bold rule had the wrong case ("Tungsten-Bold.woff2"
+ * vs. the real "tungsten-bold.woff2"). That's harmless on case-insensitive
+ * local filesystems but 404/503s on Vercel's case-sensitive Linux storage,
+ * which is exactly what was showing up in production. One real weight,
+ * used for every Tungsten request — still condensed/bold everywhere it's
+ * applied, just without separate faces per weight. Add more @font-face
+ * blocks here (with matching real files) if additional weights land.
  */
 @font-face {
   font-family: "Tungsten";
-  src:
-    url("/fonts/tungsten/Tungsten-Semibold.woff2") format("woff2"),
-    url("/fonts/tungsten/Tungsten-Semibold.woff") format("woff");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Tungsten";
-  src:
-    url("/fonts/tungsten/Tungsten-Bold.woff2") format("woff2"),
-    url("/fonts/tungsten/Tungsten-Bold.woff") format("woff");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Tungsten";
-  src:
-    url("/fonts/tungsten/Tungsten-Black.woff2") format("woff2"),
-    url("/fonts/tungsten/Tungsten-Black.woff") format("woff");
-  font-weight: 900;
+  src: url("/fonts/tungsten/tungsten-bold.woff2") format("woff2");
+  font-weight: 400 900;
   font-style: normal;
   font-display: swap;
 }

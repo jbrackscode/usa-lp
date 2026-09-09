@@ -14,6 +14,13 @@ const fbPixelId = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID;
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
+      <head>
+        {/* Only the two faces every page actually paints above the fold —
+            Gotham Pro regular (body copy) and Tungsten (every headline) —
+            preloaded so they're not discovered late via the CSS parse. */}
+        <link rel="preload" href="/fonts/gotham/GothamPro.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/tungsten/tungsten-bold.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+      </head>
       <body className="min-h-full flex flex-col">
         {fbPixelId && (
           <>

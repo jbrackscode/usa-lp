@@ -92,7 +92,7 @@ export function RacksInUse() {
                 className={`rack-photo rack-photo-${i} relative aspect-[3/4] w-[190px] shrink-0 snap-start overflow-hidden rounded-xl bg-brand-cream sm:w-[230px]`}
               >
                 {loadedIndexes.has(i) && (
-                  <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 640px) 230px, 190px" className="object-cover" priority={i === 0} />
+                  <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 640px) 230px, 190px" className="object-cover" />
                 )}
               </div>
             ))}
