@@ -245,10 +245,20 @@ export function BuyBox({
         {/* Buy panel: size, color, add-ons, price, CTA — one bordered/shadowed card */}
         <div className="mt-5 rounded-xl border border-brand-line bg-white p-5 shadow-[0_8px_24px_rgba(0,0,0,0.08)] sm:p-6">
           {/* Size switcher */}
-          <div className="mb-1.5 flex items-baseline justify-between text-xs font-bold uppercase tracking-wide text-brand-black">
-            How many bikes?
+          <div className="mb-6 flex items-center justify-between gap-2">
+            <div className="flex flex-wrap items-baseline gap-1.5 text-xs font-bold uppercase tracking-wide text-brand-black">
+              How many bikes? <span className="text-sm normal-case text-brand-black">{rack.label}</span>
+            </div>
+            {rack.compareAtPrice > rack.price && (
+              <span
+                className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-white [animation:pulse-subtle_2s_ease-in-out_infinite]"
+                style={{ background: "linear-gradient(135deg, var(--color-brand-orange) 0%, #f7931e 100%)" }}
+              >
+                Save ${rack.compareAtPrice - rack.price}
+              </span>
+            )}
           </div>
-          <div className="grid grid-cols-1 gap-0 sm:grid-cols-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             {rackSizes.map((s, i) => (
               <button
                 key={s.bikes}
@@ -257,36 +267,21 @@ export function BuyBox({
                   setSizeIndex(i);
                   setImageIndex(0);
                 }}
-                className={`flex items-center justify-between gap-3 rounded-lg border-2 bg-white px-3.5 py-2.5 text-left transition-colors sm:flex-col sm:justify-start sm:gap-0 sm:px-2 sm:py-2.5 sm:text-center ${
+                className={`relative flex flex-col items-center gap-0.5 rounded-lg border-2 bg-white px-2 py-3 text-center transition-colors ${
                   i === sizeIndex ? "border-brand-black shadow-[inset_0_0_0_1px_#1a1a1a]" : "border-brand-line hover:border-brand-black/40"
                 }`}
               >
-                {/* Desktop: every card reserves the same badge row, whether it has one or not, so the size label always lines up across all three cards. */}
-                <div className="mb-1.5 hidden h-[18px] items-center justify-center sm:flex">
-                  {s.badge && (
-                    <span className="whitespace-nowrap rounded-full bg-brand-green px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
-                      {s.badge}
-                    </span>
-                  )}
-                </div>
-
-                <div className={`flex ${s.badge ? "flex-col items-start gap-1" : "items-center"} sm:flex-col sm:items-center sm:gap-0`}>
-                  {/* Mobile: badge sits above the label instead of squeezing beside it (which was forcing "5 Bikes" to wrap) */}
-                  {s.badge && (
-                    <span className="shrink-0 whitespace-nowrap rounded-full bg-brand-green px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white sm:hidden">
-                      {s.badge}
-                    </span>
-                  )}
-                  <strong className="text-base text-brand-black sm:text-lg">{s.label}</strong>
-                </div>
-
-                <div className="flex flex-col items-end gap-0.5 sm:mt-0.5 sm:items-center">
-                  <span className="flex items-baseline gap-1.5">
-                    <span className="text-base font-extrabold text-brand-black">${s.price}</span>
-                    <span className="text-[11px] text-brand-black/40 line-through">${s.compareAtPrice}</span>
+                {s.badge && (
+                  <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-green px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white sm:text-[10px]">
+                    {s.badge}
                   </span>
-                  <span className="text-xs text-brand-black/60">{s.sublabel}</span>
-                </div>
+                )}
+                <strong className="text-sm text-brand-black sm:text-lg">{s.label}</strong>
+                <span className="flex items-baseline gap-1">
+                  <span className="text-sm font-extrabold text-brand-black sm:text-base">${s.price}</span>
+                  <span className="text-[10px] text-brand-black/40 line-through sm:text-[11px]">${s.compareAtPrice}</span>
+                </span>
+                <span className="text-[10px] text-brand-black/60 sm:text-xs">{s.sublabel}</span>
               </button>
             ))}
           </div>
