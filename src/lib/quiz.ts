@@ -1,12 +1,6 @@
-// Content for /lp-quiz. The quiz itself lives in ConvertBox (same widget
-// used on the live jbracks.com/pages/quiz page) — this page's job is just to
-// sell the click. Every CTA here uses the exact same trigger link and script
-// UUID as the real page, so it opens the same live quiz.
-
-export const convertBox = {
-  triggerHref: "#cb448c0464",
-  scriptUuid: "78b30db1-9aff-48e3-ad56-27f8763a2ab3",
-};
+// Content for /lp-quiz. The interactive quiz itself is the custom
+// <QuizFunnel> component (src/components/quiz) — this content is the
+// marketing copy around it that sells the click.
 
 export const hero = {
   kicker: "60-SECOND RACK FINDER",

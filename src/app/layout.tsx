@@ -10,6 +10,7 @@ export const metadata: Metadata = {
 // Set in .env.local — see .env.local.example. Left unset, the pixel simply
 // doesn't render (no broken script, no empty tracking calls).
 const fbPixelId = process.env.NEXT_PUBLIC_FACEBOOK_PIXEL_ID;
+const ga4Id = process.env.NEXT_PUBLIC_GA4_MEASUREMENT_ID;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -46,6 +47,17 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                 src={`https://www.facebook.com/tr?id=${fbPixelId}&ev=PageView&noscript=1`}
               />
             </noscript>
+          </>
+        )}
+        {ga4Id && (
+          <>
+            <Script src={`https://www.googletagmanager.com/gtag/js?id=${ga4Id}`} strategy="afterInteractive" />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${ga4Id}');`}
+            </Script>
           </>
         )}
         {children}

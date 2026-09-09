@@ -1,41 +1,24 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Header } from "@/components/lp/Header";
 import { Footer } from "@/components/lp/Footer";
-import { convertBox, hero, benefits, trustStrip, finalCta } from "@/lib/quiz";
+import { QuizButton } from "@/components/quiz/QuizButton";
+import { hero, benefits, trustStrip, finalCta } from "@/lib/quiz";
+import { getLiveBikeRackData } from "@/lib/bikeRacksLive";
 
 export const metadata: Metadata = {
   title: "JB Racks — Find Your Rack Quiz",
   description: "Answer a few quick questions and get a personalized JB Racks recommendation.",
 };
 
-function QuizButton({ label, className = "" }: { label: string; className?: string }) {
-  return (
-    <a
-      href={convertBox.triggerHref}
-      className={`inline-block rounded-full bg-brand-green px-8 py-4 text-base font-black uppercase tracking-wide text-white shadow-[0_3px_0_rgba(0,0,0,0.15)] hover:opacity-90 ${className}`}
-    >
-      {label}
-    </a>
-  );
-}
+// Same 5-minute ISR as the other buy-box pages — the quiz's product
+// recommendation uses this same live (cached) price data.
+export const revalidate = 300;
 
-export default function LpQuizPage() {
+export default async function LpQuizPage() {
+  const { rackSizes, addons } = await getLiveBikeRackData();
+
   return (
     <>
-      {/* Same ConvertBox loader (and account UUID) as the live
-          jbracks.com/pages/quiz page, so the trigger links below open the
-          identical, already-built quiz widget. The real snippet is an IIFE
-          that just creates this exact <script src> tag and appends it to
-          <head> — using the tag directly here (rather than the IIFE) is what
-          actually gets Next's beforeInteractive strategy to head-place it. */}
-      <Script
-        id="app-convertbox-script"
-        src="https://cdn.convertbox.com/convertbox/js/embed.js"
-        data-uuid={convertBox.scriptUuid}
-        strategy="beforeInteractive"
-      />
-
       <Header />
       <main className="bg-white">
         {/* Hero */}
@@ -48,7 +31,7 @@ export default function LpQuizPage() {
               {hero.headline}
             </h1>
             <p className="mx-auto mt-5 max-w-[56ch] text-lg text-brand-black/70">{hero.sub}</p>
-            <QuizButton label={hero.cta} className="mt-8" />
+            <QuizButton label={hero.cta} className="mt-8" rackSizes={rackSizes} addons={addons} />
           </div>
         </div>
 
@@ -82,7 +65,7 @@ export default function LpQuizPage() {
             {finalCta.headline}
           </h2>
           <p className="mx-auto mt-4 max-w-[52ch] text-[15.5px] text-white/60">{finalCta.body}</p>
-          <QuizButton label={finalCta.cta} className="mt-7" />
+          <QuizButton label={finalCta.cta} className="mt-7" rackSizes={rackSizes} addons={addons} />
         </div>
       </main>
       <Footer />

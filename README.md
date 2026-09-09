@@ -43,6 +43,12 @@ Fill in `.env.local`:
 | `NEXT_PUBLIC_SALE_ENDS_AT` | ISO timestamp the hero countdown targets |
 | `NEXT_PUBLIC_FACEBOOK_PIXEL_ID` | Meta Events Manager → Data Sources → your pixel → Settings. Optional — leave blank and the pixel simply doesn't render (site-wide, in `src/app/layout.tsx`) |
 | `NEXT_PUBLIC_OFFER_TEXT` / `NEXT_PUBLIC_OFFER_LINK` | Current-offer banner on `/lp-bike-racks`, below the header/ticker. Optional — leave `NEXT_PUBLIC_OFFER_TEXT` blank to hide it; `_LINK` is optional too (text renders unlinked without it) |
+| `NEXT_PUBLIC_GA4_MEASUREMENT_ID` | GA4 → Admin → Data Streams → your web stream → Measurement ID (`G-XXXXXXXXXX`). Optional — leave blank and gtag.js doesn't load. Once set, the `/lp-quiz` funnel (`src/components/quiz`) fires `quiz_answer`/`quiz_complete` events with the selected choices |
+| `KLAVIYO_PRIVATE_API_KEY` | Klaviyo → Settings → API Keys → Private API Keys (needs Profiles + Events write scope, plus Lists write if using `KLAVIYO_LIST_ID`). Server-only — never exposed to the browser. Optional — `/api/quiz-submit` still logs and returns success without it, it just skips the Klaviyo call |
+| `KLAVIYO_LIST_ID` | A Klaviyo list ID to subscribe quiz leads to (List Detail page URL, or Settings → Lists). Optional — without it, quiz leads are still tracked as a profile + event, just not added to a list |
+| `RESEND_API_KEY` | resend.com → API Keys. Server-only. Optional — without it `/api/quiz-submit` still logs and returns success, it just skips emailing the lead notification |
+| `RESEND_FROM_EMAIL` | The sender address, e.g. `"JB Racks Quiz <hello@jbracks.com>"` — must be on a domain verified in Resend (resend.com → Domains). Defaults to Resend's sandbox `onboarding@resend.dev`, which only delivers to your own Resend account email until you verify a domain |
+| `QUIZ_NOTIFY_EMAIL` | Who gets emailed for every quiz submission. Defaults to `reed@jbracks.com` |
 
 Until Shopify env vars are set, "Claim My Rack" / "Add to Cart" buttons fall
 back to linking at the live store instead of erroring, and `/lp-bike-racks`
