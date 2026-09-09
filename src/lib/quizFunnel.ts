@@ -78,10 +78,10 @@ export const quizSteps: Record<number, QuizStep> = {
     question: "What do you drive?",
     subtitle: "Choose one",
     buttons: [
-      { label: "Sedan/Hatch", next: 5 },
+      { label: "Sedan/Hatchback", next: 5 },
       { label: "SUV", next: 5 },
-      { label: "Pick Up", next: 5 },
-      { label: "No tow bar / not sure", next: 9, variant: "other" },
+      { label: "Pickup", next: 5 },
+      { label: "No hitch / not sure", next: 9, variant: "other" },
     ],
   },
   3: {
@@ -130,22 +130,22 @@ export const quizSteps: Record<number, QuizStep> = {
   11: {
     type: "choice",
     id: 11,
-    question: "What happens when you fold your rack back up after a ride?",
+    question: "After a ride, when it's time to fold the rack down, what matters to you?",
     subtitle: "Choose one",
     buttons: [
-      { label: "It drops with a bit of a bang - no big deal", next: 12 },
-      { label: "Honestly? I'd love it to ease down instead of slam", next: 12, wantsStrut: true, variant: "other" },
+      { label: "Doesn't matter much - I'll just deal with it", next: 12 },
+      { label: "I'd want it to ease down slow and controlled, not slam", next: 12, wantsStrut: true, variant: "other" },
     ],
   },
   12: {
     type: "choice",
     id: 12,
-    question: "Where does the rack live when it's not on the car?",
+    question: "Where would you keep the rack when it's not on the car?",
     subtitle: "Choose one",
     buttons: [
       { label: "Propped in a corner of the garage", next: 6, wantsStand: true },
-      { label: "It's got a proper spot already", next: 6 },
-      { label: "Good question... no idea yet", next: 6, wantsStand: true, variant: "other" },
+      { label: "I've already got a spot sorted", next: 6 },
+      { label: "Honestly, not sure yet", next: 6, wantsStand: true, variant: "other" },
     ],
   },
   6: {

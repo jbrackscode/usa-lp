@@ -5,7 +5,7 @@
 export const hero = {
   kicker: "60-SECOND RACK FINDER",
   headline: "Not sure which JB Rack is right for you?",
-  sub: "Bike racks aren't the easiest thing to buy sight-unseen. Answer a few quick questions and we'll help you land on the right size and setup — or tell you honestly if now isn't the right time.",
+  sub: "Bike racks aren't the easiest thing to buy sight unseen. Answer a few quick questions and we'll help you land on the right size and setup — or tell you honestly if now isn't the right time.",
   cta: "Take the Quiz",
 };
 
