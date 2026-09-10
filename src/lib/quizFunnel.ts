@@ -109,7 +109,7 @@ export const quizSteps: Record<number, QuizStep> = {
   11: {
     type: "choice",
     id: 11,
-    question: "Want your rack to ease down slow and controlled, instead of slamming shut?",
+    question: "Want your rack to ease down slow and controlled, instead of slamming down?",
     subtitle: "Choose one",
     buttons: [
       { label: "Yes, that matters to me", next: 12, wantsStrut: true, variant: "other" },
