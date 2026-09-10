@@ -54,9 +54,12 @@ export type QuizStep = ChoiceStep | EmailStep | TextStep | EndStep;
 
 export const START_STEP = 1;
 
-// Longest real path through the funnel (e.g. 1 → 2 → 5 → 10 → 11 → 12 → 6)
-// — used for the "Step X of Y" progress indicator.
-export const MAX_STEPS = 7;
+// Longest real path through the funnel (e.g. 1 → 5 → 10 → 11 → 12 → 6) —
+// used for the "Step X of Y" progress indicator. Kept short on purpose:
+// every question here either decides the recommendation (hitch, bike count,
+// fold/storage preference) or routes to a genuine bail-out — nothing is
+// asked just to ask.
+export const MAX_STEPS = 6;
 
 export const quizSteps: Record<number, QuizStep> = {
   1: {
@@ -65,35 +68,11 @@ export const quizSteps: Record<number, QuizStep> = {
     question: "What would help you decide?",
     subtitle: "Choose one",
     buttons: [
-      { label: "Vehicle Fit Confirmation", next: 2 },
-      { label: "Bike Compatibility", next: 3 },
+      { label: "Vehicle Fit Confirmation", next: 5 },
+      { label: "Bike Compatibility", next: 5 },
       { label: "Comparing Price/Options", next: 4 },
       { label: "Buying Later (Not Urgent)", next: 10 },
       { label: "Other", next: 7, variant: "other" },
-    ],
-  },
-  2: {
-    type: "choice",
-    id: 2,
-    question: "What do you drive?",
-    subtitle: "Choose one",
-    buttons: [
-      { label: "Sedan/Hatchback", next: 5 },
-      { label: "SUV", next: 5 },
-      { label: "Pickup", next: 5 },
-      { label: "No hitch / not sure", next: 9, variant: "other" },
-    ],
-  },
-  3: {
-    type: "choice",
-    id: 3,
-    question: "What are you needing to carry?",
-    subtitle: "Choose one",
-    buttons: [
-      { label: "E-bikes", next: 5 },
-      { label: "Fat tire/mtb", next: 5 },
-      { label: "Kids bikes", next: 5 },
-      { label: "3+ bikes", next: 5 },
     ],
   },
   4: {
@@ -109,18 +88,18 @@ export const quizSteps: Record<number, QuizStep> = {
   5: {
     type: "choice",
     id: 5,
-    question: "Do you have a 2-inch hitch?",
-    subtitle: "Choose one",
+    question: "Quick check — got a 2-inch hitch on your vehicle?",
+    subtitle: "This is all we need to confirm fitment",
     buttons: [
-      { label: "Yes", next: 10 },
-      { label: "No", next: 9 },
+      { label: "Yes, I've got one", next: 10 },
+      { label: "No / not sure", next: 9 },
     ],
   },
   10: {
     type: "choice",
     id: 10,
     question: "How many bikes do you need to carry?",
-    subtitle: "Choose one — this is what decides your recommended rack",
+    subtitle: "Almost there — this decides your recommended rack",
     buttons: [
       { label: "1-4 bikes", next: 11, bikeCount: 4 },
       { label: "5 bikes", next: 11, bikeCount: 5 },
@@ -130,22 +109,22 @@ export const quizSteps: Record<number, QuizStep> = {
   11: {
     type: "choice",
     id: 11,
-    question: "After a ride, when it's time to fold the rack down, what matters to you?",
+    question: "Want your rack to ease down slow and controlled, instead of slamming shut?",
     subtitle: "Choose one",
     buttons: [
-      { label: "Doesn't matter much - I'll just deal with it", next: 12 },
-      { label: "I'd want it to ease down slow and controlled, not slam", next: 12, wantsStrut: true, variant: "other" },
+      { label: "Yes, that matters to me", next: 12, wantsStrut: true, variant: "other" },
+      { label: "Not fussed either way", next: 12 },
     ],
   },
   12: {
     type: "choice",
     id: 12,
-    question: "Where would you keep the rack when it's not on the car?",
+    question: "Want a dedicated spot to keep it stored neatly when it's off the car?",
     subtitle: "Choose one",
     buttons: [
-      { label: "Propped in a corner of the garage", next: 6, wantsStand: true },
-      { label: "I've already got a spot sorted", next: 6 },
-      { label: "Honestly, not sure yet", next: 6, wantsStand: true, variant: "other" },
+      { label: "Yes, I'd like that", next: 6, wantsStand: true, variant: "other" },
+      { label: "No, I've got storage sorted", next: 6 },
+      { label: "Not sure yet", next: 6, wantsStand: true },
     ],
   },
   6: {
