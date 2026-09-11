@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { quizSteps, START_STEP, MAX_STEPS, type ChoiceButton } from "@/lib/quizFunnel";
+import { quizSteps, START_STEP, MAX_STEPS, MODEL_COMPARE_STEP_ID, type ChoiceButton } from "@/lib/quizFunnel";
 import { reviewStats, type RackSize, type Addons } from "@/lib/bikeRacks";
 import { storeUrl } from "@/lib/config";
 
@@ -144,12 +144,15 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   // form right), so it needs a lot more width than a single question card —
   // mobile stays a single stacked column at the same size as every other step.
   const isRevealStep = step.type === "email" && !submitted;
+  // The live model-comparison table needs more room than a question card —
+  // everything else (checklists, spec grids) fits the standard width fine.
+  const isWideInfoStep = step.type === "choice" && step.id === MODEL_COMPARE_STEP_ID;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8" role="dialog" aria-modal="true">
       <div
         className={`relative w-full rounded-xl bg-white p-6 shadow-lg transition-[max-width] sm:p-8 lg:p-12 ${
-          isRevealStep ? "max-w-lg lg:max-w-5xl" : "max-w-lg lg:max-w-3xl"
+          isRevealStep ? "max-w-lg lg:max-w-5xl" : isWideInfoStep ? "max-w-lg lg:max-w-4xl" : "max-w-lg lg:max-w-3xl"
         }`}
       >
         <button
@@ -171,6 +174,95 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
           <div>
             <h2 className="pr-8 text-xl font-extrabold text-brand-black sm:text-2xl lg:text-4xl">{step.question}</h2>
             <p className="mt-1.5 text-sm text-brand-black/60 lg:mt-3 lg:text-lg">{step.subtitle}</p>
+
+            {step.checklist && (
+              <ul className="mt-5 flex flex-col gap-2.5 rounded-xl border border-brand-line bg-brand-cream p-4 lg:mt-8 lg:gap-3.5 lg:p-6">
+                {step.checklist.map((line) => (
+                  <li key={line} className="flex items-start gap-2.5 text-[13.5px] leading-relaxed text-brand-black/80 lg:text-base">
+                    <span className="mt-0.5 shrink-0 text-brand-green">✓</span>
+                    {line}
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            {step.facts && (
+              <dl className="mt-5 flex flex-col divide-y divide-brand-line rounded-xl border border-brand-line lg:mt-8">
+                {step.facts.map((fact) => (
+                  <div key={fact.label} className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4 lg:px-6 lg:py-4">
+                    <dt className="shrink-0 text-[11.5px] font-bold uppercase tracking-wide text-brand-black/45 sm:w-36 lg:w-44 lg:text-xs">
+                      {fact.label}
+                    </dt>
+                    <dd className="text-[13.5px] text-brand-black/80 lg:text-base">{fact.value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+
+            {step.note && (
+              <p className="mt-4 rounded-lg border-l-4 border-brand-green bg-brand-green-light px-4 py-3 text-[13px] text-brand-green-dark lg:mt-5 lg:text-base">
+                {step.note}
+              </p>
+            )}
+
+            {step.id === MODEL_COMPARE_STEP_ID && (
+              <div className="mt-5 overflow-x-auto rounded-xl border border-brand-line lg:mt-8">
+                <table className="w-full min-w-[480px] border-collapse text-left">
+                  <thead>
+                    <tr className="bg-brand-cream">
+                      <th className="px-3 py-2.5 text-[11px] font-bold uppercase tracking-wide text-brand-black/50 lg:px-5 lg:py-3.5 lg:text-xs">
+                        &nbsp;
+                      </th>
+                      {rackSizes.map((r) => (
+                        <th key={r.handle} className="px-3 py-2.5 text-sm font-extrabold text-brand-black lg:px-5 lg:py-3.5 lg:text-lg">
+                          {r.label}
+                          {r.badge && (
+                            <span className="ml-1.5 inline-block rounded-full bg-brand-green-light px-2 py-0.5 align-middle text-[10px] font-bold text-brand-green-dark lg:text-[11px]">
+                              {r.badge}
+                            </span>
+                          )}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-brand-line">
+                    <tr>
+                      <td className="px-3 py-2.5 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3.5 lg:text-sm">Bikes carried</td>
+                      {rackSizes.map((r) => (
+                        <td key={r.handle} className="px-3 py-2.5 text-[13.5px] text-brand-black lg:px-5 lg:py-3.5 lg:text-base">
+                          {r.bikes}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2.5 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3.5 lg:text-sm">Best for</td>
+                      {rackSizes.map((r) => (
+                        <td key={r.handle} className="px-3 py-2.5 text-[13.5px] text-brand-black lg:px-5 lg:py-3.5 lg:text-base">
+                          {r.sublabel}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2.5 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3.5 lg:text-sm">Price</td>
+                      {rackSizes.map((r) => (
+                        <td key={r.handle} className="px-3 py-2.5 text-[13.5px] font-bold text-brand-black lg:px-5 lg:py-3.5 lg:text-base">
+                          ${r.price}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <td className="px-3 py-2.5 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3.5 lg:text-sm">You save</td>
+                      {rackSizes.map((r) => (
+                        <td key={r.handle} className="px-3 py-2.5 text-[13.5px] text-brand-green-dark lg:px-5 lg:py-3.5 lg:text-base">
+                          {r.compareAtPrice > r.price ? `$${r.compareAtPrice - r.price}` : "—"}
+                        </td>
+                      ))}
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+
             <div className="mt-6 flex flex-col gap-2.5 lg:mt-10 lg:gap-4">
               {step.buttons.map((button) => (
                 <button
