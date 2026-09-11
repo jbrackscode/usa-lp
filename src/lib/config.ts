@@ -26,7 +26,7 @@ export const product = {
 export const featureRows = [
   {
     image: "/images/jb-racks_ready_in_seconds.jpg",
-    video: "/videos/4_black-truck-dust-trail.mp4",
+    video: "/videos/1_white-car-dirt-road.mp4",
     title: "Unload Fast. Ride Sooner.",
     body: "Pull into the trailhead and get your bikes off in well under a minute instead of wrestling with straps and buckles. More time on the trail, less time at the tailgate.",
     size: "medium",
