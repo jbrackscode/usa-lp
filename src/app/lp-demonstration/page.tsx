@@ -25,11 +25,11 @@ export const revalidate = 300;
 export default async function LpDemonstrationPage() {
   const [row1, row2, row3, row4, row5] = featureRows;
   const { rackSizes } = await getLiveBikeRackData();
-  const fourBikePrice = rackSizes.find((r) => r.bikes === 4)?.price;
+  const fourBike = rackSizes.find((r) => r.bikes === 4);
 
   return (
     <>
-      <PromoBar price={fourBikePrice} />
+      <PromoBar price={fourBike?.price} />
       <Header />
       <main className="bg-white">
         <Hero />
@@ -37,13 +37,13 @@ export default async function LpDemonstrationPage() {
         <FeatureRow {...row1} />
         <FeatureRow {...row2} />
 
-        <ComparisonTable />
+        <ComparisonTable price={fourBike?.price} />
 
         <FeatureRow {...row3} />
         <FeatureRow {...row4} />
         <FeatureRow {...row5} />
 
-        <PricingSection />
+        <PricingSection price={fourBike?.price} compareAtPrice={fourBike?.compareAtPrice} />
         <Testimonials />
 
         <section className="pb-[39px] pt-[30px] sm:pb-[52px] sm:pt-10">
@@ -55,7 +55,7 @@ export default async function LpDemonstrationPage() {
           </div>
         </section>
 
-        <ClosingCTA />
+        <ClosingCTA price={fourBike?.price} />
       </main>
       <Footer />
     </>

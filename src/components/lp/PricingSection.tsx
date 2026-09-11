@@ -1,8 +1,15 @@
 import { pricingHighlights, product } from "@/lib/config";
 import { ClaimRackButton } from "./ClaimRackButton";
 
-export function PricingSection() {
-  const savings = product.compareAtPrice - product.price;
+type PricingSectionProps = {
+  // Live 4 Bike Rack pricing, same source /lp-vertical-bike-racks uses —
+  // falls back to the static config price if the caller doesn't have it.
+  price?: number;
+  compareAtPrice?: number;
+};
+
+export function PricingSection({ price = product.price, compareAtPrice = product.compareAtPrice }: PricingSectionProps) {
+  const savings = compareAtPrice - price;
 
   return (
     <div className="mx-auto max-w-[1000px] px-5 pb-[39px] pt-[30px] text-center text-brand-black sm:pb-[52px] sm:pt-10">
@@ -10,16 +17,16 @@ export function PricingSection() {
         Limited-Time Price
       </span>
       <h2 className="text-3xl font-extrabold uppercase tracking-tighter leading-[1.14] sm:text-5xl">
-        Get the 4 Bike Vertical Rack for ${product.price}
+        Get the 4 Bike Vertical Rack for ${price}
       </h2>
       <p className="mx-auto mt-2.5 max-w-[560px] text-base text-[#666]">
-        Down from the regular ${product.compareAtPrice} price — while this batch lasts.
+        Down from the regular ${compareAtPrice} price — while this batch lasts.
       </p>
 
       <div className="mx-auto mt-7 max-w-[480px] rounded-[14px] border border-brand-line bg-white px-6 py-8 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
         <div className="flex items-baseline justify-center gap-3">
-          <span className="text-[46px] font-extrabold leading-none">${product.price}</span>
-          <span className="text-[22px] text-[#a3a3a3] line-through">${product.compareAtPrice}</span>
+          <span className="text-[46px] font-extrabold leading-none">${price}</span>
+          <span className="text-[22px] text-[#a3a3a3] line-through">${compareAtPrice}</span>
         </div>
         <span className="mt-2 inline-block rounded-full bg-brand-green-light px-3 py-1.5 text-[13px] font-bold text-brand-green-dark">
           Save ${savings}
@@ -41,7 +48,7 @@ export function PricingSection() {
           ))}
         </ul>
 
-        <ClaimRackButton label={`Claim My Rack - $${product.price}`} full className="mt-6" />
+        <ClaimRackButton label={`Claim My Rack - $${price}`} full className="mt-6" />
         <p className="mt-3 text-xs text-[#999]">Free shipping, no code needed.</p>
       </div>
     </div>
