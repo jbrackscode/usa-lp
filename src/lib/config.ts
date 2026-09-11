@@ -54,7 +54,7 @@ export const featureRows = [
   },
   {
     image: "/images/jb-racks_park_and_ride.jpg",
-    video: "/videos/6_red-truck-forest.mp4",
+    video: "/videos/7_white-truck-field.mp4",
     title: "Arrive. Unload. Ride.",
     body: "Pull into the trailhead and unclip your bike in seconds — no wrestling with straps or buckles. Less time setting up, more time on the trail.",
     size: "small",
