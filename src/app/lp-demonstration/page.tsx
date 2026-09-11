@@ -34,14 +34,17 @@ export default async function LpDemonstrationPage() {
       <main className="bg-white">
         <Hero />
 
-        <FeatureRow {...row1} />
-        <FeatureRow {...row2} />
+        {/* image={row.image} title={row.title} body={row.body} only —
+            never spread the row, since it also carries a `video` field
+            meant for /lp-demonstration-videos only. */}
+        <FeatureRow image={row1.image} title={row1.title} body={row1.body} />
+        <FeatureRow image={row2.image} title={row2.title} body={row2.body} />
 
         <ComparisonTable price={fourBike?.price} />
 
-        <FeatureRow {...row3} />
-        <FeatureRow {...row4} />
-        <FeatureRow {...row5} />
+        <FeatureRow image={row3.image} title={row3.title} body={row3.body} />
+        <FeatureRow image={row4.image} title={row4.title} body={row4.body} />
+        <FeatureRow image={row5.image} title={row5.title} body={row5.body} />
 
         <PricingSection price={fourBike?.price} compareAtPrice={fourBike?.compareAtPrice} />
         <Testimonials />
