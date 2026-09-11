@@ -19,33 +19,42 @@ export const product = {
   saleEndsAt: process.env.NEXT_PUBLIC_SALE_ENDS_AT ?? "2026-09-30T00:00:00-07:00",
 };
 
+// Each row also carries a `video` — the best contextual match from
+// /public/videos for that row's copy — used only by /lp-demonstration-videos
+// (see FeatureRow's optional `video` prop). /lp-demonstration itself keeps
+// rendering the static image.
 export const featureRows = [
   {
     image: "/images/jb-racks_ready_in_seconds.jpg",
+    video: "/videos/4_black-truck-dust-trail.mp4",
     title: "Unload Fast. Ride Sooner.",
     body: "Pull into the trailhead and get your bikes off in well under a minute instead of wrestling with straps and buckles. More time on the trail, less time at the tailgate.",
     size: "medium",
   },
   {
     image: "/images/jb-racks_cheap_adventures.jpg",
+    video: "/videos/5_gray-suv-mountain.mp4",
     title: "More Rides. Less Cost.",
     body: "At an estimated $2.30 per ride, the JB 4 Rack pays for itself fast. Built to last for years of adventures, it's an affordable way to get out more — without the ongoing cost of rentals or roof boxes.",
     size: "small",
   },
   {
     image: "/images/jb-racks_easy_to_attach.jpg",
+    video: "/videos/2_bike-swingup-closeup.mp4",
     title: "Rubber-Gripped, Scratch-Free Hold",
     body: "Rubber straps grip the tires, not the frame, so there's minimal contact with your bike's paint and components. Less rattling against metal means less wear on the ride you actually care about.",
     size: "small",
   },
   {
     image: "/images/jb-racks_fits_almost_any_vehicle.jpg",
+    video: "/videos/3_white-suv-paved-road.mp4",
     title: "Versatile Hitch Fit",
     body: "The 18″ hitch bar clears spare tires and extended trays on almost any vehicle, and fits 2″ Class III receivers — the most common hitch in the US.",
     size: "medium",
   },
   {
     image: "/images/jb-racks_park_and_ride.jpg",
+    video: "/videos/6_red-truck-forest.mp4",
     title: "Arrive. Unload. Ride.",
     body: "Pull into the trailhead and unclip your bike in seconds — no wrestling with straps or buckles. Less time setting up, more time on the trail.",
     size: "small",

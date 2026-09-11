@@ -1,0 +1,67 @@
+import type { Metadata } from "next";
+import { PromoBar } from "@/components/lp/PromoBar";
+import { Header } from "@/components/lp/Header";
+import { Hero } from "@/components/lp/Hero";
+import { FeatureRow } from "@/components/lp/FeatureRow";
+import { ComparisonTable } from "@/components/lp/ComparisonTable";
+import { PricingSection } from "@/components/lp/PricingSection";
+import { Testimonials } from "@/components/lp/Testimonials";
+import { FAQ } from "@/components/lp/FAQ";
+import { ClosingCTA } from "@/components/lp/ClosingCTA";
+import { Footer } from "@/components/lp/Footer";
+import { featureRows } from "@/lib/config";
+import { getLiveBikeRackData } from "@/lib/bikeRacksLive";
+
+// Identical to /lp-demonstration except the five jb-racks_* feature images
+// are swapped for the best-matching video from /public/videos (see the
+// `video` field on each lib/config.ts featureRows entry) — everything else,
+// copy/pricing/layout, is shared with the image version.
+export const metadata: Metadata = {
+  title: "JB Racks — Vertical Bike Rack",
+  description:
+    "5 reasons 20,000+ riders swear by vertical. E-bike rated, 4-year warranty, free shipping.",
+};
+
+// Same 5-minute ISR as the other buy-box pages — pricing comes from the same
+// live (cached) Shopify data instead of a static number.
+export const revalidate = 300;
+
+export default async function LpDemonstrationVideosPage() {
+  const [row1, row2, row3, row4, row5] = featureRows;
+  const { rackSizes } = await getLiveBikeRackData();
+  const fourBike = rackSizes.find((r) => r.bikes === 4);
+
+  return (
+    <>
+      <PromoBar price={fourBike?.price} />
+      <Header />
+      <main className="bg-white">
+        <Hero />
+
+        <FeatureRow {...row1} />
+        <FeatureRow {...row2} />
+
+        <ComparisonTable price={fourBike?.price} />
+
+        <FeatureRow {...row3} />
+        <FeatureRow {...row4} />
+        <FeatureRow {...row5} />
+
+        <PricingSection price={fourBike?.price} compareAtPrice={fourBike?.compareAtPrice} />
+        <Testimonials />
+
+        <section className="pb-[39px] pt-[30px] sm:pb-[52px] sm:pt-10">
+          <div className="mx-auto max-w-[1000px] px-5">
+            <h2 className="mb-6 text-center text-3xl font-extrabold uppercase tracking-tighter leading-[1.14] text-brand-black sm:text-5xl">
+              Frequently Asked Questions
+            </h2>
+            <FAQ />
+          </div>
+        </section>
+
+        <ClosingCTA price={fourBike?.price} />
+      </main>
+      <Footer />
+    </>
+  );
+}
