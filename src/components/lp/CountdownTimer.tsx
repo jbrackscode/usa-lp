@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 type CountdownTimerProps = {
   target: string;
   className?: string;
+  // Flat inline text instead of the boxed/shadowed digit pills — for use in
+  // subtler banners where the loud default treatment would fight the design.
+  compact?: boolean;
 };
 
 function getTimeLeft(target: string) {
@@ -24,13 +27,27 @@ const units: { key: keyof ReturnType<typeof getTimeLeft>; label: string }[] = [
   { key: "seconds", label: "Sec" },
 ];
 
-export function CountdownTimer({ target, className = "" }: CountdownTimerProps) {
+export function CountdownTimer({ target, className = "", compact = false }: CountdownTimerProps) {
   const [display, setDisplay] = useState(() => getTimeLeft(target));
 
   useEffect(() => {
     const id = setInterval(() => setDisplay(getTimeLeft(target)), 1000);
     return () => clearInterval(id);
   }, [target]);
+
+  if (compact) {
+    return (
+      <div className={`flex items-baseline gap-1 text-[11.5px] font-bold tabular-nums text-white/85 sm:text-[13px] ${className}`} suppressHydrationWarning>
+        {units.map(({ key, label }, i) => (
+          <span key={key}>
+            {String(display[key]).padStart(2, "0")}
+            <span className="text-[9px] font-semibold text-white/50">{label.charAt(0).toLowerCase()}</span>
+            {i < units.length - 1 && <span className="text-white/40"> : </span>}
+          </span>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className={`flex items-start gap-1.5 ${className}`} suppressHydrationWarning>

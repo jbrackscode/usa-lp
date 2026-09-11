@@ -41,7 +41,7 @@ export const featureRows = [
   {
     image: "/images/jb-racks_fits_almost_any_vehicle.jpg",
     title: "Versatile Hitch Fit",
-    body: "The 18″ hitch bar clears spare tires and extended trays on almost any vehicle, and fits 2″ (50mm) Class III receivers — the most common hitch in the US.",
+    body: "The 18″ hitch bar clears spare tires and extended trays on almost any vehicle, and fits 2″ Class III receivers — the most common hitch in the US.",
     size: "medium",
   },
   {
@@ -112,7 +112,7 @@ export const testimonials = [
 export const faqs = [
   {
     question: "What size hitch do I need?",
-    answer: "The 4 Bike Rack fits a 2″ (50mm) Class III hitch receiver — the most common size on trucks and SUVs in the US. Check your owner's manual or reach out to our support team if you're not sure.",
+    answer: "The 4 Bike Rack fits a 2″ Class III hitch receiver — the most common size on trucks and SUVs in the US. Check your owner's manual or reach out to our support team if you're not sure.",
   },
   {
     question: "What's the weight capacity?",
