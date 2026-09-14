@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { quizSteps, START_STEP, MAX_STEPS, MODEL_COMPARE_STEP_ID, type ChoiceButton } from "@/lib/quizFunnel";
+import {
+  quizSteps,
+  START_STEP,
+  MAX_STEPS,
+  MODEL_COMPARE_STEP_ID,
+  bikeCategories,
+  type ChoiceButton,
+  type BikeCategory,
+} from "@/lib/quizFunnel";
 import { reviewStats, type RackSize, type Addons } from "@/lib/bikeRacks";
 import { storeUrl } from "@/lib/config";
 
@@ -36,6 +44,30 @@ const benefits = [
   "Structural steel — load & vibration tested",
 ];
 
+const ZERO_INVENTORY: Record<BikeCategory, number> = {
+  mountainBike: 0,
+  eBike: 0,
+  roadGravel: 0,
+  kidsBike: 0,
+  fatBike: 0,
+  hybrid: 0,
+};
+
+// Small illustration for the fat-tire "how to check" helper — a wheel with
+// the sidewall marking called out, matching how a real tire prints it.
+function TireDiagram() {
+  return (
+    <svg viewBox="0 0 120 120" className="h-24 w-24 shrink-0 text-brand-orange sm:h-28 sm:w-28" aria-hidden>
+      <circle cx="60" cy="66" r="46" fill="none" stroke="#1a1a1a" strokeWidth="12" />
+      <circle cx="60" cy="66" r="26" fill="none" stroke="#e2e2e2" strokeWidth="2" />
+      <rect x="14" y="4" width="58" height="18" rx="9" fill="none" stroke="currentColor" strokeWidth="2" />
+      <text x="43" y="17" textAnchor="middle" fontSize="11" fontWeight="700" fill="currentColor">
+        26x4.0
+      </text>
+    </svg>
+  );
+}
+
 export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps) {
   const [stepId, setStepId] = useState(START_STEP);
   const [history, setHistory] = useState<number[]>([START_STEP]);
@@ -46,6 +78,10 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   // recommendation shown at the Mystery Deal step. Every path into step 6
   // now passes through step 10 first, so this is always known by then.
   const [bikeCount, setBikeCount] = useState<4 | 5 | 6 | null>(null);
+  // Per-category counts from the inventory step (10) — drives both
+  // bikeCount (the sum) and which bike-detail follow-ups (18/19/20) are
+  // actually relevant to ask.
+  const [inventory, setInventory] = useState<Record<BikeCategory, number>>(ZERO_INVENTORY);
   // Set by the fold/storage questions (11, 12) — surfaces the Slow-Fold
   // Strut and/or Garage Stand alongside the rack recommendation.
   const [wantsStrut, setWantsStrut] = useState(false);
@@ -69,6 +105,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     setStepId(START_STEP);
     setHistory([START_STEP]);
     setAnswers({});
+    setInventory(ZERO_INVENTORY);
     setName("");
     setEmail("");
     setReasonText("");
@@ -80,13 +117,43 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     onClose();
   }
 
+  // Walks the bike-detail chain (kids wheel size → fat-tire width → e-bike
+  // weight) in order, skipping any step whose category wasn't actually
+  // selected in the inventory — only asks what's actually relevant, then
+  // falls through to the fold-preference question (11) once nothing's left.
+  function resolveBikeDetailChain(fromStepId: number): number {
+    if (fromStepId === 10 && inventory.kidsBike > 0) return 18;
+    if ((fromStepId === 10 || fromStepId === 18) && inventory.fatBike > 0) return 19;
+    if (fromStepId !== 20 && fromStepId !== 21 && inventory.eBike > 0) return 20;
+    return 11;
+  }
+
   function handleChoice(button: ChoiceButton) {
-    setAnswers((a) => ({ ...a, [stepId]: button.label }));
+    setAnswers((a) => ({ ...a, [stepId]: button.hint ? `${button.label} (${button.hint})` : button.label }));
     if (button.bikeCount) setBikeCount(button.bikeCount);
     if (button.wantsStrut) setWantsStrut(true);
     if (button.wantsStand) setWantsStand(true);
     trackGA4("quiz_answer", { quiz_step: stepId, quiz_question: step.type === "choice" ? step.question : "", quiz_answer: button.label });
-    goTo(button.next);
+    goTo(button.chainNext ? resolveBikeDetailChain(stepId) : button.next);
+  }
+
+  const totalBikes = Object.values(inventory).reduce((sum, n) => sum + n, 0);
+
+  function adjustInventory(key: BikeCategory, delta: number) {
+    setInventory((inv) => ({ ...inv, [key]: Math.max(0, Math.min(9, inv[key] + delta)) }));
+  }
+
+  function handleInventorySubmit() {
+    if (totalBikes === 0) return;
+    const tier: 4 | 5 | 6 = totalBikes <= 4 ? 4 : totalBikes === 5 ? 5 : 6;
+    setBikeCount(tier);
+    const summary = bikeCategories
+      .filter((c) => inventory[c.key] > 0)
+      .map((c) => `${inventory[c.key]} ${c.label}`)
+      .join(", ");
+    setAnswers((a) => ({ ...a, [stepId]: summary }));
+    trackGA4("quiz_answer", { quiz_step: stepId, quiz_question: "What bikes are you carrying?", quiz_answer: summary });
+    goTo(resolveBikeDetailChain(stepId));
   }
 
   // Falls back to the 5-bike ("Most Popular") size if somehow reached
@@ -263,19 +330,123 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
               </div>
             )}
 
-            <div className="mt-6 flex flex-col gap-2.5 lg:mt-10 lg:gap-4">
-              {step.buttons.map((button) => (
-                <button
-                  key={button.label}
-                  type="button"
-                  onClick={() => handleChoice(button)}
-                  className={`w-full rounded-full px-5 py-3.5 text-[15px] font-semibold transition-opacity hover:opacity-90 lg:px-8 lg:py-5 lg:text-xl lg:font-bold ${
-                    button.variant === "other" ? "bg-[#22c55e] text-white" : "bg-[#f0f0f0] text-brand-black"
-                  }`}
-                >
-                  {button.label}
-                </button>
-              ))}
+            {step.cardButtons ? (
+              <div className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-3 lg:mt-10 lg:gap-4">
+                {step.buttons.map((button) => (
+                  <button
+                    key={button.label}
+                    type="button"
+                    onClick={() => handleChoice(button)}
+                    className={`rounded-xl border-2 p-4 text-center transition-colors lg:p-5 ${
+                      button.note ? "sm:col-span-3 text-left" : ""
+                    } ${
+                      button.variant === "other"
+                        ? "border-brand-green bg-brand-green-light"
+                        : "border-brand-line hover:border-brand-black/40"
+                    }`}
+                  >
+                    <div className="text-[15px] font-bold text-brand-black lg:text-lg">{button.label}</div>
+                    {button.hint && <div className="mt-1 text-xs text-brand-black/50 lg:text-sm">{button.hint}</div>}
+                    {button.note && (
+                      <p className="mt-2 text-[13px] leading-relaxed text-brand-black/70 lg:text-sm">{button.note}</p>
+                    )}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="mt-6 flex flex-col gap-2.5 lg:mt-10 lg:gap-4">
+                {step.buttons.map((button) => (
+                  <button
+                    key={button.label}
+                    type="button"
+                    onClick={() => handleChoice(button)}
+                    className={`w-full rounded-full px-5 py-3.5 text-[15px] font-semibold transition-opacity hover:opacity-90 lg:px-8 lg:py-5 lg:text-xl lg:font-bold ${
+                      button.variant === "other" ? "bg-[#22c55e] text-white" : "bg-[#f0f0f0] text-brand-black"
+                    }`}
+                  >
+                    {button.label}
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {step.footerNote && (
+              <p className="mt-3 text-xs text-brand-black/50 lg:mt-4 lg:text-sm">{step.footerNote}</p>
+            )}
+
+            {step.helper && (
+              <details className="mt-4 rounded-xl border border-brand-line p-4 lg:mt-6 lg:p-5">
+                <summary className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-brand-black lg:text-base">
+                  <span
+                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-brand-black/40 text-[11px]"
+                    aria-hidden
+                  >
+                    ?
+                  </span>
+                  {step.helper.label}
+                </summary>
+                <div className="mt-3 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                  {step.helper.showTireDiagram && <TireDiagram />}
+                  <p className="text-[13px] leading-relaxed text-brand-black/70 lg:text-base">{step.helper.body}</p>
+                </div>
+              </details>
+            )}
+          </div>
+        )}
+
+        {step.type === "inventory" && (
+          <div>
+            <h2 className="pr-8 text-xl font-extrabold text-brand-black sm:text-2xl lg:text-4xl">{step.heading}</h2>
+            <p className="mt-1.5 text-sm text-brand-black/60 lg:mt-3 lg:text-lg">{step.subtitle}</p>
+
+            <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:mt-10 lg:gap-4">
+              {bikeCategories.map((cat) => {
+                const count = inventory[cat.key];
+                return (
+                  <div
+                    key={cat.key}
+                    className={`flex flex-col items-center gap-2.5 rounded-xl border-2 p-3 text-center transition-colors lg:gap-3 lg:p-5 ${
+                      count > 0 ? "border-brand-black" : "border-brand-line"
+                    }`}
+                  >
+                    <div className="text-[13px] font-semibold text-brand-black lg:text-base">{cat.label}</div>
+                    <div className="flex items-center gap-2.5 lg:gap-3">
+                      <button
+                        type="button"
+                        onClick={() => adjustInventory(cat.key, -1)}
+                        disabled={count === 0}
+                        aria-label={`Remove a ${cat.label}`}
+                        className="flex h-7 w-7 items-center justify-center rounded-full border border-brand-line text-base font-bold leading-none text-brand-black disabled:opacity-30 lg:h-9 lg:w-9 lg:text-lg"
+                      >
+                        −
+                      </button>
+                      <span className="w-5 text-center text-lg font-black text-brand-black lg:text-xl">{count}</span>
+                      <button
+                        type="button"
+                        onClick={() => adjustInventory(cat.key, 1)}
+                        aria-label={`Add a ${cat.label}`}
+                        className="flex h-7 w-7 items-center justify-center rounded-full border border-brand-line text-base font-bold leading-none text-brand-black hover:border-brand-black lg:h-9 lg:w-9 lg:text-lg"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="mt-5 flex items-center justify-between gap-3 lg:mt-8">
+              <span className="text-sm font-semibold text-brand-black/60 lg:text-base">
+                {totalBikes} bike{totalBikes === 1 ? "" : "s"} selected
+              </span>
+              <button
+                type="button"
+                onClick={handleInventorySubmit}
+                disabled={totalBikes === 0}
+                className="rounded-full bg-brand-black px-6 py-3 text-sm font-black uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-30 lg:px-8 lg:py-4 lg:text-base"
+              >
+                {step.cta}
+              </button>
             </div>
           </div>
         )}
