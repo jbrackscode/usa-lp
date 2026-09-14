@@ -74,8 +74,8 @@ export function RacksInUse() {
     <div id="racks-in-use" className="border-t border-brand-line py-12 sm:py-14">
       <div className="mx-auto max-w-[1100px] px-6">
         <div className="mx-auto mb-8 max-w-[62ch] text-center">
-          <div className="mb-2.5 text-sm font-bold text-brand-green-dark">{reviewPhotos.length}+ CUSTOMER PHOTOS</div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold uppercase tracking-tighter leading-[1.14] text-brand-black">Racks in Use</h2>
+          <div className="mb-2.5 text-sm font-bold text-brand-green-dark">REAL CUSTOMERS, REAL RACKS</div>
+          <h2 className="text-3xl sm:text-5xl font-extrabold uppercase tracking-tighter leading-[1.14] text-brand-black">Loaded Up and Ready to Ride</h2>
         </div>
       </div>
 
