@@ -500,7 +500,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
                   <div className="min-w-0 flex-1">
                     <div className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-black lg:text-sm">
                       <span className="tracking-widest text-brand-star">★★★★★</span>
-                      {reviewStats.average}/5 · {reviewStats.count} reviews
+                      {reviewStats.average}/5 · 20,000+ customers
                     </div>
                     <h3 className="mt-1.5 text-2xl font-black tracking-tight text-brand-black lg:mt-1.5 lg:text-2xl">
                       {recommendedRack.label} Vertical Rack
