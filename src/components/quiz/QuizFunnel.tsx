@@ -475,49 +475,49 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
               </a>
             </div>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-10">
               {/* LEFT — the recommendation */}
               <div>
-                <div className="rounded-2xl bg-gradient-to-br from-brand-green-dark to-brand-green px-5 py-4 text-center sm:py-5 lg:px-7 lg:py-6">
+                <div className="rounded-2xl bg-gradient-to-br from-brand-green-dark to-brand-green px-5 py-3 text-center sm:py-4 lg:px-6 lg:py-3.5">
                   <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/80 lg:text-xs">Based on your answers</div>
-                  <div className="mt-0.5 text-xl font-black uppercase tracking-tight text-white sm:text-2xl lg:text-3xl">
+                  <div className="mt-0.5 text-xl font-black uppercase tracking-tight text-white sm:text-2xl lg:text-xl">
                     Your Recommended Rack
                   </div>
                 </div>
 
-                <div className="mt-6 flex flex-col items-center gap-5 text-center">
-                  <div className="relative aspect-square w-40 shrink-0 overflow-hidden rounded-xl bg-brand-cream sm:w-48 lg:w-full lg:max-w-[280px]">
+                <div className="mt-5 flex flex-col items-center gap-4 text-center lg:mt-4 lg:gap-3">
+                  <div className="relative aspect-square w-40 shrink-0 overflow-hidden rounded-xl bg-brand-cream sm:w-48 lg:w-full lg:max-w-[170px]">
                     <Image
                       src={recommendedRack.imagesByColor.Black[0]}
                       alt={recommendedRack.label}
                       fill
-                      sizes="(min-width: 1024px) 280px, 192px"
+                      sizes="(min-width: 1024px) 170px, 192px"
                       className="object-contain p-2"
                       priority
                     />
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <div className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-black lg:text-base">
+                    <div className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-black lg:text-sm">
                       <span className="tracking-widest text-brand-star">★★★★★</span>
                       {reviewStats.average}/5 · {reviewStats.count} reviews
                     </div>
-                    <h3 className="mt-1.5 text-2xl font-black tracking-tight text-brand-black lg:mt-2 lg:text-4xl">
+                    <h3 className="mt-1.5 text-2xl font-black tracking-tight text-brand-black lg:mt-1.5 lg:text-2xl">
                       {recommendedRack.label} Vertical Rack
                     </h3>
-                    <div className="mt-2 flex flex-wrap items-baseline justify-center gap-2 lg:mt-3">
-                      <span className="text-3xl font-black text-brand-black lg:text-5xl">${recommendedRack.price}</span>
-                      <span className="text-lg text-brand-black/40 line-through lg:text-xl">${recommendedRack.compareAtPrice}</span>
+                    <div className="mt-2 flex flex-wrap items-baseline justify-center gap-2 lg:mt-1.5">
+                      <span className="text-3xl font-black text-brand-black lg:text-3xl">${recommendedRack.price}</span>
+                      <span className="text-lg text-brand-black/40 line-through lg:text-base">${recommendedRack.compareAtPrice}</span>
                       {savings > 0 && (
-                        <span className="rounded-full bg-brand-green-light px-2.5 py-1 text-[12.5px] font-bold text-brand-green-dark lg:px-3 lg:py-1.5 lg:text-sm">
+                        <span className="rounded-full bg-brand-green-light px-2.5 py-1 text-[12.5px] font-bold text-brand-green-dark lg:px-2.5 lg:py-1 lg:text-xs">
                           Save ${savings}
                         </span>
                       )}
                     </div>
 
-                    <ul className="mx-auto mt-4 hidden max-w-[34ch] flex-col gap-1.5 text-left sm:flex lg:mt-6 lg:max-w-[38ch] lg:gap-2.5">
+                    <ul className="mx-auto mt-4 hidden max-w-[34ch] flex-col gap-1.5 text-left sm:flex lg:mt-3 lg:grid lg:max-w-none lg:grid-cols-2 lg:gap-x-4 lg:gap-y-1">
                       {benefits.map((b) => (
-                        <li key={b} className="flex items-start gap-2 text-[13.5px] text-brand-black/75 lg:text-base">
+                        <li key={b} className="flex items-start gap-2 text-[13.5px] text-brand-black/75 lg:text-[12.5px]">
                           <span className="mt-0.5 shrink-0 text-brand-green">✓</span>
                           {b}
                         </li>
@@ -527,26 +527,28 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
                 </div>
 
                 {recommendedAddons.length > 0 && (
-                  <div className="mx-auto mt-6 max-w-[38ch] lg:mx-0 lg:max-w-none">
-                    <div className="mb-2 text-xs font-bold uppercase tracking-wide text-brand-black/50 lg:text-sm">Complete your setup</div>
-                    <div className="flex flex-col gap-2 lg:gap-3">
+                  <div className="mx-auto mt-4 max-w-[38ch] lg:mx-0 lg:mt-3 lg:max-w-none">
+                    <div className="mb-1.5 text-xs font-bold uppercase tracking-wide text-brand-black/50 lg:text-[11px]">
+                      Complete your setup
+                    </div>
+                    <div className="flex flex-col gap-1.5 lg:gap-1.5">
                       {recommendedAddons.map((addon) => (
                         <div
                           key={addon.name}
-                          className="flex items-center gap-3 rounded-lg border border-brand-line bg-brand-cream p-2.5 text-left lg:p-3.5"
+                          className="flex items-center gap-3 rounded-lg border border-brand-line bg-brand-cream p-2.5 text-left lg:p-2"
                         >
-                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-white lg:h-16 lg:w-16">
+                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-white lg:h-10 lg:w-10">
                             <Image src={addon.image} alt={addon.name} fill sizes="64px" className="object-cover" />
                           </div>
                           <div className="min-w-0 flex-1">
-                            <div className="text-[13px] font-bold text-brand-black lg:text-base">{addon.name}</div>
-                            <div className="truncate text-[11.5px] text-brand-black/60 lg:text-sm">{addon.note}</div>
+                            <div className="text-[13px] font-bold text-brand-black lg:text-[12.5px]">{addon.name}</div>
+                            <div className="truncate text-[11.5px] text-brand-black/60 lg:text-[11px]">{addon.note}</div>
                           </div>
                           <div className="flex shrink-0 items-baseline gap-1.5">
                             {addon.compareAtPrice > addon.price && (
-                              <span className="text-xs text-brand-black/40 line-through lg:text-sm">${addon.compareAtPrice}</span>
+                              <span className="text-xs text-brand-black/40 line-through lg:text-xs">${addon.compareAtPrice}</span>
                             )}
-                            <span className="text-sm font-extrabold text-brand-black lg:text-lg">+${addon.price}</span>
+                            <span className="text-sm font-extrabold text-brand-black lg:text-sm">+${addon.price}</span>
                           </div>
                         </div>
                       ))}
@@ -556,26 +558,26 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
               </div>
 
               {/* RIGHT — the sign-up form */}
-              <div className="mt-6 border-t border-brand-line pt-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:border-l lg:border-t-0 lg:pl-12 lg:pt-0">
-                <h2 className="pr-8 text-xl font-extrabold uppercase tracking-tight text-brand-black sm:text-2xl lg:pr-0 lg:text-3xl">
+              <div className="mt-6 border-t border-brand-line pt-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+                <h2 className="pr-8 text-xl font-extrabold uppercase tracking-tight text-brand-black sm:text-2xl lg:pr-0 lg:text-2xl">
                   {step.heading}
                 </h2>
-                <p className="mt-2 text-[15px] text-brand-black/70 lg:mt-3 lg:text-lg">{step.body}</p>
+                <p className="mt-2 text-[15px] text-brand-black/70 lg:mt-2 lg:text-base">{step.body}</p>
 
-                <div className="mt-6 flex flex-col gap-2.5 lg:mt-8 lg:gap-4">
+                <div className="mt-5 flex flex-col gap-2.5 lg:mt-5 lg:gap-3">
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Your name"
-                    className="w-full rounded-full border border-brand-line px-4 py-3 text-[15px] text-brand-black outline-none focus:border-brand-black lg:px-6 lg:py-4 lg:text-lg"
+                    className="w-full rounded-full border border-brand-line px-4 py-3 text-[15px] text-brand-black outline-none focus:border-brand-black lg:px-5 lg:py-3 lg:text-base"
                   />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="w-full rounded-full border border-brand-line px-4 py-3 text-[15px] text-brand-black outline-none focus:border-brand-black lg:px-6 lg:py-4 lg:text-lg"
+                    className="w-full rounded-full border border-brand-line px-4 py-3 text-[15px] text-brand-black outline-none focus:border-brand-black lg:px-5 lg:py-3 lg:text-base"
                   />
                 </div>
 
@@ -583,7 +585,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
                   type="button"
                   onClick={handleEmailSubmit}
                   disabled={submitting || !email}
-                  className="mt-4 w-full rounded-full bg-[#22c55e] px-5 py-4 text-base font-black uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-60 lg:mt-6 lg:py-5 lg:text-xl"
+                  className="mt-4 w-full rounded-full bg-[#22c55e] px-5 py-4 text-base font-black uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-60 lg:mt-4 lg:py-4 lg:text-lg"
                 >
                   {submitting ? "Sending…" : step.cta}
                 </button>
@@ -591,7 +593,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="mt-4 w-full text-center text-sm text-brand-black/50 underline lg:mt-5 lg:text-base"
+                  className="mt-4 w-full text-center text-sm text-brand-black/50 underline lg:mt-3 lg:text-sm"
                 >
                   {step.declineLabel}
                 </button>
