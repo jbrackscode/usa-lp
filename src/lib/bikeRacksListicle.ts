@@ -223,7 +223,7 @@ export const faqs = [
 // (it's an honest deadline), but let it sit quietly near the button rather
 // than lead with alarm-style urgency.
 export const finalCta = {
-  headline: "You've got what you need to decide.",
+  headline: "Ready to ride?",
   body: "Free shipping, a 4-year warranty, and a rack built for exactly what you're hauling — pick your size below.",
   cta: "Find your size — from $597",
 };
