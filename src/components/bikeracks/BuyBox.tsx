@@ -328,6 +328,7 @@ export function BuyBox({
               name={addons.garageStand.name}
               note={addons.garageStand.note}
               price={addons.garageStand.price}
+              compareAtPrice={addons.garageStand.compareAtPrice}
               outOfStock={outOfStockVariantIds.has(addons.garageStand.variantId)}
             />
             <AddonCard
@@ -337,6 +338,7 @@ export function BuyBox({
               name={addons.slowFoldStrut.name}
               note={addons.slowFoldStrut.note}
               price={addons.slowFoldStrut.price}
+              compareAtPrice={addons.slowFoldStrut.compareAtPrice}
               outOfStock={outOfStockVariantIds.has(addons.slowFoldStrut.variantId)}
             />
             <AddonCard
@@ -468,6 +470,7 @@ function AddonCard({
   name,
   note,
   price,
+  compareAtPrice,
   outOfStock = false,
 }: {
   checked: boolean;
@@ -476,8 +479,10 @@ function AddonCard({
   name: string;
   note: string;
   price: number;
+  compareAtPrice?: number;
   outOfStock?: boolean;
 }) {
+  const onSale = typeof compareAtPrice === "number" && compareAtPrice > price;
   return (
     <button
       type="button"
@@ -500,7 +505,10 @@ function AddonCard({
             {name}
             {outOfStock && <span className="ml-1.5 font-normal text-brand-black/50">(Sold out)</span>}
           </strong>
-          <span className="shrink-0 text-sm font-bold text-brand-black">+${price}</span>
+          <span className="flex shrink-0 items-baseline gap-1.5">
+            {onSale && <span className="text-xs text-brand-black/40 line-through">${compareAtPrice}</span>}
+            <span className="text-sm font-bold text-brand-black">+${price}</span>
+          </span>
         </div>
         <p className="mt-0.5 truncate text-xs text-brand-black/60">{note}</p>
       </div>

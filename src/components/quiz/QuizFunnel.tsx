@@ -371,7 +371,12 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
                             <div className="text-[13px] font-bold text-brand-black lg:text-base">{addon.name}</div>
                             <div className="truncate text-[11.5px] text-brand-black/60 lg:text-sm">{addon.note}</div>
                           </div>
-                          <div className="shrink-0 text-sm font-extrabold text-brand-black lg:text-lg">+${addon.price}</div>
+                          <div className="flex shrink-0 items-baseline gap-1.5">
+                            {addon.compareAtPrice > addon.price && (
+                              <span className="text-xs text-brand-black/40 line-through lg:text-sm">${addon.compareAtPrice}</span>
+                            )}
+                            <span className="text-sm font-extrabold text-brand-black lg:text-lg">+${addon.price}</span>
+                          </div>
                         </div>
                       ))}
                     </div>

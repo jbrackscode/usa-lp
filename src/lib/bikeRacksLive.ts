@@ -82,7 +82,7 @@ export async function getLiveBikeRackData(): Promise<LiveBikeRackData> {
     },
     slowFoldStrut: {
       ...staticAddons.slowFoldStrut,
-      price: pricedPriceOnly(live, staticAddons.slowFoldStrut.variantId, staticAddons.slowFoldStrut.price),
+      ...pricedFields(live, staticAddons.slowFoldStrut.variantId, staticAddons.slowFoldStrut.price, staticAddons.slowFoldStrut.compareAtPrice),
     },
     swingArm: {
       ...staticAddons.swingArm,
