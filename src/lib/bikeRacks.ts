@@ -201,20 +201,21 @@ export const rackSizes: RackSize[] = [
 
 export type Addons = typeof addons;
 
-// garageStand and slowFoldStrut are NOT reachable via the Storefront API
-// (confirmed: both their variant ID and handle return null on the live
-// store) — they aren't published to the sales channel the Storefront token
-// is scoped to, unlike swingArm which resolves fine. getLiveBikeRackData()
-// silently falls back to these static values for both, so unlike every
-// other price in this file, these two only update when hand-edited here —
-// keep them in sync with jbracks.com manually until the products are
-// published to that sales channel in Shopify Admin.
+// garageStand and slowFoldStrut are deliberately excluded from the live
+// Shopify price merge in bikeRacksLive.ts (see the comment there): their
+// variant DOES resolve via the Storefront API, but only to the regular
+// standalone price, not the discounted price Essential Upsells actually
+// charges when either is bundled with the rack — a bundle-conditional
+// discount the Storefront API can't see. So unlike every other price in
+// this file, these two only update when hand-edited here — keep them in
+// sync with whatever Essential Upsells is currently offering on
+// jbracks.com.
 export const addons = {
   garageStand: {
     name: "Garage Stand",
     note: "Stores your rack off the car when it's not in use",
     price: 50,
-    compareAtPrice: 200,
+    compareAtPrice: 180,
     variantId: 44696448663764,
     image: `${CDN}/shed-stand-5_fbc742db-77dd-4964-bd34-aaae51055bb2.webp?v=1773812428`,
   },

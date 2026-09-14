@@ -75,15 +75,19 @@ export async function getLiveBikeRackData(): Promise<LiveBikeRackData> {
     },
   }));
 
+  // garageStand and slowFoldStrut are intentionally NOT live-priced, unlike
+  // everything else in this file. Their variant now resolves fine via the
+  // Storefront API, but that resolves to the product's regular standalone
+  // price ($180 / $150) — not the discounted price Essential Upsells offers
+  // when bundled with the rack ($50 / $100), which is a bundle-conditional
+  // discount the Storefront API has no way to see (it lives in Essential
+  // Upsells' own config / a Shopify automatic discount, not on the variant
+  // itself). Live-merging here would silently overwrite the real bundle
+  // price with the wrong (higher) standalone one, so these two stay purely
+  // static — keep them in sync with the Essential Upsells offer by hand.
   const addons: Addons = {
-    garageStand: {
-      ...staticAddons.garageStand,
-      ...pricedFields(live, staticAddons.garageStand.variantId, staticAddons.garageStand.price, staticAddons.garageStand.compareAtPrice),
-    },
-    slowFoldStrut: {
-      ...staticAddons.slowFoldStrut,
-      ...pricedFields(live, staticAddons.slowFoldStrut.variantId, staticAddons.slowFoldStrut.price, staticAddons.slowFoldStrut.compareAtPrice),
-    },
+    garageStand: staticAddons.garageStand,
+    slowFoldStrut: staticAddons.slowFoldStrut,
     swingArm: {
       ...staticAddons.swingArm,
       price: pricedPriceOnly(live, staticAddons.swingArm.variantId, staticAddons.swingArm.price),
