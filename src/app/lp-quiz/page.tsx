@@ -49,7 +49,7 @@ export default async function LpQuizPage() {
 
         {/* Trust strip */}
         <div className="border-y border-brand-line bg-brand-cream py-10">
-          <div className="mx-auto grid max-w-[1100px] grid-cols-2 gap-6 px-6 text-center sm:grid-cols-4">
+          <div className="mx-auto grid max-w-[1100px] grid-cols-3 gap-6 px-6 text-center">
             {trustStrip.map((t) => (
               <div key={t.label}>
                 <div className="text-2xl font-extrabold text-brand-black">{t.value}</div>

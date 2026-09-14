@@ -26,7 +26,6 @@ export const benefits = [
 
 export const trustStrip = [
   { value: "4.7/5", label: "Average rating" },
-  { value: "144", label: "Verified reviews" },
   { value: "20,000+", label: "Customers" },
   { value: "4-Year", label: "Warranty" },
 ];
