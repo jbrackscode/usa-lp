@@ -27,9 +27,12 @@ type FinalCtaProps = {
 };
 
 // White card (not black) so it doesn't visually merge into the black footer
-// directly beneath it, with a real live countdown to product.saleEndsAt —
-// the same sale-end date already driving the countdown on /lp-demonstration
-// — for genuine urgency rather than an invented scarcity claim.
+// directly beneath it. This is the last thing a shopper sees before they've
+// already read the reviews, warranty, and comparison table above — so the
+// copy leads with a confident close, not another sales push. The countdown
+// to product.saleEndsAt is real (the same date driving /lp-demonstration's
+// countdown), so it stays, but as a quiet aside near the button rather than
+// an alarm-style badge up top.
 export function FinalCta({ rackSizes }: FinalCtaProps) {
   const [display, setDisplay] = useState(() => getTimeLeft(product.saleEndsAt));
 
@@ -42,35 +45,10 @@ export function FinalCta({ rackSizes }: FinalCtaProps) {
 
   return (
     <div className="mx-5 mb-10 rounded-xl border border-brand-line bg-white px-6 py-10 text-center shadow-[0_1px_3px_rgba(0,0,0,0.06)] sm:mx-10 sm:px-10 sm:py-12">
-      <span
-        className="inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white [animation:pulse-subtle_2s_ease-in-out_infinite]"
-        style={{ background: "linear-gradient(135deg, var(--color-brand-orange) 0%, #f7931e 100%)" }}
-      >
-        ⚠ {fromPrice ? `$${fromPrice} pricing ends soon` : "Current pricing ends soon"}
-      </span>
-
-      <h2 className="mx-auto mt-5 max-w-[20ch] text-3xl sm:text-5xl font-extrabold uppercase tracking-tighter leading-tight text-brand-black">
+      <h2 className="mx-auto max-w-[20ch] text-3xl sm:text-5xl font-extrabold uppercase tracking-tighter leading-tight text-brand-black">
         {finalCta.headline}
       </h2>
       <p className="mx-auto mt-4 max-w-[56ch] text-[15.5px] text-brand-black/60">{finalCta.body}</p>
-
-      <div className="mt-6 flex items-start justify-center gap-1.5" suppressHydrationWarning>
-        {units.map(({ key, label }, i) => (
-          <div key={key} className="flex items-start gap-1.5">
-            <div className="flex flex-col items-center">
-              <span className="min-w-[2.2em] rounded-lg bg-brand-cream px-2.5 py-1.5 text-center text-lg font-black tabular-nums text-brand-black sm:text-xl">
-                {String(display[key]).padStart(2, "0")}
-              </span>
-              <span className="mt-1 text-[9px] font-extrabold uppercase tracking-wide text-brand-black/40">{label}</span>
-            </div>
-            {i < units.length - 1 && (
-              <span className="-mt-3.5 self-center text-lg font-black text-brand-black/20" aria-hidden>
-                :
-              </span>
-            )}
-          </div>
-        ))}
-      </div>
 
       <a
         href="#buy-box"
@@ -78,6 +56,29 @@ export function FinalCta({ rackSizes }: FinalCtaProps) {
       >
         {fromPrice ? `Find your size — from $${fromPrice}` : finalCta.cta}
       </a>
+
+      <div className="mt-5 flex flex-col items-center gap-2">
+        <span className="text-xs font-medium text-brand-black/40">
+          {fromPrice ? `Current $${fromPrice} pricing holds for:` : "Current pricing holds for:"}
+        </span>
+        <div className="flex items-start gap-1.5" suppressHydrationWarning>
+          {units.map(({ key, label }, i) => (
+            <div key={key} className="flex items-start gap-1">
+              <div className="flex flex-col items-center">
+                <span className="min-w-[2em] rounded-md bg-brand-cream px-2 py-1 text-center text-sm font-bold tabular-nums text-brand-black/70">
+                  {String(display[key]).padStart(2, "0")}
+                </span>
+                <span className="mt-0.5 text-[8px] font-bold uppercase tracking-wide text-brand-black/30">{label}</span>
+              </div>
+              {i < units.length - 1 && (
+                <span className="-mt-2.5 self-center text-sm font-bold text-brand-black/20" aria-hidden>
+                  :
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

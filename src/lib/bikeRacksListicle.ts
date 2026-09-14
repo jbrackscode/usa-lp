@@ -216,9 +216,15 @@ export const faqs = [
   },
 ];
 
+// By this point in the page the shopper has already seen the proof
+// (reviews), the risk-reversal (warranty, free shipping) and the
+// comparison (why vertical beats a platform rack) — the close should read
+// like a confident summary, not another pitch. Keep the real countdown
+// (it's an honest deadline), but let it sit quietly near the button rather
+// than lead with alarm-style urgency.
 export const finalCta = {
-  headline: "Don't wait for the rack you have now to prove the point.",
-  body: "Pick your size, lock in free shipping, and get a rack that was actually built for what you're hauling — backed by a four-year warranty.",
+  headline: "You've got what you need to decide.",
+  body: "Free shipping, a 4-year warranty, and a rack built for exactly what you're hauling — pick your size below.",
   cta: "Find your size — from $597",
 };
 
