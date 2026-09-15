@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import confetti from "canvas-confetti";
 import { HelpCircle, Info, type LucideIcon } from "lucide-react";
 import {
   quizSteps,
@@ -121,10 +122,31 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   const [reasonText, setReasonText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
-  if (!open) return null;
+  // Guards the confetti burst to once per playthrough — reset() clears it
+  // so retaking the quiz celebrates again.
+  const confettiFired = useRef(false);
 
   const step = quizSteps[stepId];
+  const isRevealStep = step.type === "email" && !submitted;
+
+  // Pop confetti the moment the recommendation is actually revealed, not on
+  // every re-render while the shopper is typing their name/email into the
+  // same step.
+  useEffect(() => {
+    if (open && isRevealStep && !confettiFired.current) {
+      confettiFired.current = true;
+      confetti({
+        particleCount: 130,
+        spread: 75,
+        startVelocity: 45,
+        origin: { y: 0.6 },
+        colors: ["#009d31", "#0f7a52", "#ff6000", "#f5a623", "#1a1a1a"],
+        zIndex: 9999,
+      });
+    }
+  }, [open, isRevealStep]);
+
+  if (!open) return null;
 
   function goTo(next: number) {
     setHistory((h) => [...h, next]);
@@ -141,6 +163,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     setEmail("");
     setReasonText("");
     setSubmitted(false);
+    confettiFired.current = false;
   }
 
   function handleClose() {
@@ -263,10 +286,9 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   // path (see MAX_STEPS) — hidden entirely on terminal end states.
   const progressIndex = Math.min(history.length, MAX_STEPS);
   const showProgress = step.type !== "end";
-  // The recommendation reveal splits into two columns on desktop (recs left,
-  // form right), so it needs a lot more width than a single question card —
-  // mobile stays a single stacked column at the same size as every other step.
-  const isRevealStep = step.type === "email" && !submitted;
+  // isRevealStep (the recommendation reveal splits into two columns on
+  // desktop — recs left, form right — so it needs a lot more width than a
+  // single question card) is computed above, alongside the confetti effect.
   // The live model-comparison table needs more room than a question card —
   // everything else (checklists, spec grids) fits the standard width fine.
   const isWideInfoStep = step.type === "choice" && step.id === MODEL_COMPARE_STEP_ID;
