@@ -152,10 +152,12 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   // weight) in order, skipping any step whose category wasn't actually
   // selected in the inventory — only asks what's actually relevant, then
   // falls through to the fold-preference question (11) once nothing's left.
+  // 20/21/22 are all part of the e-bike-weight sub-flow (question, then
+  // whichever caution note applies), so none of them re-trigger step 20.
   function resolveBikeDetailChain(fromStepId: number): number {
     if (fromStepId === 10 && inventory.kidsBike > 0) return 18;
     if ((fromStepId === 10 || fromStepId === 18) && inventory.fatBike > 0) return 19;
-    if (fromStepId !== 20 && fromStepId !== 21 && inventory.eBike > 0) return 20;
+    if (fromStepId !== 20 && fromStepId !== 21 && fromStepId !== 22 && inventory.eBike > 0) return 20;
     return 11;
   }
 
