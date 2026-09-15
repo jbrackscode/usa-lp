@@ -185,7 +185,7 @@ export const quizSteps: Record<number, QuizStep> = {
     question: "Which best describes you?",
     subtitle: "Helps us tailor your recommendation",
     buttons: [
-      { label: "Family Adventures", next: 1, customerType: "family_adventures" },
+      { label: "Family Adventurer", next: 1, customerType: "family_adventures" },
       { label: "Mountain Biking", next: 1, customerType: "mountain_biking" },
       { label: "Cycling", next: 1, customerType: "cycling" },
       { label: "Other", next: 1, customerType: "other", variant: "other" },
