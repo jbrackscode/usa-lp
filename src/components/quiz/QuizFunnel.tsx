@@ -283,8 +283,12 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   }
 
   // How far through a typical path we are, out of the longest realistic
-  // path (see MAX_STEPS) — hidden entirely on terminal end states.
+  // path (see MAX_STEPS) — hidden entirely on terminal end states. Shown as
+  // a bar rather than "Step X of 12": most real paths finish well short of
+  // the worst case, and a literal step count that high reads as scarier
+  // than the actual experience.
   const progressIndex = Math.min(history.length, MAX_STEPS);
+  const progressPercent = Math.max(6, Math.min(100, (progressIndex / MAX_STEPS) * 100));
   const showProgress = step.type !== "end";
   // isRevealStep (the recommendation reveal splits into two columns on
   // desktop — recs left, form right — so it needs a lot more width than a
@@ -315,8 +319,18 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
             steps that would otherwise run past a laptop viewport. */}
         <div className="overflow-y-auto p-6 sm:p-8 lg:p-10">
           {showProgress && (
-            <div className="mb-4 text-xs font-bold uppercase tracking-wide text-brand-black/40 lg:mb-5 lg:text-sm">
-              Step {progressIndex} of {MAX_STEPS}
+            <div
+              className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-brand-line lg:mb-5"
+              role="progressbar"
+              aria-label="Quiz progress"
+              aria-valuenow={Math.round(progressPercent)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            >
+              <div
+                className="h-full rounded-full bg-brand-green transition-[width] duration-500 ease-out"
+                style={{ width: `${progressPercent}%` }}
+              />
             </div>
           )}
 
