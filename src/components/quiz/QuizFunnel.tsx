@@ -55,6 +55,18 @@ const ZERO_INVENTORY: Record<BikeCategory, number> = {
   hybrid: 0,
 };
 
+// Personalizes the recommendation screen's kicker line with the customer
+// type — self-reported at step 0, or inferred from the bike inventory if
+// that's somehow unanswered. Doesn't change which rack/add-ons get
+// recommended (that stays driven by the real bike-count/fold/storage
+// answers) — just how the reveal is framed.
+const CUSTOMER_TYPE_KICKER: Record<CustomerType, string> = {
+  family_adventures: "For family adventures",
+  mountain_biking: "For mountain missions",
+  cycling: "For your rides",
+  other: "Based on your answers",
+};
+
 // Small icon badge shown above a step's heading — purely visual, gives the
 // funnel a guided-flow feel instead of a plain form. Renders nothing when a
 // step doesn't set one (the email/reveal step has its own banner instead).
@@ -96,6 +108,10 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   // (the sum), which bike-detail follow-ups (18/19/20) are relevant, and
   // the Klaviyo customer_type segment sent on submission.
   const [inventory, setInventory] = useState<Record<BikeCategory, number>>(ZERO_INVENTORY);
+  // Set by the opening "which best describes you?" step (0) — the explicit,
+  // self-reported customer_type. Preferred over the inventory-based
+  // inference below whenever it's set.
+  const [customerType, setCustomerType] = useState<CustomerType | null>(null);
   // Set by the fold/storage questions (11, 12) — surfaces the Slow-Fold
   // Strut and/or Garage Stand alongside the rack recommendation.
   const [wantsStrut, setWantsStrut] = useState(false);
@@ -120,6 +136,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     setHistory([START_STEP]);
     setAnswers({});
     setInventory(ZERO_INVENTORY);
+    setCustomerType(null);
     setName("");
     setEmail("");
     setReasonText("");
@@ -144,6 +161,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
 
   function handleChoice(button: ChoiceButton) {
     setAnswers((a) => ({ ...a, [stepId]: button.hint ? `${button.label} (${button.hint})` : button.label }));
+    if (button.customerType) setCustomerType(button.customerType);
     if (button.bikeCount) setBikeCount(button.bikeCount);
     if (button.wantsStrut) setWantsStrut(true);
     if (button.wantsStand) setWantsStand(true);
@@ -170,17 +188,20 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     goTo(resolveBikeDetailChain(stepId));
   }
 
-  // Which Klaviyo customer_type segment this shopper's inventory maps to —
-  // a kids bike reads as a family/household purchase before anything else,
-  // then mountain/fat bikes, then general cycling. Falls back to "other"
-  // for the (structurally unreachable via the email step, but defensive)
-  // case of an empty inventory.
-  function resolveCustomerType(): CustomerType {
-    if (inventory.kidsBike > 0) return "family_adventures";
-    if (inventory.mountainBike > 0 || inventory.fatBike > 0) return "mountain_biking";
-    if (inventory.roadGravel > 0 || inventory.hybrid > 0 || inventory.eBike > 0) return "cycling";
-    return "other";
-  }
+  // The explicit answer from step 0 wins; if that's somehow unset, infer
+  // from the bike inventory instead — a kids bike reads as a family/
+  // household purchase before anything else, then mountain/fat bikes, then
+  // general cycling, "other" as the last resort. Used both for the Klaviyo
+  // profile property and to personalize the reveal screen's kicker.
+  const resolvedCustomerType: CustomerType =
+    customerType ??
+    (inventory.kidsBike > 0
+      ? "family_adventures"
+      : inventory.mountainBike > 0 || inventory.fatBike > 0
+        ? "mountain_biking"
+        : inventory.roadGravel > 0 || inventory.hybrid > 0 || inventory.eBike > 0
+          ? "cycling"
+          : "other");
 
   // Falls back to the 5-bike ("Most Popular") size if somehow reached
   // without a bike-count answer, rather than showing nothing.
@@ -210,20 +231,19 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   async function handleEmailSubmit() {
     setSubmitting(true);
     const recommendedAddonNames = recommendedAddons.map((a) => a.name);
-    const customerType = resolveCustomerType();
     trackGA4("quiz_complete", {
       quiz_path: history.join(">"),
       quiz_outcome: "email_capture",
       recommended_rack: recommendedRack.label,
       recommended_addons: recommendedAddonNames.join(", "),
-      customer_type: customerType,
+      customer_type: resolvedCustomerType,
     });
     await submitToApi({
       name,
       email,
       recommendedRack: recommendedRack.label,
       recommendedAddons: recommendedAddonNames,
-      customerType,
+      customerType: resolvedCustomerType,
     });
     setSubmitting(false);
     setSubmitted(true);
@@ -525,7 +545,9 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
                 {/* LEFT — the recommendation */}
                 <div>
                   <div className="rounded-2xl bg-gradient-to-br from-brand-green-dark to-brand-green px-5 py-3 text-center sm:py-4 lg:px-6 lg:py-3.5">
-                    <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/80 lg:text-xs">Based on your answers</div>
+                    <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/80 lg:text-xs">
+                      {CUSTOMER_TYPE_KICKER[resolvedCustomerType]}
+                    </div>
                     <div className="mt-0.5 text-xl font-black uppercase tracking-tight text-white sm:text-2xl lg:text-xl">
                       Your Recommended Rack
                     </div>

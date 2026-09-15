@@ -41,12 +41,24 @@ import {
   Route,
   Snowflake,
   Building2,
+  Users,
 } from "lucide-react";
+
+// Which Klaviyo customer_type segment this shopper belongs to. Set directly
+// by the first step's explicit choice; if that's somehow unanswered, the
+// component falls back to inferring it from the bike-inventory step. Used
+// both to tag the Klaviyo profile on submission and to personalize the
+// recommendation screen's kicker copy.
+export type CustomerType = "family_adventures" | "mountain_biking" | "cycling" | "other";
 
 export type ChoiceButton = {
   label: string;
   next: number;
   variant?: "default" | "other";
+  // Only set on the opening "which best describes you?" step — the
+  // explicit, self-reported version of customer_type (preferred over the
+  // inventory-based inference it also feeds as a fallback).
+  customerType?: CustomerType;
   // Only set on the bike-count step — lets the recommendation at the
   // Mystery Deal step map straight to a real 4/5/6-bike SKU instead of
   // guessing from unrelated earlier answers.
@@ -152,27 +164,33 @@ export type EndStep = {
 
 export type QuizStep = ChoiceStep | InventoryStep | EmailStep | TextStep | EndStep;
 
-export const START_STEP = 1;
+export const START_STEP = 0;
 
 // Longest real path through the funnel — e.g. someone with a kids bike, a
 // fat bike, and a heavy e-bike hits every detail follow-up in the chain:
-// 1 → 3 → 2 → 10 → 18 → 19 → 20 → 21 → 11 → 12 → 6. Used for the
+// 0 → 1 → 3 → 2 → 10 → 18 → 19 → 20 → 21 → 11 → 12 → 6. Used for the
 // "Step X of Y" progress indicator — most shoppers take a much shorter
 // path since the bike-detail steps only appear when actually relevant.
-export const MAX_STEPS = 11;
+export const MAX_STEPS = 12;
 
 // Step 16 ("Comparing our own models") renders a live pricing table from the
 // real rackSizes prop instead of static copy here — see QuizFunnel.tsx.
 export const MODEL_COMPARE_STEP_ID = 16;
 
-// Which Klaviyo customer_type segment a shopper's bike inventory maps to —
-// computed in QuizFunnel.tsx from the inventory step's counts and sent on
-// email submission. Priority order: a kids bike in the mix reads as a
-// family/household purchase before anything else; mountain/fat bikes read
-// as a mountain-biking household; everything else lands on general cycling.
-export type CustomerType = "family_adventures" | "mountain_biking" | "cycling" | "other";
-
 export const quizSteps: Record<number, QuizStep> = {
+  0: {
+    type: "choice",
+    id: 0,
+    icon: Users,
+    question: "Which best describes you?",
+    subtitle: "Helps us tailor your recommendation",
+    buttons: [
+      { label: "Family Adventures", next: 1, customerType: "family_adventures" },
+      { label: "Mountain Biking", next: 1, customerType: "mountain_biking" },
+      { label: "Cycling", next: 1, customerType: "cycling" },
+      { label: "Other", next: 1, customerType: "other", variant: "other" },
+    ],
+  },
   1: {
     type: "choice",
     id: 1,
