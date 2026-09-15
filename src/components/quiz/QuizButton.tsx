@@ -9,13 +9,18 @@ type QuizButtonProps = {
   className?: string;
   rackSizes: RackSize[];
   addons: Addons;
+  // Opens the quiz modal immediately on mount instead of waiting for a
+  // click — only pass this on one <QuizButton> per page (each instance
+  // manages its own open state, so two auto-opening instances would both
+  // try to pop a modal at once).
+  autoOpen?: boolean;
 };
 
 // Self-contained: renders its own trigger + its own QuizFunnel instance, so
 // dropping <QuizButton /> anywhere on the page "just works" without lifting
 // open state up to a shared parent.
-export function QuizButton({ label, className = "", rackSizes, addons }: QuizButtonProps) {
-  const [open, setOpen] = useState(false);
+export function QuizButton({ label, className = "", rackSizes, addons, autoOpen = false }: QuizButtonProps) {
+  const [open, setOpen] = useState(autoOpen);
 
   return (
     <>

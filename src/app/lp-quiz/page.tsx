@@ -31,7 +31,7 @@ export default async function LpQuizPage() {
               {hero.headline}
             </h1>
             <p className="mx-auto mt-5 max-w-[56ch] text-lg text-brand-black/70">{hero.sub}</p>
-            <QuizButton label={hero.cta} className="mt-8" rackSizes={rackSizes} addons={addons} />
+            <QuizButton label={hero.cta} className="mt-8" rackSizes={rackSizes} addons={addons} autoOpen />
           </div>
         </div>
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { HelpCircle, Info, type LucideIcon } from "lucide-react";
 import {
   quizSteps,
   START_STEP,
@@ -10,6 +11,7 @@ import {
   bikeCategories,
   type ChoiceButton,
   type BikeCategory,
+  type CustomerType,
 } from "@/lib/quizFunnel";
 import { reviewStats, type RackSize, type Addons } from "@/lib/bikeRacks";
 import { storeUrl } from "@/lib/config";
@@ -53,6 +55,18 @@ const ZERO_INVENTORY: Record<BikeCategory, number> = {
   hybrid: 0,
 };
 
+// Small icon badge shown above a step's heading — purely visual, gives the
+// funnel a guided-flow feel instead of a plain form. Renders nothing when a
+// step doesn't set one (the email/reveal step has its own banner instead).
+function StepIcon({ icon: Icon }: { icon?: LucideIcon }) {
+  if (!Icon) return null;
+  return (
+    <span className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-brand-green-light text-brand-green-dark lg:mb-4 lg:h-12 lg:w-12">
+      <Icon className="h-5 w-5 lg:h-6 lg:w-6" strokeWidth={2.2} />
+    </span>
+  );
+}
+
 // Small illustration for the fat-tire "how to check" helper — a wheel with
 // the sidewall marking called out, matching how a real tire prints it.
 function TireDiagram() {
@@ -78,9 +92,9 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   // recommendation shown at the Mystery Deal step. Every path into step 6
   // now passes through step 10 first, so this is always known by then.
   const [bikeCount, setBikeCount] = useState<4 | 5 | 6 | null>(null);
-  // Per-category counts from the inventory step (10) — drives both
-  // bikeCount (the sum) and which bike-detail follow-ups (18/19/20) are
-  // actually relevant to ask.
+  // Per-category counts from the inventory step (10) — drives bikeCount
+  // (the sum), which bike-detail follow-ups (18/19/20) are relevant, and
+  // the Klaviyo customer_type segment sent on submission.
   const [inventory, setInventory] = useState<Record<BikeCategory, number>>(ZERO_INVENTORY);
   // Set by the fold/storage questions (11, 12) — surfaces the Slow-Fold
   // Strut and/or Garage Stand alongside the rack recommendation.
@@ -156,6 +170,18 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     goTo(resolveBikeDetailChain(stepId));
   }
 
+  // Which Klaviyo customer_type segment this shopper's inventory maps to —
+  // a kids bike reads as a family/household purchase before anything else,
+  // then mountain/fat bikes, then general cycling. Falls back to "other"
+  // for the (structurally unreachable via the email step, but defensive)
+  // case of an empty inventory.
+  function resolveCustomerType(): CustomerType {
+    if (inventory.kidsBike > 0) return "family_adventures";
+    if (inventory.mountainBike > 0 || inventory.fatBike > 0) return "mountain_biking";
+    if (inventory.roadGravel > 0 || inventory.hybrid > 0 || inventory.eBike > 0) return "cycling";
+    return "other";
+  }
+
   // Falls back to the 5-bike ("Most Popular") size if somehow reached
   // without a bike-count answer, rather than showing nothing.
   const recommendedRack = rackSizes.find((r) => r.bikes === bikeCount) ?? rackSizes.find((r) => r.badge) ?? rackSizes[0];
@@ -184,13 +210,21 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   async function handleEmailSubmit() {
     setSubmitting(true);
     const recommendedAddonNames = recommendedAddons.map((a) => a.name);
+    const customerType = resolveCustomerType();
     trackGA4("quiz_complete", {
       quiz_path: history.join(">"),
       quiz_outcome: "email_capture",
       recommended_rack: recommendedRack.label,
       recommended_addons: recommendedAddonNames.join(", "),
+      customer_type: customerType,
     });
-    await submitToApi({ name, email, recommendedRack: recommendedRack.label, recommendedAddons: recommendedAddonNames });
+    await submitToApi({
+      name,
+      email,
+      recommendedRack: recommendedRack.label,
+      recommendedAddons: recommendedAddonNames,
+      customerType,
+    });
     setSubmitting(false);
     setSubmitted(true);
   }
@@ -218,7 +252,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4 py-8" role="dialog" aria-modal="true">
       <div
-        className={`relative w-full rounded-xl bg-white p-6 shadow-lg transition-[max-width] sm:p-8 lg:p-12 ${
+        className={`relative flex max-h-[88vh] w-full flex-col rounded-xl bg-white shadow-lg transition-[max-width] ${
           isRevealStep ? "max-w-lg lg:max-w-5xl" : isWideInfoStep ? "max-w-lg lg:max-w-4xl" : "max-w-lg lg:max-w-3xl"
         }`}
       >
@@ -231,409 +265,424 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
           ×
         </button>
 
-        {showProgress && (
-          <div className="mb-5 text-xs font-bold uppercase tracking-wide text-brand-black/40 lg:mb-7 lg:text-sm">
-            Step {progressIndex} of {MAX_STEPS}
-          </div>
-        )}
+        {/* Everything below scrolls internally, capped by max-h-[88vh] on the
+            card above — the close button stays fixed in the corner (it's
+            positioned against the non-scrolling wrapper) even on the denser
+            steps that would otherwise run past a laptop viewport. */}
+        <div className="overflow-y-auto p-6 sm:p-8 lg:p-10">
+          {showProgress && (
+            <div className="mb-4 text-xs font-bold uppercase tracking-wide text-brand-black/40 lg:mb-5 lg:text-sm">
+              Step {progressIndex} of {MAX_STEPS}
+            </div>
+          )}
 
-        {step.type === "choice" && (
-          <div>
-            <h2 className="pr-8 text-xl font-extrabold text-brand-black sm:text-2xl lg:text-4xl">{step.question}</h2>
-            <p className="mt-1.5 text-sm text-brand-black/60 lg:mt-3 lg:text-lg">{step.subtitle}</p>
+          {step.type === "choice" && (
+            <div>
+              <StepIcon icon={step.icon} />
+              <h2 className="pr-8 text-xl font-extrabold text-brand-black sm:text-2xl lg:text-3xl">{step.question}</h2>
+              <p className="mt-1.5 text-sm text-brand-black/60 lg:mt-2 lg:text-base">{step.subtitle}</p>
 
-            {step.checklist && (
-              <ul className="mt-5 flex flex-col gap-2.5 rounded-xl border border-brand-line bg-brand-cream p-4 lg:mt-8 lg:gap-3.5 lg:p-6">
-                {step.checklist.map((line) => (
-                  <li key={line} className="flex items-start gap-2.5 text-[13.5px] leading-relaxed text-brand-black/80 lg:text-base">
-                    <span className="mt-0.5 shrink-0 text-brand-green">✓</span>
-                    {line}
-                  </li>
-                ))}
-              </ul>
-            )}
+              {step.checklist && (
+                <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:mt-5 lg:gap-2.5">
+                  {step.checklist.map((item) => (
+                    <div
+                      key={item.text}
+                      className="flex items-start gap-2.5 rounded-lg border border-brand-line bg-brand-cream p-3 lg:p-3.5"
+                    >
+                      <item.icon className="mt-0.5 h-4 w-4 shrink-0 text-brand-green-dark lg:h-5 lg:w-5" strokeWidth={2.2} />
+                      <span className="text-[12.5px] leading-snug text-brand-black/80 lg:text-[13.5px]">{item.text}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
 
-            {step.facts && (
-              <dl className="mt-5 flex flex-col divide-y divide-brand-line rounded-xl border border-brand-line lg:mt-8">
-                {step.facts.map((fact) => (
-                  <div key={fact.label} className="flex flex-col gap-0.5 px-4 py-3 sm:flex-row sm:items-baseline sm:gap-4 lg:px-6 lg:py-4">
-                    <dt className="shrink-0 text-[11.5px] font-bold uppercase tracking-wide text-brand-black/45 sm:w-36 lg:w-44 lg:text-xs">
-                      {fact.label}
-                    </dt>
-                    <dd className="text-[13.5px] text-brand-black/80 lg:text-base">{fact.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            )}
+              {step.facts && (
+                <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:mt-5 lg:gap-2.5">
+                  {step.facts.map((fact) => (
+                    <div
+                      key={fact.label}
+                      className="flex flex-col items-center gap-1 rounded-lg border border-brand-line p-3 text-center lg:p-3.5"
+                    >
+                      <fact.icon className="h-5 w-5 text-brand-green-dark lg:h-6 lg:w-6" strokeWidth={2} />
+                      <div className="mt-1 text-[13px] font-bold text-brand-black lg:text-sm">{fact.value}</div>
+                      <div className="text-[10.5px] uppercase tracking-wide text-brand-black/45 lg:text-[11px]">{fact.label}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
 
-            {step.note && (
-              <p className="mt-4 rounded-lg border-l-4 border-brand-green bg-brand-green-light px-4 py-3 text-[13px] text-brand-green-dark lg:mt-5 lg:text-base">
-                {step.note}
-              </p>
-            )}
+              {step.note && (
+                <div className="mt-3 flex items-start gap-2 rounded-lg border-l-4 border-brand-green bg-brand-green-light px-3.5 py-2.5 lg:mt-4 lg:px-4 lg:py-3">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-brand-green-dark lg:h-5 lg:w-5" strokeWidth={2.2} />
+                  <p className="text-[12.5px] text-brand-green-dark lg:text-sm">{step.note}</p>
+                </div>
+              )}
 
-            {step.id === MODEL_COMPARE_STEP_ID && (
-              <div className="mt-5 overflow-x-auto rounded-xl border border-brand-line lg:mt-8">
-                <table className="w-full min-w-[480px] border-collapse text-left">
-                  <thead>
-                    <tr className="bg-brand-cream">
-                      <th className="px-3 py-2.5 text-[11px] font-bold uppercase tracking-wide text-brand-black/50 lg:px-5 lg:py-3.5 lg:text-xs">
-                        &nbsp;
-                      </th>
-                      {rackSizes.map((r) => (
-                        <th key={r.handle} className="px-3 py-2.5 text-sm font-extrabold text-brand-black lg:px-5 lg:py-3.5 lg:text-lg">
-                          {r.label}
-                          {r.badge && (
-                            <span className="ml-1.5 inline-block rounded-full bg-brand-green-light px-2 py-0.5 align-middle text-[10px] font-bold text-brand-green-dark lg:text-[11px]">
-                              {r.badge}
-                            </span>
-                          )}
+              {step.id === MODEL_COMPARE_STEP_ID && (
+                <div className="mt-4 overflow-x-auto rounded-xl border border-brand-line lg:mt-5">
+                  <table className="w-full min-w-[480px] border-collapse text-left">
+                    <thead>
+                      <tr className="bg-brand-cream">
+                        <th className="px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-brand-black/50 lg:px-5 lg:py-3 lg:text-xs">
+                          &nbsp;
                         </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-brand-line">
-                    <tr>
-                      <td className="px-3 py-2.5 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3.5 lg:text-sm">Bikes carried</td>
-                      {rackSizes.map((r) => (
-                        <td key={r.handle} className="px-3 py-2.5 text-[13.5px] text-brand-black lg:px-5 lg:py-3.5 lg:text-base">
-                          {r.bikes}
-                        </td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td className="px-3 py-2.5 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3.5 lg:text-sm">Best for</td>
-                      {rackSizes.map((r) => (
-                        <td key={r.handle} className="px-3 py-2.5 text-[13.5px] text-brand-black lg:px-5 lg:py-3.5 lg:text-base">
-                          {r.sublabel}
-                        </td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td className="px-3 py-2.5 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3.5 lg:text-sm">Price</td>
-                      {rackSizes.map((r) => (
-                        <td key={r.handle} className="px-3 py-2.5 text-[13.5px] font-bold text-brand-black lg:px-5 lg:py-3.5 lg:text-base">
-                          ${r.price}
-                        </td>
-                      ))}
-                    </tr>
-                    <tr>
-                      <td className="px-3 py-2.5 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3.5 lg:text-sm">You save</td>
-                      {rackSizes.map((r) => (
-                        <td key={r.handle} className="px-3 py-2.5 text-[13.5px] text-brand-green-dark lg:px-5 lg:py-3.5 lg:text-base">
-                          {r.compareAtPrice > r.price ? `$${r.compareAtPrice - r.price}` : "—"}
-                        </td>
-                      ))}
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            )}
+                        {rackSizes.map((r) => (
+                          <th key={r.handle} className="px-3 py-2 text-sm font-extrabold text-brand-black lg:px-5 lg:py-3 lg:text-lg">
+                            {r.label}
+                            {r.badge && (
+                              <span className="ml-1.5 inline-block rounded-full bg-brand-green-light px-2 py-0.5 align-middle text-[10px] font-bold text-brand-green-dark lg:text-[11px]">
+                                {r.badge}
+                              </span>
+                            )}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-brand-line">
+                      <tr>
+                        <td className="px-3 py-2 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3 lg:text-sm">Bikes carried</td>
+                        {rackSizes.map((r) => (
+                          <td key={r.handle} className="px-3 py-2 text-[13.5px] text-brand-black lg:px-5 lg:py-3 lg:text-base">
+                            {r.bikes}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="px-3 py-2 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3 lg:text-sm">Best for</td>
+                        {rackSizes.map((r) => (
+                          <td key={r.handle} className="px-3 py-2 text-[13.5px] text-brand-black lg:px-5 lg:py-3 lg:text-base">
+                            {r.sublabel}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="px-3 py-2 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3 lg:text-sm">Price</td>
+                        {rackSizes.map((r) => (
+                          <td key={r.handle} className="px-3 py-2 text-[13.5px] font-bold text-brand-black lg:px-5 lg:py-3 lg:text-base">
+                            ${r.price}
+                          </td>
+                        ))}
+                      </tr>
+                      <tr>
+                        <td className="px-3 py-2 text-[12.5px] font-bold text-brand-black/60 lg:px-5 lg:py-3 lg:text-sm">You save</td>
+                        {rackSizes.map((r) => (
+                          <td key={r.handle} className="px-3 py-2 text-[13.5px] text-brand-green-dark lg:px-5 lg:py-3 lg:text-base">
+                            {r.compareAtPrice > r.price ? `$${r.compareAtPrice - r.price}` : "—"}
+                          </td>
+                        ))}
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
 
-            {step.cardButtons ? (
-              <div className="mt-6 grid grid-cols-1 gap-2.5 sm:grid-cols-3 lg:mt-10 lg:gap-4">
-                {step.buttons.map((button) => (
-                  <button
-                    key={button.label}
-                    type="button"
-                    onClick={() => handleChoice(button)}
-                    className={`rounded-xl border-2 p-4 text-center transition-colors lg:p-5 ${
-                      button.note ? "sm:col-span-3 text-left" : ""
-                    } ${
-                      button.variant === "other"
-                        ? "border-brand-green bg-brand-green-light"
-                        : "border-brand-line hover:border-brand-black/40"
-                    }`}
-                  >
-                    <div className="text-[15px] font-bold text-brand-black lg:text-lg">{button.label}</div>
-                    {button.hint && <div className="mt-1 text-xs text-brand-black/50 lg:text-sm">{button.hint}</div>}
-                    {button.note && (
-                      <p className="mt-2 text-[13px] leading-relaxed text-brand-black/70 lg:text-sm">{button.note}</p>
-                    )}
-                  </button>
-                ))}
+              {step.cardButtons ? (
+                <div className="mt-5 grid grid-cols-1 gap-2.5 sm:grid-cols-3 lg:mt-6 lg:gap-3">
+                  {step.buttons.map((button) => (
+                    <button
+                      key={button.label}
+                      type="button"
+                      onClick={() => handleChoice(button)}
+                      className={`rounded-xl border-2 p-3.5 text-center transition-colors lg:p-4 ${
+                        button.note ? "sm:col-span-3 text-left" : ""
+                      } ${
+                        button.variant === "other"
+                          ? "border-brand-green bg-brand-green-light"
+                          : "border-brand-line hover:border-brand-black/40"
+                      }`}
+                    >
+                      <div className="text-[15px] font-bold text-brand-black lg:text-base">{button.label}</div>
+                      {button.hint && <div className="mt-1 text-xs text-brand-black/50 lg:text-[13px]">{button.hint}</div>}
+                      {button.note && (
+                        <p className="mt-2 text-[13px] leading-relaxed text-brand-black/70 lg:text-sm">{button.note}</p>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="mt-5 flex flex-col gap-2.5 lg:mt-6 lg:gap-3">
+                  {step.buttons.map((button) => (
+                    <button
+                      key={button.label}
+                      type="button"
+                      onClick={() => handleChoice(button)}
+                      className={`w-full rounded-full px-5 py-3.5 text-[15px] font-semibold transition-opacity hover:opacity-90 lg:px-7 lg:py-4 lg:text-lg lg:font-bold ${
+                        button.variant === "other" ? "bg-[#22c55e] text-white" : "bg-[#f0f0f0] text-brand-black"
+                      }`}
+                    >
+                      {button.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {step.footerNote && (
+                <p className="mt-3 text-xs text-brand-black/50 lg:mt-3.5 lg:text-sm">{step.footerNote}</p>
+              )}
+
+              {step.helper && (
+                <details className="mt-3.5 rounded-xl border border-brand-line p-3.5 lg:mt-4 lg:p-4">
+                  <summary className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-brand-black lg:text-base">
+                    <HelpCircle className="h-5 w-5 shrink-0 text-brand-black/50" strokeWidth={2} />
+                    {step.helper.label}
+                  </summary>
+                  <div className="mt-3 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                    {step.helper.showTireDiagram && <TireDiagram />}
+                    <p className="text-[13px] leading-relaxed text-brand-black/70 lg:text-base">{step.helper.body}</p>
+                  </div>
+                </details>
+              )}
+            </div>
+          )}
+
+          {step.type === "inventory" && (
+            <div>
+              <StepIcon icon={step.icon} />
+              <h2 className="pr-8 text-xl font-extrabold text-brand-black sm:text-2xl lg:text-3xl">{step.heading}</h2>
+              <p className="mt-1.5 text-sm text-brand-black/60 lg:mt-2 lg:text-base">{step.subtitle}</p>
+
+              <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:mt-6 lg:gap-3">
+                {bikeCategories.map((cat) => {
+                  const count = inventory[cat.key];
+                  return (
+                    <div
+                      key={cat.key}
+                      className={`flex flex-col items-center gap-2 rounded-xl border-2 p-3 text-center transition-colors lg:gap-2 lg:p-4 ${
+                        count > 0 ? "border-brand-black" : "border-brand-line"
+                      }`}
+                    >
+                      <cat.icon
+                        className={`h-6 w-6 lg:h-7 lg:w-7 ${count > 0 ? "text-brand-black" : "text-brand-black/35"}`}
+                        strokeWidth={1.8}
+                      />
+                      <div className="text-[12.5px] font-semibold text-brand-black lg:text-sm">{cat.label}</div>
+                      <div className="flex items-center gap-2.5 lg:gap-3">
+                        <button
+                          type="button"
+                          onClick={() => adjustInventory(cat.key, -1)}
+                          disabled={count === 0}
+                          aria-label={`Remove a ${cat.label}`}
+                          className="flex h-7 w-7 items-center justify-center rounded-full border border-brand-line text-base font-bold leading-none text-brand-black disabled:opacity-30 lg:h-8 lg:w-8 lg:text-lg"
+                        >
+                          −
+                        </button>
+                        <span className="w-5 text-center text-lg font-black text-brand-black lg:text-xl">{count}</span>
+                        <button
+                          type="button"
+                          onClick={() => adjustInventory(cat.key, 1)}
+                          aria-label={`Add a ${cat.label}`}
+                          className="flex h-7 w-7 items-center justify-center rounded-full border border-brand-line text-base font-bold leading-none text-brand-black hover:border-brand-black lg:h-8 lg:w-8 lg:text-lg"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-4 flex items-center justify-between gap-3 lg:mt-5">
+                <span className="text-sm font-semibold text-brand-black/60 lg:text-base">
+                  {totalBikes} bike{totalBikes === 1 ? "" : "s"} selected
+                </span>
+                <button
+                  type="button"
+                  onClick={handleInventorySubmit}
+                  disabled={totalBikes === 0}
+                  className="rounded-full bg-brand-black px-6 py-3 text-sm font-black uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-30 lg:px-7 lg:py-3.5 lg:text-base"
+                >
+                  {step.cta}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {step.type === "email" &&
+            (submitted ? (
+              <div className="pr-8 lg:text-center">
+                <h2 className="text-xl font-extrabold text-brand-black sm:text-2xl lg:text-4xl">You&apos;re in!</h2>
+                <p className="mt-2 text-[15px] text-brand-black/70 lg:mx-auto lg:mt-4 lg:max-w-lg lg:text-lg">
+                  Keep an eye on your inbox — your surprise discount for the <strong>{recommendedRack.label} Vertical Rack</strong>
+                  {recommendedAddons.length > 0 && (
+                    <>
+                      {" "}
+                      (and the <strong>{recommendedAddons.map((a) => a.name).join(" + ")}</strong>)
+                    </>
+                  )}{" "}
+                  is on its way to {email || "your inbox"}.
+                </p>
+                <a
+                  href={`${storeUrl}/products/${recommendedRack.handle}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-block rounded-full bg-brand-green px-6 py-3 text-sm font-black uppercase tracking-wide text-white hover:opacity-90 lg:mt-8 lg:px-10 lg:py-4 lg:text-base"
+                >
+                  View {recommendedRack.label} Rack
+                </a>
               </div>
             ) : (
-              <div className="mt-6 flex flex-col gap-2.5 lg:mt-10 lg:gap-4">
-                {step.buttons.map((button) => (
-                  <button
-                    key={button.label}
-                    type="button"
-                    onClick={() => handleChoice(button)}
-                    className={`w-full rounded-full px-5 py-3.5 text-[15px] font-semibold transition-opacity hover:opacity-90 lg:px-8 lg:py-5 lg:text-xl lg:font-bold ${
-                      button.variant === "other" ? "bg-[#22c55e] text-white" : "bg-[#f0f0f0] text-brand-black"
-                    }`}
-                  >
-                    {button.label}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {step.footerNote && (
-              <p className="mt-3 text-xs text-brand-black/50 lg:mt-4 lg:text-sm">{step.footerNote}</p>
-            )}
-
-            {step.helper && (
-              <details className="mt-4 rounded-xl border border-brand-line p-4 lg:mt-6 lg:p-5">
-                <summary className="flex cursor-pointer items-center gap-2 text-sm font-semibold text-brand-black lg:text-base">
-                  <span
-                    className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-brand-black/40 text-[11px]"
-                    aria-hidden
-                  >
-                    ?
-                  </span>
-                  {step.helper.label}
-                </summary>
-                <div className="mt-3 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
-                  {step.helper.showTireDiagram && <TireDiagram />}
-                  <p className="text-[13px] leading-relaxed text-brand-black/70 lg:text-base">{step.helper.body}</p>
-                </div>
-              </details>
-            )}
-          </div>
-        )}
-
-        {step.type === "inventory" && (
-          <div>
-            <h2 className="pr-8 text-xl font-extrabold text-brand-black sm:text-2xl lg:text-4xl">{step.heading}</h2>
-            <p className="mt-1.5 text-sm text-brand-black/60 lg:mt-3 lg:text-lg">{step.subtitle}</p>
-
-            <div className="mt-6 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:mt-10 lg:gap-4">
-              {bikeCategories.map((cat) => {
-                const count = inventory[cat.key];
-                return (
-                  <div
-                    key={cat.key}
-                    className={`flex flex-col items-center gap-2.5 rounded-xl border-2 p-3 text-center transition-colors lg:gap-3 lg:p-5 ${
-                      count > 0 ? "border-brand-black" : "border-brand-line"
-                    }`}
-                  >
-                    <div className="text-[13px] font-semibold text-brand-black lg:text-base">{cat.label}</div>
-                    <div className="flex items-center gap-2.5 lg:gap-3">
-                      <button
-                        type="button"
-                        onClick={() => adjustInventory(cat.key, -1)}
-                        disabled={count === 0}
-                        aria-label={`Remove a ${cat.label}`}
-                        className="flex h-7 w-7 items-center justify-center rounded-full border border-brand-line text-base font-bold leading-none text-brand-black disabled:opacity-30 lg:h-9 lg:w-9 lg:text-lg"
-                      >
-                        −
-                      </button>
-                      <span className="w-5 text-center text-lg font-black text-brand-black lg:text-xl">{count}</span>
-                      <button
-                        type="button"
-                        onClick={() => adjustInventory(cat.key, 1)}
-                        aria-label={`Add a ${cat.label}`}
-                        className="flex h-7 w-7 items-center justify-center rounded-full border border-brand-line text-base font-bold leading-none text-brand-black hover:border-brand-black lg:h-9 lg:w-9 lg:text-lg"
-                      >
-                        +
-                      </button>
+              <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-10">
+                {/* LEFT — the recommendation */}
+                <div>
+                  <div className="rounded-2xl bg-gradient-to-br from-brand-green-dark to-brand-green px-5 py-3 text-center sm:py-4 lg:px-6 lg:py-3.5">
+                    <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/80 lg:text-xs">Based on your answers</div>
+                    <div className="mt-0.5 text-xl font-black uppercase tracking-tight text-white sm:text-2xl lg:text-xl">
+                      Your Recommended Rack
                     </div>
                   </div>
-                );
-              })}
-            </div>
 
-            <div className="mt-5 flex items-center justify-between gap-3 lg:mt-8">
-              <span className="text-sm font-semibold text-brand-black/60 lg:text-base">
-                {totalBikes} bike{totalBikes === 1 ? "" : "s"} selected
-              </span>
-              <button
-                type="button"
-                onClick={handleInventorySubmit}
-                disabled={totalBikes === 0}
-                className="rounded-full bg-brand-black px-6 py-3 text-sm font-black uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-30 lg:px-8 lg:py-4 lg:text-base"
-              >
-                {step.cta}
-              </button>
-            </div>
-          </div>
-        )}
+                  <div className="mt-5 flex flex-col items-center gap-4 text-center lg:mt-4 lg:gap-3">
+                    <div className="relative aspect-square w-40 shrink-0 overflow-hidden rounded-xl bg-brand-cream sm:w-48 lg:w-full lg:max-w-[170px]">
+                      <Image
+                        src={recommendedRack.imagesByColor.Black[0]}
+                        alt={recommendedRack.label}
+                        fill
+                        sizes="(min-width: 1024px) 170px, 192px"
+                        className="object-contain p-2"
+                        priority
+                      />
+                    </div>
 
-        {step.type === "email" &&
-          (submitted ? (
-            <div className="pr-8 lg:text-center">
-              <h2 className="text-xl font-extrabold text-brand-black sm:text-2xl lg:text-4xl">You&apos;re in!</h2>
-              <p className="mt-2 text-[15px] text-brand-black/70 lg:mx-auto lg:mt-4 lg:max-w-lg lg:text-lg">
-                Keep an eye on your inbox — your surprise discount for the <strong>{recommendedRack.label} Vertical Rack</strong>
-                {recommendedAddons.length > 0 && (
-                  <>
-                    {" "}
-                    (and the <strong>{recommendedAddons.map((a) => a.name).join(" + ")}</strong>)
-                  </>
-                )}{" "}
-                is on its way to {email || "your inbox"}.
-              </p>
-              <a
-                href={`${storeUrl}/products/${recommendedRack.handle}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-5 inline-block rounded-full bg-brand-green px-6 py-3 text-sm font-black uppercase tracking-wide text-white hover:opacity-90 lg:mt-8 lg:px-10 lg:py-4 lg:text-base"
-              >
-                View {recommendedRack.label} Rack
-              </a>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-10">
-              {/* LEFT — the recommendation */}
-              <div>
-                <div className="rounded-2xl bg-gradient-to-br from-brand-green-dark to-brand-green px-5 py-3 text-center sm:py-4 lg:px-6 lg:py-3.5">
-                  <div className="text-[11px] font-bold uppercase tracking-[0.15em] text-white/80 lg:text-xs">Based on your answers</div>
-                  <div className="mt-0.5 text-xl font-black uppercase tracking-tight text-white sm:text-2xl lg:text-xl">
-                    Your Recommended Rack
+                    <div className="min-w-0 flex-1">
+                      <div className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-black lg:text-sm">
+                        <span className="tracking-widest text-brand-star">★★★★★</span>
+                        {reviewStats.average}/5 · 20,000+ customers
+                      </div>
+                      <h3 className="mt-1.5 text-2xl font-black tracking-tight text-brand-black lg:mt-1.5 lg:text-2xl">
+                        {recommendedRack.label} Vertical Rack
+                      </h3>
+                      <div className="mt-2 flex flex-wrap items-baseline justify-center gap-2 lg:mt-1.5">
+                        <span className="text-3xl font-black text-brand-black lg:text-3xl">${recommendedRack.price}</span>
+                        <span className="text-lg text-brand-black/40 line-through lg:text-base">${recommendedRack.compareAtPrice}</span>
+                        {savings > 0 && (
+                          <span className="rounded-full bg-brand-green-light px-2.5 py-1 text-[12.5px] font-bold text-brand-green-dark lg:px-2.5 lg:py-1 lg:text-xs">
+                            Save ${savings}
+                          </span>
+                        )}
+                      </div>
+
+                      <ul className="mx-auto mt-4 hidden max-w-[34ch] flex-col gap-1.5 text-left sm:flex lg:mt-3 lg:grid lg:max-w-none lg:grid-cols-2 lg:gap-x-4 lg:gap-y-1">
+                        {benefits.map((b) => (
+                          <li key={b} className="flex items-start gap-2 text-[13.5px] text-brand-black/75 lg:text-[12.5px]">
+                            <span className="mt-0.5 shrink-0 text-brand-green">✓</span>
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
+
+                  {recommendedAddons.length > 0 && (
+                    <div className="mx-auto mt-4 max-w-[38ch] lg:mx-0 lg:mt-3 lg:max-w-none">
+                      <div className="mb-1.5 text-xs font-bold uppercase tracking-wide text-brand-black/50 lg:text-[11px]">
+                        Complete your setup
+                      </div>
+                      <div className="flex flex-col gap-1.5 lg:gap-1.5">
+                        {recommendedAddons.map((addon) => (
+                          <div
+                            key={addon.name}
+                            className="flex items-center gap-3 rounded-lg border border-brand-line bg-brand-cream p-2.5 text-left lg:p-2"
+                          >
+                            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-white lg:h-10 lg:w-10">
+                              <Image src={addon.image} alt={addon.name} fill sizes="64px" className="object-cover" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <div className="text-[13px] font-bold text-brand-black lg:text-[12.5px]">{addon.name}</div>
+                              <div className="truncate text-[11.5px] text-brand-black/60 lg:text-[11px]">{addon.note}</div>
+                            </div>
+                            <div className="flex shrink-0 items-baseline gap-1.5">
+                              {addon.compareAtPrice > addon.price && (
+                                <span className="text-xs text-brand-black/40 line-through lg:text-xs">${addon.compareAtPrice}</span>
+                              )}
+                              <span className="text-sm font-extrabold text-brand-black lg:text-sm">+${addon.price}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
-                <div className="mt-5 flex flex-col items-center gap-4 text-center lg:mt-4 lg:gap-3">
-                  <div className="relative aspect-square w-40 shrink-0 overflow-hidden rounded-xl bg-brand-cream sm:w-48 lg:w-full lg:max-w-[170px]">
-                    <Image
-                      src={recommendedRack.imagesByColor.Black[0]}
-                      alt={recommendedRack.label}
-                      fill
-                      sizes="(min-width: 1024px) 170px, 192px"
-                      className="object-contain p-2"
-                      priority
+                {/* RIGHT — the sign-up form */}
+                <div className="mt-6 border-t border-brand-line pt-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+                  <h2 className="pr-8 text-xl font-extrabold uppercase tracking-tight text-brand-black sm:text-2xl lg:pr-0 lg:text-2xl">
+                    {step.heading}
+                  </h2>
+                  <p className="mt-2 text-[15px] text-brand-black/70 lg:mt-2 lg:text-base">{step.body}</p>
+
+                  <div className="mt-5 flex flex-col gap-2.5 lg:mt-5 lg:gap-3">
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Your name"
+                      className="w-full rounded-full border border-brand-line px-4 py-3 text-[15px] text-brand-black outline-none focus:border-brand-black lg:px-5 lg:py-3 lg:text-base"
+                    />
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="your@email.com"
+                      className="w-full rounded-full border border-brand-line px-4 py-3 text-[15px] text-brand-black outline-none focus:border-brand-black lg:px-5 lg:py-3 lg:text-base"
                     />
                   </div>
 
-                  <div className="min-w-0 flex-1">
-                    <div className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-black lg:text-sm">
-                      <span className="tracking-widest text-brand-star">★★★★★</span>
-                      {reviewStats.average}/5 · 20,000+ customers
-                    </div>
-                    <h3 className="mt-1.5 text-2xl font-black tracking-tight text-brand-black lg:mt-1.5 lg:text-2xl">
-                      {recommendedRack.label} Vertical Rack
-                    </h3>
-                    <div className="mt-2 flex flex-wrap items-baseline justify-center gap-2 lg:mt-1.5">
-                      <span className="text-3xl font-black text-brand-black lg:text-3xl">${recommendedRack.price}</span>
-                      <span className="text-lg text-brand-black/40 line-through lg:text-base">${recommendedRack.compareAtPrice}</span>
-                      {savings > 0 && (
-                        <span className="rounded-full bg-brand-green-light px-2.5 py-1 text-[12.5px] font-bold text-brand-green-dark lg:px-2.5 lg:py-1 lg:text-xs">
-                          Save ${savings}
-                        </span>
-                      )}
-                    </div>
+                  <button
+                    type="button"
+                    onClick={handleEmailSubmit}
+                    disabled={submitting || !email}
+                    className="mt-4 w-full rounded-full bg-[#22c55e] px-5 py-4 text-base font-black uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-60 lg:mt-4 lg:py-4 lg:text-lg"
+                  >
+                    {submitting ? "Sending…" : step.cta}
+                  </button>
 
-                    <ul className="mx-auto mt-4 hidden max-w-[34ch] flex-col gap-1.5 text-left sm:flex lg:mt-3 lg:grid lg:max-w-none lg:grid-cols-2 lg:gap-x-4 lg:gap-y-1">
-                      {benefits.map((b) => (
-                        <li key={b} className="flex items-start gap-2 text-[13.5px] text-brand-black/75 lg:text-[12.5px]">
-                          <span className="mt-0.5 shrink-0 text-brand-green">✓</span>
-                          {b}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={handleClose}
+                    className="mt-4 w-full text-center text-sm text-brand-black/50 underline lg:mt-3 lg:text-sm"
+                  >
+                    {step.declineLabel}
+                  </button>
                 </div>
-
-                {recommendedAddons.length > 0 && (
-                  <div className="mx-auto mt-4 max-w-[38ch] lg:mx-0 lg:mt-3 lg:max-w-none">
-                    <div className="mb-1.5 text-xs font-bold uppercase tracking-wide text-brand-black/50 lg:text-[11px]">
-                      Complete your setup
-                    </div>
-                    <div className="flex flex-col gap-1.5 lg:gap-1.5">
-                      {recommendedAddons.map((addon) => (
-                        <div
-                          key={addon.name}
-                          className="flex items-center gap-3 rounded-lg border border-brand-line bg-brand-cream p-2.5 text-left lg:p-2"
-                        >
-                          <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-md bg-white lg:h-10 lg:w-10">
-                            <Image src={addon.image} alt={addon.name} fill sizes="64px" className="object-cover" />
-                          </div>
-                          <div className="min-w-0 flex-1">
-                            <div className="text-[13px] font-bold text-brand-black lg:text-[12.5px]">{addon.name}</div>
-                            <div className="truncate text-[11.5px] text-brand-black/60 lg:text-[11px]">{addon.note}</div>
-                          </div>
-                          <div className="flex shrink-0 items-baseline gap-1.5">
-                            {addon.compareAtPrice > addon.price && (
-                              <span className="text-xs text-brand-black/40 line-through lg:text-xs">${addon.compareAtPrice}</span>
-                            )}
-                            <span className="text-sm font-extrabold text-brand-black lg:text-sm">+${addon.price}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
+            ))}
 
-              {/* RIGHT — the sign-up form */}
-              <div className="mt-6 border-t border-brand-line pt-6 lg:mt-0 lg:flex lg:flex-col lg:justify-center lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
-                <h2 className="pr-8 text-xl font-extrabold uppercase tracking-tight text-brand-black sm:text-2xl lg:pr-0 lg:text-2xl">
-                  {step.heading}
-                </h2>
-                <p className="mt-2 text-[15px] text-brand-black/70 lg:mt-2 lg:text-base">{step.body}</p>
+          {step.type === "text" && (
+            <div>
+              <StepIcon icon={step.icon} />
+              <h2 className="pr-8 text-xl font-extrabold text-brand-black sm:text-2xl lg:text-3xl">{step.heading}</h2>
+              <textarea
+                value={reasonText}
+                onChange={(e) => setReasonText(e.target.value)}
+                placeholder={step.placeholder}
+                rows={4}
+                className="mt-5 w-full resize-none rounded-2xl border border-brand-line px-4 py-3 text-[15px] text-brand-black outline-none focus:border-brand-black lg:mt-6 lg:px-6 lg:py-4 lg:text-lg"
+              />
+              <button
+                type="button"
+                onClick={() => handleTextSubmit(step.next)}
+                disabled={submitting || !reasonText.trim()}
+                className="mt-4 w-full rounded-full bg-[#22c55e] px-5 py-3.5 text-[15px] font-black uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-60 lg:mt-5 lg:py-4 lg:text-lg"
+              >
+                {submitting ? "Sending…" : step.cta}
+              </button>
+            </div>
+          )}
 
-                <div className="mt-5 flex flex-col gap-2.5 lg:mt-5 lg:gap-3">
-                  <input
-                    type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Your name"
-                    className="w-full rounded-full border border-brand-line px-4 py-3 text-[15px] text-brand-black outline-none focus:border-brand-black lg:px-5 lg:py-3 lg:text-base"
-                  />
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="your@email.com"
-                    className="w-full rounded-full border border-brand-line px-4 py-3 text-[15px] text-brand-black outline-none focus:border-brand-black lg:px-5 lg:py-3 lg:text-base"
-                  />
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handleEmailSubmit}
-                  disabled={submitting || !email}
-                  className="mt-4 w-full rounded-full bg-[#22c55e] px-5 py-4 text-base font-black uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-60 lg:mt-4 lg:py-4 lg:text-lg"
-                >
-                  {submitting ? "Sending…" : step.cta}
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handleClose}
-                  className="mt-4 w-full text-center text-sm text-brand-black/50 underline lg:mt-3 lg:text-sm"
-                >
-                  {step.declineLabel}
-                </button>
+          {step.type === "end" && (
+            <div className="pr-8">
+              <StepIcon icon={step.icon} />
+              <h2 className="text-xl font-extrabold text-brand-black sm:text-2xl lg:text-3xl">{step.heading}</h2>
+              <div className="mt-3 flex flex-col gap-2.5 lg:mt-5 lg:gap-3">
+                {step.body.map((p) => (
+                  <p key={p} className="text-[15px] leading-relaxed text-brand-black/70 lg:text-base">
+                    {p}
+                  </p>
+                ))}
               </div>
             </div>
-          ))}
-
-        {step.type === "text" && (
-          <div>
-            <h2 className="pr-8 text-xl font-extrabold text-brand-black sm:text-2xl lg:text-4xl">{step.heading}</h2>
-            <textarea
-              value={reasonText}
-              onChange={(e) => setReasonText(e.target.value)}
-              placeholder={step.placeholder}
-              rows={4}
-              className="mt-5 w-full resize-none rounded-2xl border border-brand-line px-4 py-3 text-[15px] text-brand-black outline-none focus:border-brand-black lg:mt-8 lg:px-6 lg:py-4 lg:text-lg"
-            />
-            <button
-              type="button"
-              onClick={() => handleTextSubmit(step.next)}
-              disabled={submitting || !reasonText.trim()}
-              className="mt-4 w-full rounded-full bg-[#22c55e] px-5 py-3.5 text-[15px] font-black uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-60 lg:mt-6 lg:py-5 lg:text-xl"
-            >
-              {submitting ? "Sending…" : step.cta}
-            </button>
-          </div>
-        )}
-
-        {step.type === "end" && (
-          <div className="pr-8">
-            <h2 className="text-xl font-extrabold text-brand-black sm:text-2xl lg:text-4xl">{step.heading}</h2>
-            <div className="mt-3 flex flex-col gap-2.5 lg:mt-6 lg:gap-4">
-              {step.body.map((p) => (
-                <p key={p} className="text-[15px] leading-relaxed text-brand-black/70 lg:text-lg">
-                  {p}
-                </p>
-              ))}
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   );

@@ -9,6 +9,10 @@ type QuizSubmitBody = {
   reasonText?: string;
   recommendedRack?: string;
   recommendedAddons?: string[];
+  // One of family_adventures / mountain_biking / cycling / other — derived
+  // from the quiz's bike-inventory step, see resolveCustomerType() in
+  // QuizFunnel.tsx.
+  customerType?: string;
 };
 
 export async function POST(request: Request) {
@@ -19,11 +23,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  const { answers = {}, name, email, reasonText, recommendedRack, recommendedAddons } = body;
+  const { answers = {}, name, email, reasonText, recommendedRack, recommendedAddons, customerType } = body;
 
   // Stubbed for now, per the spec — this is where the payload would get
   // written to a sheet/CRM/etc. once there's a real destination for it.
-  console.log("[quiz-submit]", { answers, name, email, reasonText, recommendedRack, recommendedAddons });
+  console.log("[quiz-submit]", { answers, name, email, reasonText, recommendedRack, recommendedAddons, customerType });
 
   const recommendedAddonsStr = recommendedAddons && recommendedAddons.length > 0 ? recommendedAddons.join(", ") : undefined;
 
@@ -40,6 +44,7 @@ export async function POST(request: Request) {
       // Sent as its own "quiz_recommendations" property (event + profile),
       // not flattened into `answers` — see lib/klaviyo.ts.
       recommendedAddons,
+      customerType,
     });
   }
 

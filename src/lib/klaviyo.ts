@@ -18,6 +18,11 @@ type QuizKlaviyoPayload = {
   // filter (e.g. "quiz_recommendations contains Garage Stand"), not just
   // buried in a one-off event's properties.
   recommendedAddons?: string[];
+  // One of family_adventures / mountain_biking / cycling / other, derived
+  // from the quiz's bike-inventory answers — pushed to its own
+  // "customer_type" profile property (same pattern as quiz_recommendations)
+  // so it's usable as a segment filter, not just an event property.
+  customerType?: string;
 };
 
 /**
@@ -27,7 +32,13 @@ type QuizKlaviyoPayload = {
  * false) when KLAVIYO_PRIVATE_API_KEY isn't set, rather than throwing, so
  * the quiz submission itself never fails for lack of Klaviyo credentials.
  */
-export async function trackQuizCompletionInKlaviyo({ email, firstName, answers, recommendedAddons }: QuizKlaviyoPayload): Promise<boolean> {
+export async function trackQuizCompletionInKlaviyo({
+  email,
+  firstName,
+  answers,
+  recommendedAddons,
+  customerType,
+}: QuizKlaviyoPayload): Promise<boolean> {
   if (!KLAVIYO_API_KEY) return false;
 
   const headers = {
@@ -37,6 +48,11 @@ export async function trackQuizCompletionInKlaviyo({ email, firstName, answers, 
   };
 
   const hasRecommendations = Boolean(recommendedAddons && recommendedAddons.length > 0);
+  const profileProperties = {
+    ...(hasRecommendations ? { quiz_recommendations: recommendedAddons } : {}),
+    ...(customerType ? { customer_type: customerType } : {}),
+  };
+  const hasProfileProperties = Object.keys(profileProperties).length > 0;
 
   try {
     const eventRes = await fetch("https://a.klaviyo.com/api/events/", {
@@ -49,6 +65,7 @@ export async function trackQuizCompletionInKlaviyo({ email, firstName, answers, 
             properties: {
               ...answers,
               ...(hasRecommendations ? { quiz_recommendations: recommendedAddons } : {}),
+              ...(customerType ? { customer_type: customerType } : {}),
             },
             metric: { data: { type: "metric", attributes: { name: "Quiz Completed" } } },
             profile: {
@@ -57,7 +74,7 @@ export async function trackQuizCompletionInKlaviyo({ email, firstName, answers, 
                 attributes: {
                   email,
                   ...(firstName ? { first_name: firstName } : {}),
-                  ...(hasRecommendations ? { properties: { quiz_recommendations: recommendedAddons } } : {}),
+                  ...(hasProfileProperties ? { properties: profileProperties } : {}),
                 },
               },
             },

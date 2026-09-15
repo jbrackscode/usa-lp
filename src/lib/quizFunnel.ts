@@ -8,7 +8,40 @@
 // answer the shopper's real barrier (can I fit this? does my bike fit?
 // how does this compare?) instead of just routing them toward the product
 // page. Specs quoted here match the live PDP/FAQ copy in lib/config.ts —
-// keep the two in sync if the real specs ever change.
+// keep the two in sync if the real specs ever change. Checklist/fact text
+// is kept short on purpose — these render as compact icon grids, not
+// paragraphs, so the modal stays inside a laptop viewport.
+
+import type { LucideIcon } from "lucide-react";
+import {
+  Search,
+  Ruler,
+  BookOpen,
+  Wrench,
+  Disc,
+  Weight,
+  Package,
+  Baby,
+  Car,
+  Bike,
+  Scale,
+  ClipboardCheck,
+  BarChart3,
+  CircleDot,
+  AlertTriangle,
+  ChevronsDown,
+  Home,
+  MessageSquare,
+  CheckCircle2,
+  Compass,
+  ShieldCheck,
+  BadgeCheck,
+  Mountain,
+  Zap,
+  Route,
+  Snowflake,
+  Building2,
+} from "lucide-react";
 
 export type ChoiceButton = {
   label: string;
@@ -41,14 +74,18 @@ export type ChoiceButton = {
 export type ChoiceStep = {
   type: "choice";
   id: number;
+  // Small icon badge shown next to the question — purely visual, keeps the
+  // funnel feeling like a guided flow rather than a plain form.
+  icon?: LucideIcon;
   question: string;
   subtitle: string;
-  // Real, factual content shown above the buttons — a "how to check"
-  // checklist, a spec key/value grid, or a plain callout. Optional: most
-  // steps don't need it, but the ones addressing a real shopper barrier
-  // (hitch fitment, bike compatibility, price comparison) do.
-  checklist?: string[];
-  facts?: { label: string; value: string }[];
+  // Real, factual content shown above the buttons as a compact icon grid —
+  // this is what lets the quiz actually answer the shopper's real barrier
+  // (can I fit this? does my bike fit? how does this compare?) instead of
+  // just routing them toward the product page. Kept short by design: these
+  // render as stat/tip cards, not paragraphs.
+  checklist?: { icon: LucideIcon; text: string }[];
+  facts?: { icon: LucideIcon; label: string; value: string }[];
   note?: string;
   // Renders buttons as a card grid (label + hint) instead of the default
   // full-width pill list — used by the bike-detail steps where each option
@@ -68,18 +105,19 @@ export type ChoiceStep = {
 // they're the ones that need a follow-up question.
 export type BikeCategory = "mountainBike" | "eBike" | "roadGravel" | "kidsBike" | "fatBike" | "hybrid";
 
-export const bikeCategories: { key: BikeCategory; label: string }[] = [
-  { key: "mountainBike", label: "Mountain bike" },
-  { key: "eBike", label: "E-bike" },
-  { key: "roadGravel", label: "Road / gravel" },
-  { key: "kidsBike", label: "Kids bike" },
-  { key: "fatBike", label: "Fat bike" },
-  { key: "hybrid", label: "Hybrid / commuter" },
+export const bikeCategories: { key: BikeCategory; label: string; icon: LucideIcon }[] = [
+  { key: "mountainBike", label: "Mountain bike", icon: Mountain },
+  { key: "eBike", label: "E-bike", icon: Zap },
+  { key: "roadGravel", label: "Road / gravel", icon: Route },
+  { key: "kidsBike", label: "Kids bike", icon: Baby },
+  { key: "fatBike", label: "Fat bike", icon: Snowflake },
+  { key: "hybrid", label: "Hybrid / commuter", icon: Building2 },
 ];
 
 export type InventoryStep = {
   type: "inventory";
   id: number;
+  icon?: LucideIcon;
   heading: string;
   subtitle: string;
   cta: string;
@@ -97,6 +135,7 @@ export type EmailStep = {
 export type TextStep = {
   type: "text";
   id: number;
+  icon?: LucideIcon;
   heading: string;
   placeholder: string;
   cta: string;
@@ -106,6 +145,7 @@ export type TextStep = {
 export type EndStep = {
   type: "end";
   id: number;
+  icon?: LucideIcon;
   heading: string;
   body: string[];
 };
@@ -125,10 +165,18 @@ export const MAX_STEPS = 11;
 // real rackSizes prop instead of static copy here — see QuizFunnel.tsx.
 export const MODEL_COMPARE_STEP_ID = 16;
 
+// Which Klaviyo customer_type segment a shopper's bike inventory maps to —
+// computed in QuizFunnel.tsx from the inventory step's counts and sent on
+// email submission. Priority order: a kids bike in the mix reads as a
+// family/household purchase before anything else; mountain/fat bikes read
+// as a mountain-biking household; everything else lands on general cycling.
+export type CustomerType = "family_adventures" | "mountain_biking" | "cycling" | "other";
+
 export const quizSteps: Record<number, QuizStep> = {
   1: {
     type: "choice",
     id: 1,
+    icon: Compass,
     question: "What would help you decide?",
     subtitle: "Choose one",
     buttons: [
@@ -142,13 +190,14 @@ export const quizSteps: Record<number, QuizStep> = {
   2: {
     type: "choice",
     id: 2,
+    icon: Car,
     question: "Do you have a 2-inch hitch?",
     subtitle: "Here's how to check in 10 seconds",
     checklist: [
-      "Look underneath your rear bumper for a square tube sticking out from the frame — that's a hitch receiver.",
-      "A Class III (2\") receiver opening measures 2\" × 2\". A smaller 1.25\" opening is Class I/II and won't fit our racks.",
-      "Already tow a trailer or boat? You've almost certainly got a 2\" receiver — check your owner's manual for \"Class III\" or \"2 inch.\"",
-      "Nothing under the bumper at all? You don't have one yet — it's a standard, inexpensive add-on at most auto shops or national installers.",
+      { icon: Search, text: "Look under your rear bumper for a square tube — that's a hitch receiver." },
+      { icon: Ruler, text: "A 2\" × 2\" opening is Class III. A 1.25\" opening won't fit." },
+      { icon: BookOpen, text: "Already tow a trailer or boat? You've almost certainly got a 2\" receiver." },
+      { icon: Wrench, text: "Nothing there? It's a standard, inexpensive add-on at most auto shops." },
     ],
     buttons: [
       { label: "Yes, I've got one", next: 10 },
@@ -158,14 +207,15 @@ export const quizSteps: Record<number, QuizStep> = {
   3: {
     type: "choice",
     id: 3,
+    icon: Bike,
     question: "Will your bikes actually fit?",
     subtitle: "The real specs — not marketing fluff",
     facts: [
-      { label: "Wheel size", value: "21\"–29\" — most kids', hybrid, road, gravel & mountain bikes" },
-      { label: "Tire width", value: "Up to 3\" wide — covers plus-size tires, not true fat-tire bikes" },
-      { label: "Weight per bike", value: "Up to 65 lbs per wheel holder — rated for e-bikes" },
-      { label: "Total capacity", value: "240 lbs combined across the rack" },
-      { label: "Smaller wheels", value: "Under 21\"? A wheel bracket accessory covers 16\"–20\" kids' bikes" },
+      { icon: Disc, label: "Wheel size", value: "21–29\" wheels" },
+      { icon: Ruler, label: "Tire width", value: "Up to 3\" wide" },
+      { icon: Weight, label: "Per bike", value: "Up to 65 lbs" },
+      { icon: Package, label: "Total capacity", value: "240 lbs" },
+      { icon: Baby, label: "Smaller wheels", value: "16–20\" w/ bracket" },
     ],
     note: "The only bikes that don't fit: true fat-tire/snow bikes with 4\"+ tires. Everything else — including heavy e-bikes — is covered.",
     buttons: [
@@ -176,6 +226,7 @@ export const quizSteps: Record<number, QuizStep> = {
   4: {
     type: "choice",
     id: 4,
+    icon: Scale,
     question: "What are you comparing?",
     subtitle: "Choose one",
     buttons: [
@@ -186,19 +237,21 @@ export const quizSteps: Record<number, QuizStep> = {
   15: {
     type: "choice",
     id: 15,
+    icon: ClipboardCheck,
     question: "What actually matters when comparing racks",
     subtitle: "The specs worth checking on any rack you're comparing — here's where JB Racks lands",
     facts: [
-      { label: "Weight rating", value: "65 lbs per wheel holder, 240 lbs total — a lot of racks predate e-bikes and aren't rated for them" },
-      { label: "Hitch fit", value: "2\" Class III receiver, 18\" bar clears spare tires and extended trays" },
-      { label: "Wobble control", value: "Anti-wobble hitch bracket included standard, not an upsell" },
-      { label: "Warranty", value: "4-Year Warranty" },
+      { icon: Weight, label: "Weight rating", value: "65 lbs/holder, 240 total" },
+      { icon: Car, label: "Hitch fit", value: "2\" Class III, 18\" bar" },
+      { icon: ShieldCheck, label: "Wobble control", value: "Anti-wobble bracket incl." },
+      { icon: BadgeCheck, label: "Warranty", value: "4-Year" },
     ],
     buttons: [{ label: "Got it — find my size", next: 10 }],
   },
   [MODEL_COMPARE_STEP_ID]: {
     type: "choice",
     id: MODEL_COMPARE_STEP_ID,
+    icon: BarChart3,
     question: "Compare our 4, 5 & 6-bike racks",
     subtitle: "Real specs and live pricing side by side",
     buttons: [{ label: "Pick my size", next: 10 }],
@@ -206,6 +259,7 @@ export const quizSteps: Record<number, QuizStep> = {
   10: {
     type: "inventory",
     id: 10,
+    icon: Bike,
     heading: "What bikes are you carrying?",
     subtitle: "Tap + for each bike. If it has a motor, count it as an e-bike.",
     cta: "Next",
@@ -213,6 +267,7 @@ export const quizSteps: Record<number, QuizStep> = {
   18: {
     type: "choice",
     id: 18,
+    icon: CircleDot,
     question: "Your kids bike — what wheel size?",
     subtitle: "Choose one",
     cardButtons: true,
@@ -229,6 +284,7 @@ export const quizSteps: Record<number, QuizStep> = {
   19: {
     type: "choice",
     id: 19,
+    icon: Ruler,
     question: "Your fat bike — how wide are the tires?",
     subtitle: "Choose one",
     cardButtons: true,
@@ -246,6 +302,7 @@ export const quizSteps: Record<number, QuizStep> = {
   20: {
     type: "choice",
     id: 20,
+    icon: Weight,
     question: "Your e-bike — how heavy is it?",
     subtitle: "The spec sticker on the frame or the brand's website has the exact figure.",
     cardButtons: true,
@@ -265,6 +322,7 @@ export const quizSteps: Record<number, QuizStep> = {
   21: {
     type: "choice",
     id: 21,
+    icon: AlertTriangle,
     question: "Heads up on that e-bike",
     subtitle: "Still worth knowing before you load it",
     note: "Each wheel holder is rated to 65 lbs. A heavier e-bike can still ride in the rack, but load it into the lowest slot and double-check the strap tension before you drive — that's the one bike we'd want you to keep an eye on.",
@@ -273,6 +331,7 @@ export const quizSteps: Record<number, QuizStep> = {
   11: {
     type: "choice",
     id: 11,
+    icon: ChevronsDown,
     question: "Want your rack to ease down slow and controlled, instead of slamming down?",
     subtitle: "Choose one",
     buttons: [
@@ -283,6 +342,7 @@ export const quizSteps: Record<number, QuizStep> = {
   12: {
     type: "choice",
     id: 12,
+    icon: Home,
     question: "Want a dedicated spot to keep it stored neatly when it's off the car?",
     subtitle: "Choose one",
     buttons: [
@@ -302,6 +362,7 @@ export const quizSteps: Record<number, QuizStep> = {
   7: {
     type: "text",
     id: 7,
+    icon: MessageSquare,
     heading: "Tell us in your own words - what's the one thing stopping you?",
     placeholder: "Tell us...",
     cta: "SUBMIT REASON",
@@ -310,12 +371,14 @@ export const quizSteps: Record<number, QuizStep> = {
   8: {
     type: "end",
     id: 8,
+    icon: CheckCircle2,
     heading: "Thanks for answering our questions. We hope you're more clear on what's needed.",
     body: ["If you need more help reach out to reed@jbracks.com and he can help you with your pre-purchase questions."],
   },
   9: {
     type: "end",
     id: 9,
+    icon: AlertTriangle,
     heading: "No 2-inch hitch yet — here's what to do next.",
     body: [
       "JB Racks needs a 2-inch, Class III receiver to mount to, so this isn't the right time to buy just yet.",
@@ -326,6 +389,7 @@ export const quizSteps: Record<number, QuizStep> = {
   17: {
     type: "end",
     id: 17,
+    icon: AlertTriangle,
     heading: "That tire's wider than our wheel holders.",
     body: [
       "Wheel holders top out at 3\" wide, and your tires are over that — we'd rather flag it now than have it not seat properly at home.",
