@@ -80,18 +80,60 @@ function StepIcon({ icon: Icon }: { icon?: LucideIcon }) {
   );
 }
 
-// Small illustration for the fat-tire "how to check" helper — a wheel with
-// the sidewall marking called out, matching how a real tire prints it.
+// Illustration for the fat-tire "how to check" helper — a wheel with a
+// callout leader line pointing at exactly where the sidewall marking sits,
+// with the two numbers color-coded (wheel size vs. tire width) and a
+// matching legend underneath, so the "first number / second number" point
+// in the body text has something concrete to look at instead of a plain
+// unlabeled circle.
 function TireDiagram() {
+  const cx = 70;
+  const cy = 88;
+  const tireR = 46;
+  const rimR = 24;
+  const anchorAngle = -60 * (Math.PI / 180);
+  const anchorX = cx + tireR * Math.cos(anchorAngle);
+  const anchorY = cy + tireR * Math.sin(anchorAngle);
+
   return (
-    <svg viewBox="0 0 120 120" className="h-24 w-24 shrink-0 text-brand-orange sm:h-28 sm:w-28" aria-hidden>
-      <circle cx="60" cy="66" r="46" fill="none" stroke="#1a1a1a" strokeWidth="12" />
-      <circle cx="60" cy="66" r="26" fill="none" stroke="#e2e2e2" strokeWidth="2" />
-      <rect x="14" y="4" width="58" height="18" rx="9" fill="none" stroke="currentColor" strokeWidth="2" />
-      <text x="43" y="17" textAnchor="middle" fontSize="11" fontWeight="700" fill="currentColor">
-        26x4.0
-      </text>
-    </svg>
+    <div className="flex shrink-0 flex-col items-center gap-2">
+      <svg viewBox="0 0 140 148" className="h-32 w-32 sm:h-36 sm:w-36" aria-hidden>
+        {/* Callout: the sidewall marking, color-coded to match the legend */}
+        <rect x="46" y="2" width="88" height="30" rx="8" fill="#fff" stroke="#1a1a1a" strokeWidth="2" />
+        <text x="90" y="22" textAnchor="middle" fontSize="15" fontWeight="800">
+          <tspan fill="#1a1a1a">26</tspan>
+          <tspan fill="#9a9a9a"> x </tspan>
+          <tspan fill="#ff6000">4.0</tspan>
+        </text>
+        <line x1="90" y1="32" x2={anchorX} y2={anchorY} stroke="#1a1a1a" strokeWidth="2" />
+        <circle cx={anchorX} cy={anchorY} r="4" fill="#1a1a1a" />
+
+        {/* Tread ticks around the tire's outer edge */}
+        {Array.from({ length: 20 }).map((_, i) => {
+          const angle = (i / 20) * Math.PI * 2;
+          const x1 = cx + (tireR + 1) * Math.cos(angle);
+          const y1 = cy + (tireR + 1) * Math.sin(angle);
+          const x2 = cx + (tireR + 8) * Math.cos(angle);
+          const y2 = cy + (tireR + 8) * Math.sin(angle);
+          return <line key={i} x1={x1} y1={y1} x2={x2} y2={y2} stroke="#1a1a1a" strokeWidth="2.5" strokeLinecap="round" />;
+        })}
+
+        {/* Tire, then rim/wheel */}
+        <circle cx={cx} cy={cy} r={tireR} fill="none" stroke="#1a1a1a" strokeWidth="13" />
+        <circle cx={cx} cy={cy} r={rimR} fill="none" stroke="#c7c7c7" strokeWidth="2" />
+        <circle cx={cx} cy={cy} r="6" fill="#c7c7c7" />
+      </svg>
+      <div className="flex flex-col gap-1 text-[10.5px] font-semibold leading-tight text-brand-black/60">
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-brand-black" />
+          26 = wheel size (in)
+        </span>
+        <span className="flex items-center gap-1.5">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-brand-orange" />
+          4.0 = tire width (in)
+        </span>
+      </div>
+    </div>
   );
 }
 
