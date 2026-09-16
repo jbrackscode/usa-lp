@@ -474,10 +474,13 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
               )}
 
               {step.checklist && (
-                <ul className="mt-4 flex flex-col gap-2 lg:mt-5 lg:gap-2.5">
+                <ul className="mt-4 flex flex-col gap-2.5 lg:mt-6 lg:gap-3.5">
                   {step.checklist.map((line) => (
-                    <li key={line} className="flex items-start gap-2.5 text-[13px] text-brand-black/80 lg:text-[15px]">
-                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-green-dark lg:h-5 lg:w-5" strokeWidth={2.2} />
+                    <li
+                      key={line}
+                      className="flex items-start gap-2.5 text-[13.5px] leading-relaxed text-brand-black/80 lg:gap-3 lg:text-base lg:leading-relaxed"
+                    >
+                      <CheckCircle2 className="mt-[3px] h-4 w-4 shrink-0 text-brand-green-dark lg:mt-[2px] lg:h-5 lg:w-5" strokeWidth={2.2} />
                       {line}
                     </li>
                   ))}
