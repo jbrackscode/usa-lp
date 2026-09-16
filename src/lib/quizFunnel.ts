@@ -65,12 +65,17 @@ export type ChoiceButton = {
   wantsStrut?: boolean;
   wantsStand?: boolean;
   // When true, `next` is ignored and the funnel instead routes to whichever
-  // bike-detail follow-up (kids wheel size / fat-tire width / e-bike
-  // weight) is still outstanding for this shopper's inventory, falling
-  // through to the fold-preference question once none are left. Only used
-  // by steps in that chain (10, 18, 19, 20, 21) — see resolveBikeDetailChain
-  // in QuizFunnel.tsx.
+  // guided step (bike-detail follow-up, or the hitch check when it's been
+  // deferred — see needsHitchAfterBikes below) is still outstanding,
+  // falling through to the fold-preference question once none are left.
+  // Only used by steps in that chain (2, 10, 18, 19, 20, 21) — see
+  // resolveNextStep in QuizFunnel.tsx.
   chainNext?: boolean;
+  // Only set on step 3's "my bikes fit this" button. Bike Compatibility
+  // shoppers land on step 3 wanting bike questions, not a vehicle-fit
+  // tangent — so this defers the hitch check (2) until after the bike
+  // inventory/detail chain instead of asking it immediately.
+  needsHitchAfterBikes?: boolean;
   // Small muted line under the label (an age range, a weight-band example)
   // — set together with `cardButtons` on the step.
   hint?: string;
@@ -219,7 +224,7 @@ export const quizSteps: Record<number, QuizStep> = {
       "Nothing there? It's a simple, inexpensive add-on",
     ],
     buttons: [
-      { label: "Yes, I've got one", next: 10 },
+      { label: "Yes, I've got one", next: 10, chainNext: true },
       { label: "No / still not sure", next: 9 },
     ],
   },
@@ -238,7 +243,7 @@ export const quizSteps: Record<number, QuizStep> = {
     ],
     note: "The bikes that don't fit: true fat-tire/snow bikes with 4\"+ tires, and e-bikes over the 65 lb per-holder rating (most cargo/moped-style e-bikes). Everything else is covered.",
     buttons: [
-      { label: "Yep, my bikes fit this", next: 2 },
+      { label: "Yep, my bikes fit this", next: 10, needsHitchAfterBikes: true },
       { label: "I've got true fat-tire bikes (4\"+ tires)", next: 17, variant: "other" },
     ],
   },

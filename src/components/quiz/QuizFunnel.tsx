@@ -191,6 +191,12 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   // self-reported customer_type. Preferred over the inventory-based
   // inference below whenever it's set.
   const [customerType, setCustomerType] = useState<CustomerType | null>(null);
+  // Set by step 3's "my bikes fit this" button — Bike Compatibility
+  // shoppers get the bike inventory/detail chain right away, with the hitch
+  // check (2) deferred until after it instead of interrupting them
+  // immediately. Reset whenever step 1 is (re)answered so backing out and
+  // picking a different top-level reason doesn't leave this stale.
+  const [needsHitchAfterBikes, setNeedsHitchAfterBikes] = useState(false);
   // Set by the fold/storage questions (11, 12) — surfaces the Slow-Fold
   // Strut and/or Garage Stand alongside the rack recommendation.
   const [wantsStrut, setWantsStrut] = useState(false);
@@ -248,6 +254,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     setAnswers({});
     setInventory(ZERO_INVENTORY);
     setCustomerType(null);
+    setNeedsHitchAfterBikes(false);
     setName("");
     setEmail("");
     setReasonText("");
@@ -260,22 +267,27 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     onClose();
   }
 
-  // Walks the bike-detail chain (kids wheel size → fat-tire width → e-bike
-  // weight) in order, skipping any step whose category wasn't actually
-  // selected in the inventory — only asks what's actually relevant, then
-  // falls through to the fold-preference question (11) once nothing's left.
-  // 20/21/22 are all part of the e-bike-weight sub-flow (question, then
-  // whichever caution note applies), so none of them re-trigger step 20.
-  function resolveBikeDetailChain(fromStepId: number): number {
+  // Walks the guided chain — hitch check, then kids wheel size → fat-tire
+  // width → e-bike weight, in order — skipping anything not actually
+  // relevant, then falling through to the fold-preference question (11)
+  // once nothing's left. From step 2 specifically: if bike questions were
+  // already done (the reordered Bike Compatibility path), continue on to
+  // 11 instead of asking the inventory step a second time. 20/21/22 are
+  // all part of the e-bike-weight sub-flow, so none of them re-trigger 20.
+  function resolveNextStep(fromStepId: number): number {
+    if (fromStepId === 2) return history.includes(10) ? 11 : 10;
     if (fromStepId === 10 && inventory.kidsBike > 0) return 18;
     if ((fromStepId === 10 || fromStepId === 18) && inventory.fatBike > 0) return 19;
     if (fromStepId !== 20 && fromStepId !== 21 && fromStepId !== 22 && inventory.eBike > 0) return 20;
+    if (needsHitchAfterBikes && !history.includes(2)) return 2;
     return 11;
   }
 
   function handleChoice(button: ChoiceButton) {
     setAnswers((a) => ({ ...a, [stepId]: button.hint ? `${button.label} (${button.hint})` : button.label }));
+    if (stepId === 1) setNeedsHitchAfterBikes(false);
     if (button.customerType) setCustomerType(button.customerType);
+    if (button.needsHitchAfterBikes) setNeedsHitchAfterBikes(true);
     if (button.bikeCount) setBikeCount(button.bikeCount);
     // Set absolutely (not just true-when-flagged) on their own steps, so
     // going Back and picking a different answer actually clears a
@@ -283,7 +295,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     if (stepId === 11) setWantsStrut(Boolean(button.wantsStrut));
     if (stepId === 12) setWantsStand(Boolean(button.wantsStand));
     trackGA4("quiz_answer", { quiz_step: stepId, quiz_question: step.type === "choice" ? step.question : "", quiz_answer: button.label });
-    goTo(button.chainNext ? resolveBikeDetailChain(stepId) : button.next);
+    goTo(button.chainNext ? resolveNextStep(stepId) : button.next);
   }
 
   const totalBikes = Object.values(inventory).reduce((sum, n) => sum + n, 0);
@@ -302,7 +314,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
       .join(", ");
     setAnswers((a) => ({ ...a, [stepId]: summary }));
     trackGA4("quiz_answer", { quiz_step: stepId, quiz_question: "What bikes are you carrying?", quiz_answer: summary });
-    goTo(resolveBikeDetailChain(stepId));
+    goTo(resolveNextStep(stepId));
   }
 
   // The explicit answer from step 0 wins; if that's somehow unset, infer
