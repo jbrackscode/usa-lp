@@ -81,22 +81,22 @@ function HitchDiagram() {
       <rect x="85" y="72" width="50" height="44" fill="#0a0a0b" stroke="#050505" strokeWidth="1.5" />
       <line x1="88" y1="113" x2="132" y2="75" stroke="#3f3f43" strokeWidth="2" />
 
-      {/* Width callout (top) */}
-      <line x1="70" y1="20" x2="150" y2="20" stroke="#22d3ee" strokeWidth="2" />
-      <line x1="70" y1="14" x2="70" y2="58" stroke="#22d3ee" strokeWidth="1.5" />
-      <line x1="150" y1="14" x2="150" y2="58" stroke="#22d3ee" strokeWidth="1.5" />
-      <polygon points="70,20 79,15 79,25" fill="#22d3ee" />
-      <polygon points="150,20 141,15 141,25" fill="#22d3ee" />
+      {/* Width callout (top) — anchored to the actual opening, not the housing */}
+      <line x1="85" y1="20" x2="135" y2="20" stroke="#22d3ee" strokeWidth="2" />
+      <line x1="85" y1="14" x2="85" y2="72" stroke="#22d3ee" strokeWidth="1.5" />
+      <line x1="135" y1="14" x2="135" y2="72" stroke="#22d3ee" strokeWidth="1.5" />
+      <polygon points="85,20 94,15 94,25" fill="#22d3ee" />
+      <polygon points="135,20 126,15 126,25" fill="#22d3ee" />
       <text x="110" y="13" textAnchor="middle" fontSize="17" fontWeight="800" fill="#1a1a1a">
         2&quot;
       </text>
 
-      {/* Height callout (left) */}
-      <line x1="42" y1="58" x2="42" y2="130" stroke="#22d3ee" strokeWidth="2" />
-      <line x1="36" y1="58" x2="70" y2="58" stroke="#22d3ee" strokeWidth="1.5" />
-      <line x1="36" y1="130" x2="70" y2="130" stroke="#22d3ee" strokeWidth="1.5" />
-      <polygon points="42,58 37,67 47,67" fill="#22d3ee" />
-      <polygon points="42,130 37,121 47,121" fill="#22d3ee" />
+      {/* Height callout (left) — anchored to the actual opening, not the housing */}
+      <line x1="42" y1="72" x2="42" y2="116" stroke="#22d3ee" strokeWidth="2" />
+      <line x1="36" y1="72" x2="85" y2="72" stroke="#22d3ee" strokeWidth="1.5" />
+      <line x1="36" y1="116" x2="85" y2="116" stroke="#22d3ee" strokeWidth="1.5" />
+      <polygon points="42,72 37,81 47,81" fill="#22d3ee" />
+      <polygon points="42,116 37,107 47,107" fill="#22d3ee" />
       <text x="16" y="98" textAnchor="middle" fontSize="17" fontWeight="800" fill="#1a1a1a">
         2&quot;
       </text>
