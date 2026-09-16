@@ -219,9 +219,10 @@ export const quizSteps: Record<number, QuizStep> = {
     subtitle: "Here's how to check in 10 seconds",
     showHitchDiagram: true,
     checklist: [
-      "Look under your rear bumper for a square 2\" x 2\" opening",
-      "Already tow a trailer or boat? You've got one",
-      "Nothing there? It's a simple, inexpensive add-on",
+      "Look under your rear bumper for a square 2\" opening",
+      "Drive a truck or SUV with a factory tow package? It's almost certainly a 2\"",
+      "Already tow? Measure the opening. Hitches come in 1.25\" and 2\", and this rack needs the 2\"",
+      "Nothing there? A 2\" hitch can be added to most vehicles",
     ],
     buttons: [
       { label: "Yes, I've got one", next: 10, chainNext: true },
