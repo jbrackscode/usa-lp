@@ -288,7 +288,11 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   // the worst case, and a literal step count that high reads as scarier
   // than the actual experience.
   const progressIndex = Math.min(history.length, MAX_STEPS);
-  const progressPercent = Math.max(6, Math.min(100, (progressIndex / MAX_STEPS) * 100));
+  // The recommendation reveal is the actual finish line regardless of how
+  // many steps it took to get there, so the bar always reads as complete
+  // once reached — not some fraction of the 12-step worst case.
+  const progressPercent =
+    step.type === "email" ? 100 : Math.max(6, Math.min(100, (progressIndex / MAX_STEPS) * 100));
   const showProgress = step.type !== "end";
   // isRevealStep (the recommendation reveal splits into two columns on
   // desktop — recs left, form right — so it needs a lot more width than a
