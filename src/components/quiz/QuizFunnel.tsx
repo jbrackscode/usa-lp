@@ -481,7 +481,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
                       className="flex items-start gap-2.5 text-[13.5px] leading-relaxed text-brand-black/80 lg:gap-3 lg:text-base lg:leading-relaxed"
                     >
                       <CheckCircle2 className="mt-[3px] h-4 w-4 shrink-0 text-brand-green-dark lg:mt-[2px] lg:h-5 lg:w-5" strokeWidth={2.2} />
-                      {line}
+                      <span className="text-left text-balance">{line}</span>
                     </li>
                   ))}
                 </ul>
