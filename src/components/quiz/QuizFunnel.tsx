@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import confetti from "canvas-confetti";
-import { HelpCircle, Info, type LucideIcon } from "lucide-react";
+import { ArrowLeft, HelpCircle, Info, type LucideIcon } from "lucide-react";
 import {
   quizSteps,
   START_STEP,
@@ -153,6 +153,17 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     setStepId(next);
   }
 
+  // Pops back to the previous step in the actual path taken — history is
+  // already a stack of visited step ids, so this is just walking it back
+  // one. Picking a different answer from there appends a fresh path onto
+  // the (now shorter) history exactly like goTo always has.
+  function goBack() {
+    if (history.length <= 1) return;
+    const prevStepId = history[history.length - 2];
+    setHistory((h) => h.slice(0, -1));
+    setStepId(prevStepId);
+  }
+
   function reset() {
     setStepId(START_STEP);
     setHistory([START_STEP]);
@@ -188,8 +199,11 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     setAnswers((a) => ({ ...a, [stepId]: button.hint ? `${button.label} (${button.hint})` : button.label }));
     if (button.customerType) setCustomerType(button.customerType);
     if (button.bikeCount) setBikeCount(button.bikeCount);
-    if (button.wantsStrut) setWantsStrut(true);
-    if (button.wantsStand) setWantsStand(true);
+    // Set absolutely (not just true-when-flagged) on their own steps, so
+    // going Back and picking a different answer actually clears a
+    // previously-flagged want instead of leaving it stuck true.
+    if (stepId === 11) setWantsStrut(Boolean(button.wantsStrut));
+    if (stepId === 12) setWantsStand(Boolean(button.wantsStand));
     trackGA4("quiz_answer", { quiz_step: stepId, quiz_question: step.type === "choice" ? step.question : "", quiz_answer: button.label });
     goTo(button.chainNext ? resolveBikeDetailChain(stepId) : button.next);
   }
@@ -294,6 +308,11 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   const progressPercent =
     step.type === "email" ? 100 : Math.max(6, Math.min(100, (progressIndex / MAX_STEPS) * 100));
   const showProgress = step.type !== "end";
+  // The back button is available a step further than the progress bar —
+  // including on end/disqualification steps, which otherwise have no
+  // interactive element at all and would trap the shopper into closing the
+  // whole quiz just to reconsider an earlier answer.
+  const showBack = history.length > 1 && !submitted;
   // isRevealStep (the recommendation reveal splits into two columns on
   // desktop — recs left, form right — so it needs a lot more width than a
   // single question card) is computed above, alongside the confetti effect.
@@ -322,19 +341,33 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
             positioned against the non-scrolling wrapper) even on the denser
             steps that would otherwise run past a laptop viewport. */}
         <div className="overflow-y-auto p-6 sm:p-8 lg:p-10">
-          {showProgress && (
-            <div
-              className="mb-4 h-1.5 w-full overflow-hidden rounded-full bg-brand-line lg:mb-5"
-              role="progressbar"
-              aria-label="Quiz progress"
-              aria-valuenow={Math.round(progressPercent)}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            >
-              <div
-                className="h-full rounded-full bg-brand-green transition-[width] duration-500 ease-out"
-                style={{ width: `${progressPercent}%` }}
-              />
+          {(showBack || showProgress) && (
+            <div className="mb-4 flex items-center gap-3 lg:mb-5">
+              {showBack && (
+                <button
+                  type="button"
+                  onClick={goBack}
+                  className="flex shrink-0 items-center gap-1 text-xs font-bold text-brand-black/50 hover:text-brand-black lg:text-sm"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5 lg:h-4 lg:w-4" strokeWidth={2.5} />
+                  Back
+                </button>
+              )}
+              {showProgress && (
+                <div
+                  className="h-1.5 w-full overflow-hidden rounded-full bg-brand-line"
+                  role="progressbar"
+                  aria-label="Quiz progress"
+                  aria-valuenow={Math.round(progressPercent)}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                >
+                  <div
+                    className="h-full rounded-full bg-brand-green transition-[width] duration-500 ease-out"
+                    style={{ width: `${progressPercent}%` }}
+                  />
+                </div>
+              )}
             </div>
           )}
 
