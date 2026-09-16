@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import confetti from "canvas-confetti";
-import { ArrowLeft, HelpCircle, Info, type LucideIcon } from "lucide-react";
+import { ArrowLeft, CheckCircle2, HelpCircle, Info, type LucideIcon } from "lucide-react";
 import {
   quizSteps,
   START_STEP,
@@ -67,6 +67,42 @@ const CUSTOMER_TYPE_KICKER: Record<CustomerType, string> = {
   cycling: "For your rides",
   other: "Based on your answers",
 };
+
+// Illustration for the hitch-fit step — a 2" x 2" receiver tube shown at an
+// angle with both dimensions called out, matching the shopper's own
+// reference photo of the real part.
+function HitchDiagram() {
+  return (
+    <svg viewBox="0 0 220 170" className="h-32 w-full max-w-[260px] sm:h-36" aria-hidden>
+      {/* Receiver tube, 3/4 view — front face + extruded depth */}
+      <polygon points="150,58 190,30 190,102 150,130" fill="#141416" />
+      <polygon points="70,58 150,58 190,30 110,30" fill="#3a3a3e" />
+      <rect x="70" y="58" width="80" height="72" rx="3" fill="#232326" stroke="#0d0d0e" strokeWidth="2" />
+      <rect x="85" y="72" width="50" height="44" fill="#0a0a0b" stroke="#050505" strokeWidth="1.5" />
+      <line x1="88" y1="113" x2="132" y2="75" stroke="#3f3f43" strokeWidth="2" />
+
+      {/* Width callout (top) */}
+      <line x1="70" y1="20" x2="150" y2="20" stroke="#22d3ee" strokeWidth="2" />
+      <line x1="70" y1="14" x2="70" y2="58" stroke="#22d3ee" strokeWidth="1.5" />
+      <line x1="150" y1="14" x2="150" y2="58" stroke="#22d3ee" strokeWidth="1.5" />
+      <polygon points="70,20 79,15 79,25" fill="#22d3ee" />
+      <polygon points="150,20 141,15 141,25" fill="#22d3ee" />
+      <text x="110" y="13" textAnchor="middle" fontSize="17" fontWeight="800" fill="#1a1a1a">
+        2&quot;
+      </text>
+
+      {/* Height callout (left) */}
+      <line x1="42" y1="58" x2="42" y2="130" stroke="#22d3ee" strokeWidth="2" />
+      <line x1="36" y1="58" x2="70" y2="58" stroke="#22d3ee" strokeWidth="1.5" />
+      <line x1="36" y1="130" x2="70" y2="130" stroke="#22d3ee" strokeWidth="1.5" />
+      <polygon points="42,58 37,67 47,67" fill="#22d3ee" />
+      <polygon points="42,130 37,121 47,121" fill="#22d3ee" />
+      <text x="16" y="98" textAnchor="middle" fontSize="17" fontWeight="800" fill="#1a1a1a">
+        2&quot;
+      </text>
+    </svg>
+  );
+}
 
 // Small icon badge shown above a step's heading — purely visual, gives the
 // funnel a guided-flow feel instead of a plain form. Renders nothing when a
@@ -419,18 +455,21 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
               <h2 className="pr-8 text-xl font-extrabold text-brand-black sm:text-2xl lg:text-3xl">{step.question}</h2>
               <p className="mt-1.5 text-sm text-brand-black/60 lg:mt-2 lg:text-base">{step.subtitle}</p>
 
-              {step.checklist && (
-                <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2 lg:mt-5 lg:gap-2.5">
-                  {step.checklist.map((item) => (
-                    <div
-                      key={item.text}
-                      className="flex items-start gap-2.5 rounded-lg border border-brand-line bg-brand-cream p-3 lg:p-3.5"
-                    >
-                      <item.icon className="mt-0.5 h-4 w-4 shrink-0 text-brand-green-dark lg:h-5 lg:w-5" strokeWidth={2.2} />
-                      <span className="text-[12.5px] leading-snug text-brand-black/80 lg:text-[13.5px]">{item.text}</span>
-                    </div>
-                  ))}
+              {step.showHitchDiagram && (
+                <div className="mt-4 flex justify-center lg:mt-5">
+                  <HitchDiagram />
                 </div>
+              )}
+
+              {step.checklist && (
+                <ul className="mt-4 flex flex-col gap-2 lg:mt-5 lg:gap-2.5">
+                  {step.checklist.map((line) => (
+                    <li key={line} className="flex items-start gap-2.5 text-[13px] text-brand-black/80 lg:text-[15px]">
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand-green-dark lg:h-5 lg:w-5" strokeWidth={2.2} />
+                      {line}
+                    </li>
+                  ))}
+                </ul>
               )}
 
               {step.facts && (

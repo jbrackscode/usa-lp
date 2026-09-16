@@ -14,10 +14,7 @@
 
 import type { LucideIcon } from "lucide-react";
 import {
-  Search,
   Ruler,
-  BookOpen,
-  Wrench,
   Disc,
   Weight,
   Package,
@@ -91,12 +88,16 @@ export type ChoiceStep = {
   icon?: LucideIcon;
   question: string;
   subtitle: string;
-  // Real, factual content shown above the buttons as a compact icon grid —
-  // this is what lets the quiz actually answer the shopper's real barrier
-  // (can I fit this? does my bike fit? how does this compare?) instead of
-  // just routing them toward the product page. Kept short by design: these
-  // render as stat/tip cards, not paragraphs.
-  checklist?: { icon: LucideIcon; text: string }[];
+  // Real, factual content shown above the buttons — this is what lets the
+  // quiz actually answer the shopper's real barrier (can I fit this? does
+  // my bike fit? how does this compare?) instead of just routing them
+  // toward the product page. Kept short by design: checklist renders as a
+  // plain checkmark list, facts as compact icon stat cards — neither is a
+  // paragraph.
+  checklist?: string[];
+  // Shows the receiver-diagram illustration above the checklist — only the
+  // hitch-fit step (2) sets this.
+  showHitchDiagram?: boolean;
   facts?: { icon: LucideIcon; label: string; value: string }[];
   note?: string;
   // Renders buttons as a card grid (label + hint) instead of the default
@@ -211,11 +212,11 @@ export const quizSteps: Record<number, QuizStep> = {
     icon: Car,
     question: "Do you have a 2-inch hitch?",
     subtitle: "Here's how to check in 10 seconds",
+    showHitchDiagram: true,
     checklist: [
-      { icon: Search, text: "Look under your rear bumper for a square tube — that's a hitch receiver." },
-      { icon: Ruler, text: "A 2\" × 2\" opening is Class III. A 1.25\" opening won't fit." },
-      { icon: BookOpen, text: "Already tow a trailer or boat? You've almost certainly got a 2\" receiver." },
-      { icon: Wrench, text: "Nothing there? It's a standard, inexpensive add-on at most auto shops." },
+      "Look under your rear bumper for a square 2\" x 2\" opening",
+      "Already tow a trailer or boat? You've got one",
+      "Nothing there? It's a simple, inexpensive add-on",
     ],
     buttons: [
       { label: "Yes, I've got one", next: 10 },
