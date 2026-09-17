@@ -8,7 +8,7 @@ import { PaymentIcons } from "./PaymentIcons";
 import { SpecsAccordion } from "./SpecsAccordion";
 
 const benefits = [
-  "Lightweight 53-66 lbs — one person can fit it",
+  "Lightweight 53-66 lbs",
   "Anti-wobble hitch bracket included",
   "Fits wheels up to 29\" and tires up to 3\" wide",
   "Structural steel — load & vibration tested",
