@@ -31,6 +31,19 @@ test (see below).
 No database, no third-party A/B tool, no client-side flash of the wrong
 variant — the rewrite happens server-side before any HTML is sent.
 
+### UTM / gclid / fbclid
+
+These survive completely untouched, for two separate reasons:
+
+- **The browser's address bar never changes.** A rewrite is invisible to
+  the client — `window.location` and everything client-side tracking reads
+  from it (GA4's gtag.js, the Meta Pixel) still see the original URL,
+  query string and all, exactly as if the rewrite never happened.
+- **The internal rewrite also carries the query string along**, so if a
+  page's Server Component ever reads `searchParams` (none of the three
+  current pages do, but a future one might), it sees the real UTM/gclid
+  values too — not just the client-side scripts.
+
 ## The live test
 
 ```ts

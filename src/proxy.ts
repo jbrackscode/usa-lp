@@ -23,10 +23,18 @@ export function proxy(request: NextRequest) {
   const existingVariant = test.variants.find((v) => v.id === existingId);
   const variant = existingVariant ?? pickWeightedVariant(test.variants);
 
-  const response =
-    variant.path === request.nextUrl.pathname
-      ? NextResponse.next()
-      : NextResponse.rewrite(new URL(variant.path, request.url));
+  let response: NextResponse;
+  if (variant.path === request.nextUrl.pathname) {
+    response = NextResponse.next();
+  } else {
+    // `new URL(path, base)` drops the base's query string entirely when
+    // `path` is absolute — copy it over explicitly so utm_*/gclid/fbclid
+    // and everything else survive the rewrite. Ad platforms and GA4 both
+    // rely on these reaching the page that actually renders.
+    const rewriteUrl = new URL(variant.path, request.url);
+    rewriteUrl.search = request.nextUrl.search;
+    response = NextResponse.rewrite(rewriteUrl);
+  }
 
   if (variant.id !== existingId) {
     // Deliberately not httpOnly — SplitTestTracking (src/components/lp)
