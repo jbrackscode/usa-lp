@@ -19,6 +19,10 @@ type BuyBoxProps = {
   addons: Addons;
   showSpecs?: boolean;
   stickyAddToCart?: boolean;
+  // Renders the thumbnail strip as a 5-column grid under the main image on
+  // desktop (lg:+) instead of a horizontal overflow-scroll row. Mobile is
+  // unaffected either way — that's still the scroll strip.
+  thumbnailGrid?: boolean;
   // Numeric variant IDs flagged out_of_stock via the "stock_status"
   // metafield (see getLiveBikeRackData) — nothing here can be added to
   // cart, regardless of which page/instance of BuyBox is rendering.
@@ -30,6 +34,7 @@ export function BuyBox({
   addons,
   showSpecs = false,
   stickyAddToCart = false,
+  thumbnailGrid = false,
   outOfStockVariantIds = new Set(),
 }: BuyBoxProps) {
   const [sizeIndex, setSizeIndex] = useState(1); // default to 5-bike ("Most Popular")
@@ -122,6 +127,17 @@ export function BuyBox({
     return extras;
   }, [wantStrut, wantStand, wantSwingArm, addons]);
 
+  // Every add-on actually included in the current selection, regardless of
+  // whether it's folded into rackLine's bundle SKU (Stand/Strut) or its own
+  // extraLines entry (Swing Arm, or Strut alone) — rackLine.title only ever
+  // mentions Stand/Strut, so this is what the sticky bar's summary uses to
+  // show the real full picture, Swing Arm included.
+  const selectedAddonNames = [
+    wantStand ? addons.garageStand.name : null,
+    wantStrut ? addons.slowFoldStrut.name : null,
+    wantSwingArm ? addons.swingArm.name : null,
+  ].filter((n): n is string => n !== null);
+
   const price = rackLine.price * qty + extraLines.reduce((sum, e) => sum + e.price, 0);
   const compareAtPrice = rackLine.compareAtPrice * qty + extraLines.reduce((sum, e) => sum + e.price, 0);
   const savings = compareAtPrice - price;
@@ -205,15 +221,19 @@ export function BuyBox({
             </>
           )}
         </div>
-        <div className="mt-3 flex gap-2 overflow-x-auto pb-1">
+        <div
+          className={`mt-3 flex gap-2 overflow-x-auto pb-1 ${
+            thumbnailGrid ? "lg:grid lg:grid-cols-5 lg:gap-2.5 lg:overflow-visible lg:pb-0" : ""
+          }`}
+        >
           {images.map((src, i) => (
             <button
               key={src}
               type="button"
               onClick={() => setImageIndex(i)}
               className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 bg-white ${
-                i === imageIndex ? "border-brand-black" : "border-transparent"
-              }`}
+                thumbnailGrid ? "lg:aspect-square lg:h-auto lg:w-full lg:shrink" : ""
+              } ${i === imageIndex ? "border-brand-black" : "border-transparent"}`}
               aria-label={`Image ${i + 1}`}
             >
               <Image src={src} alt="" fill sizes="64px" className="object-cover" />
@@ -435,28 +455,41 @@ export function BuyBox({
 
     {stickyAddToCart && (
       <div
-        className={`fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-brand-line bg-white px-4 py-3 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] transition-transform duration-200 sm:hidden ${
+        className={`fixed inset-x-0 bottom-0 z-40 border-t border-brand-line bg-white shadow-[0_-4px_16px_rgba(0,0,0,0.08)] transition-transform duration-200 ${
           stickyVisible ? "translate-y-0" : "translate-y-full"
         }`}
         aria-hidden={!stickyVisible}
       >
-        <div className="min-w-0">
-          <div className="truncate text-[12.5px] font-semibold text-brand-black/70">{rackLine.title}</div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="text-lg font-black text-brand-black">${price}</span>
-            {savings > 0 && <span className="text-xs text-brand-black/40 line-through">${compareAtPrice}</span>}
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 lg:px-8">
+          <div className="flex min-w-0 items-center gap-3">
+            <div className="relative hidden h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-brand-cream sm:block">
+              <Image src={rack.imagesByColor[color][0]} alt={rack.label} fill sizes="56px" className="object-contain p-1" />
+            </div>
+            <div className="min-w-0">
+              <div className="truncate text-[12.5px] font-bold text-brand-black sm:text-sm">
+                {rack.label} Rack <span className="font-normal text-brand-black/50">· {color}</span>
+              </div>
+              {selectedAddonNames.length > 0 && (
+                <div className="truncate text-[11px] text-brand-black/50 sm:text-xs">+ {selectedAddonNames.join(", ")}</div>
+              )}
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-base font-black text-brand-black sm:text-lg">${price}</span>
+                {savings > 0 && <span className="text-xs text-brand-black/40 line-through">${compareAtPrice}</span>}
+                {qty > 1 && <span className="text-xs font-semibold text-brand-black/50">× {qty}</span>}
+              </div>
+            </div>
           </div>
+          <button
+            type="button"
+            onClick={handleAddToCart}
+            disabled={loading || currentSelectionOutOfStock}
+            className={`shrink-0 whitespace-nowrap rounded-full px-6 py-3 text-sm font-black uppercase tracking-tight text-white disabled:opacity-70 sm:px-8 sm:py-3.5 ${
+              currentSelectionOutOfStock ? "bg-brand-black/40" : "bg-brand-green hover:opacity-90"
+            }`}
+          >
+            {currentSelectionOutOfStock ? "Out of Stock" : loading ? "Adding…" : error ? "Redirecting…" : "Add to Cart"}
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          disabled={loading || currentSelectionOutOfStock}
-          className={`shrink-0 whitespace-nowrap rounded-full px-6 py-3 text-sm font-black uppercase tracking-tight text-white disabled:opacity-70 ${
-            currentSelectionOutOfStock ? "bg-brand-black/40" : "bg-brand-green"
-          }`}
-        >
-          {currentSelectionOutOfStock ? "Out of Stock" : loading ? "Adding…" : error ? "Redirecting…" : "Add to Cart"}
-        </button>
       </div>
     )}
     </>

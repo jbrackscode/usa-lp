@@ -39,8 +39,15 @@ export default async function LpVerticalBikeRacksPage() {
       <OfferBanner />
       <Header />
       <Ticker />
-      <main className="bg-white pb-16 sm:pb-0">
-        <BuyBox rackSizes={rackSizes} addons={addons} showSpecs stickyAddToCart outOfStockVariantIds={outOfStockVariantIds} />
+      <main className="bg-white pb-20">
+        <BuyBox
+          rackSizes={rackSizes}
+          addons={addons}
+          showSpecs
+          stickyAddToCart
+          thumbnailGrid
+          outOfStockVariantIds={outOfStockVariantIds}
+        />
         <ProductFeatureBadges />
         {/* <ProductDescription /> */}
         <PressTestimonials />
