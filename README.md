@@ -92,6 +92,14 @@ re-encodes to WebP/AVIF at request time — no manual conversion pipeline
 needed, just drop new originals into `public/images/` or reference a
 `cdn.shopify.com` URL directly.
 
+## Split testing
+
+`/lp-vertical-bike-racks` is currently split-testing against
+`/lp-demonstration` and `/lp-demonstration-videos` — no database, just a
+sticky cookie set in `src/proxy.ts`. To adjust the traffic split, pause a
+variant, or set up a new test on a different page, see
+[`docs/split-testing.md`](docs/split-testing.md).
+
 ## Deploying
 
 Push to a GitHub repo and import it in Vercel, or run `vercel` from this
