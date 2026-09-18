@@ -47,7 +47,7 @@ export const featureRows = [
   },
   {
     image: "/images/jb-racks_fits_almost_any_vehicle.jpg",
-    video: "/videos/3_white-suv-paved-road.mp4",
+    video: "/videos/rack_install_clip.mp4",
     title: "Versatile Hitch Fit",
     body: "The 18″ hitch bar clears spare tires and extended trays on almost any vehicle, and fits 2″ Class III receivers — the most common hitch in the US.",
     size: "medium",

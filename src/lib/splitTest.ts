@@ -39,7 +39,7 @@ export const splitTests: SplitTest[] = [
   {
     id: "vertical-rack-lp",
     sourcePath: "/lp-vertical-bike-racks",
-    enabled: true,
+    enabled: false,
     variants: [
       { id: "control", path: "/lp-vertical-bike-racks", weight: 1 },
       { id: "variant-1-demo", path: "/lp-demonstration", weight: 1 },
