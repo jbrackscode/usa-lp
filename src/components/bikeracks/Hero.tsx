@@ -1,7 +1,16 @@
 import { hero } from "@/lib/bikeRacksListicle";
 import { HeroGallery } from "./HeroGallery";
+import type { RackSize } from "@/lib/bikeRacks";
 
-export function Hero() {
+type HeroProps = {
+  // Live 4-bike price (rackSizes[0]), same source/pattern as FinalCta —
+  // falls back to the static hero.ctaPrimary copy if not provided.
+  rackSizes?: RackSize[];
+};
+
+export function Hero({ rackSizes }: HeroProps) {
+  const fromPrice = rackSizes?.[0]?.price;
+
   return (
     <div className="border-b border-brand-line py-6 sm:py-12">
       <div className="mx-auto grid max-w-[1180px] grid-cols-1 items-center gap-8 px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
@@ -18,7 +27,7 @@ export function Hero() {
               href="#buy-box"
               className="inline-block rounded-full bg-brand-green px-8 py-4 text-base font-black uppercase tracking-wide text-white shadow-[0_3px_0_rgba(0,0,0,0.15)] hover:opacity-90"
             >
-              {hero.ctaPrimary}
+              {fromPrice ? `Find your size — from $${fromPrice}` : hero.ctaPrimary}
             </a>
             <a href="#reasons" className="text-sm font-semibold text-brand-black underline decoration-brand-line underline-offset-4">
               {hero.ctaSecondary}

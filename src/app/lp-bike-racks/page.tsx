@@ -38,7 +38,7 @@ export default async function LpBikeRacksPage() {
       <OfferBanner />
       <Header />
       <main className="bg-white pb-16 sm:pb-0">
-        <Hero />
+        <Hero rackSizes={rackSizes} />
         <Ticker />
 
         {/* <ProblemBand /> */}
