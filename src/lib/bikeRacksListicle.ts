@@ -54,6 +54,34 @@ export const heroGallery: HeroSlide[] = [
     alt: "Truck with a JB Racks vertical bike rack loaded with bikes on a fall mountain road in Virginia",
     pill: "Virginia Blue Ridge",
   },
+  // The five slides below all have their headline/copy baked directly into
+  // the graphic (designed as standalone social posts), so none of them set
+  // a pill/badge — that would just duplicate what's already on the image.
+  {
+    type: "image",
+    image: "/images/media-new-way.webp",
+    alt: "JB Racks vertical bike rack — meet the vertical rack, the new way to move bikes",
+  },
+  {
+    type: "image",
+    image: "/images/media-new-way2.webp",
+    alt: "JB Racks vertical bike rack feature callouts — carries 4 bikes, UV-coated rubber straps, tie-down bottom straps, optional slow-fold strut",
+  },
+  {
+    type: "image",
+    image: "/images/media-15000-sold.webp",
+    alt: "Trusted on the trail — 20,000+ JB Racks sold and counting",
+  },
+  {
+    type: "image",
+    image: "/images/media-expert-quote.webp",
+    alt: "Adam Miller, mountain biking influencer riding for 15 years: I really like this rack, it's my go-to rack when I have family outings",
+  },
+  {
+    type: "image",
+    image: "/images/media-not-your-typical.webp",
+    alt: "Actively supported by riders — Mike Guy and Adam Miller, mountain biking influencers",
+  },
   // {
   //   type: "image",
   //   image: "https://cdn.shopify.com/s/files/1/0694/1117/6660/files/6-bike-rack-black-new-photo-1_43f5e1c9-1783-44b6-b132-7e8c47027995.webp?v=1767759172",
