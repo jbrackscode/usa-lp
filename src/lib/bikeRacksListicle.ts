@@ -147,7 +147,7 @@ export const reasons = [
     number: "02",
     title: "More Rides. Less Cost.",
     body: "At an estimated $2.30 per ride, the JB 4 Rack pays for itself fast. Built to last for years of adventures, it's an affordable way to get out more — without the ongoing cost of rentals or roof boxes.",
-    image: "/images/jb-racks_cheap_adventures.jpg",
+    image: "/images/media-affordable.webp",
   },
   {
     number: "03",
@@ -159,7 +159,7 @@ export const reasons = [
   {
     number: "04",
     title: "Versatile Hitch Fit",
-    body: "The 18\" hitch bar clears spare tires and extended trays on almost any vehicle, and fits 2\" (50mm) Class III receivers — the most common hitch in the US.",
+    body: "The 18\" hitch bar clears spare tires and extended trays on almost any vehicle, and fits 2\" Class III receivers — the most common hitch in the US.",
     image: "/images/jb-racks_fits_almost_any_vehicle.jpg",
   },
   {
