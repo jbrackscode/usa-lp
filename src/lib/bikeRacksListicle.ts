@@ -154,6 +154,7 @@ export const reasons = [
     title: "Rubber-Gripped, Scratch-Free Hold",
     body: "Rubber straps grip the tires, not the frame, so there's minimal contact with your bike's paint and components. Less rattling against metal means less wear on the ride you actually care about.",
     image: "/images/jb-racks_easy_to_attach.jpg",
+    video: "/videos/2_bike-swingup-closeup.mp4",
   },
   {
     number: "04",

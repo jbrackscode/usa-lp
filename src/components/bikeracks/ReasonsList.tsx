@@ -1,5 +1,40 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import { reasons, reasonsEyebrow, reasonsHeadline } from "@/lib/bikeRacksListicle";
+
+function ReasonMedia({ image, video, title }: { image: string; video?: string; title: string }) {
+  const [videoReady, setVideoReady] = useState(false);
+
+  if (!video) {
+    return <Image src={image} alt={title} fill sizes="(min-width: 640px) 500px, 100vw" className="object-cover" />;
+  }
+
+  return (
+    <>
+      {!videoReady && (
+        <div className="absolute inset-0 flex items-center justify-center bg-brand-cream">
+          <div className="flex items-center gap-2 rounded-full bg-brand-black/70 px-3 py-1.5 text-[11px] font-semibold text-white backdrop-blur-sm">
+            <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/40 border-t-white" aria-hidden />
+            Loading video…
+          </div>
+        </div>
+      )}
+      <video
+        src={video}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        onCanPlay={() => setVideoReady(true)}
+        onLoadedData={() => setVideoReady(true)}
+        className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${videoReady ? "opacity-100" : "opacity-0"}`}
+      />
+    </>
+  );
+}
 
 export function ReasonsList() {
   return (
@@ -27,9 +62,9 @@ export function ReasonsList() {
                 <p className="mt-2.5 max-w-[52ch] text-[15px] text-brand-black/70">{r.body}</p>
               </div>
 
-              {/* Image: shows first on mobile, right column on desktop */}
+              {/* Media: shows first on mobile, right column on desktop */}
               <div className="relative order-1 aspect-[1/1] w-full overflow-hidden rounded-xl bg-white sm:order-2">
-                <Image src={r.image} alt={r.title} fill sizes="(min-width: 640px) 500px, 100vw" className="object-cover" />
+                <ReasonMedia image={r.image} video={r.video} title={r.title} />
               </div>
             </div>
           ))}
