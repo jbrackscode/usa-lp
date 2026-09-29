@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type TouchEvent } from "react";
 import Image from "next/image";
 import { heroGallery } from "@/lib/bikeRacksListicle";
 
@@ -8,9 +8,36 @@ export function HeroGallery() {
   const [index, setIndex] = useState(0);
   const slide = heroGallery[index];
 
+  function prevSlide() {
+    setIndex((i) => (i - 1 + heroGallery.length) % heroGallery.length);
+  }
+  function nextSlide() {
+    setIndex((i) => (i + 1) % heroGallery.length);
+  }
+
+  // Same swipe pattern as the BuyBox gallery — arrow buttons are desktop-
+  // only (hover-revealed), so touch is the sole navigation on mobile.
+  const touchStartX = useRef<number | null>(null);
+  function handleTouchStart(e: TouchEvent<HTMLDivElement>) {
+    touchStartX.current = e.touches[0].clientX;
+  }
+  function handleTouchEnd(e: TouchEvent<HTMLDivElement>) {
+    if (touchStartX.current === null) return;
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(delta) > 40) {
+      if (delta < 0) nextSlide();
+      else prevSlide();
+    }
+    touchStartX.current = null;
+  }
+
   return (
     <div className="relative">
-      <div className="relative aspect-[1/1] w-full overflow-hidden sm:rounded-xl">
+      <div
+        className="group relative aspect-[1/1] w-full touch-pan-y overflow-hidden sm:rounded-xl"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         {slide.type === "image" && (
           <>
             <Image
@@ -65,19 +92,22 @@ export function HeroGallery() {
           </div>
         )}
 
+        {/* Desktop only (mobile navigates by swipe/dots), and hidden until
+            the gallery itself is hovered — no controls sitting on top of
+            the image otherwise. */}
         <button
           type="button"
-          onClick={() => setIndex((i) => (i - 1 + heroGallery.length) % heroGallery.length)}
+          onClick={prevSlide}
           aria-label="Previous slide"
-          className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg text-brand-black shadow hover:bg-white"
+          className="absolute left-3 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg text-brand-black opacity-0 shadow transition-opacity duration-200 hover:bg-white group-hover:opacity-100 sm:flex"
         >
           ‹
         </button>
         <button
           type="button"
-          onClick={() => setIndex((i) => (i + 1) % heroGallery.length)}
+          onClick={nextSlide}
           aria-label="Next slide"
-          className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg text-brand-black shadow hover:bg-white"
+          className="absolute right-3 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-lg text-brand-black opacity-0 shadow transition-opacity duration-200 hover:bg-white group-hover:opacity-100 sm:flex"
         >
           ›
         </button>
