@@ -250,7 +250,7 @@ export function BuyBox({
         </div>
         <h2 className="mt-2 text-3xl font-black tracking-tighter text-brand-black sm:text-4xl">The JB Vertical Bike Rack</h2>
         <p className="mt-2 text-[15.5px] leading-relaxed text-brand-black/70">
-          The vertical-style hitch rack for hauling 4, 5, or 6 bikes. Fits 2&quot; (50mm) receivers.
+          The vertical-style hitch rack for hauling 4, 5, or 6 bikes. Fits 2&quot; receivers.
         </p>
 
         <ul className="mt-4 flex flex-col gap-2">

@@ -258,7 +258,7 @@ export const reviews = [
 export const faqs = [
   {
     question: "What size hitch do I need?",
-    answer: "A 2\" (50mm) Class III hitch receiver — the most common size on trucks and SUVs in the US. The 18\" hitch bar clears rear-mounted spare wheels.",
+    answer: "A 2\" Class III hitch receiver — the most common size on trucks and SUVs in the US. The 18\" hitch bar clears rear-mounted spare wheels.",
   },
   {
     question: "What's the weight capacity?",
