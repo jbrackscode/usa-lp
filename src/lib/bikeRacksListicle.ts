@@ -146,7 +146,7 @@ export const reasons = [
   {
     number: "02",
     title: "More Rides. Low Upfront Cost.",
-    body: "Ride now, pay later. Split the JB 4 Rack into 4 easy payments at checkout and get the whole crew on the trails this weekend. Built to last for years of adventures, it's an affordable way to get out more without the big upfront cost.",
+    body: "Ride now, pay later. Split your JB Rack into easy payments at checkout and get the whole crew on the trails this weekend. Built to last for years of adventures, it's an affordable way to get out more without the big upfront cost.",
     image: "/images/media-affordable.webp",
   },
   {
