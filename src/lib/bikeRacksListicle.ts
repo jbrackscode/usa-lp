@@ -38,22 +38,23 @@ export type HeroSlide =
   | { type: "stats"; headline: string; stats: { value: string; label: string }[] }
   | { type: "replaces"; headline: string; items: string[] };
 
-// Trimmed to just the two fall lifestyle shots for now — the stats/replaces/
-// ambassador slides are still valid HeroSlide variants (see the type above),
-// just commented out below rather than deleted, in case they come back in.
+// The two fall lifestyle shots (texas-fall.jpg, virginia-fall.jpg) and the
+// stats/replaces/ambassador slides are still valid HeroSlide variants (see
+// the type above), just commented out below rather than deleted, in case
+// they come back in.
 export const heroGallery: HeroSlide[] = [
-  {
-    type: "image",
-    image: "/images/texas-fall.jpg",
-    alt: "Truck with a JB Racks vertical bike rack loaded with bikes on a fall road through Texas Hill Country",
-    pill: "Texas Hill Country",
-  },
-  {
-    type: "image",
-    image: "/images/virginia-fall.jpg",
-    alt: "Truck with a JB Racks vertical bike rack loaded with bikes on a fall mountain road in Virginia",
-    pill: "Virginia Blue Ridge",
-  },
+  // {
+  //   type: "image",
+  //   image: "/images/texas-fall.jpg",
+  //   alt: "Truck with a JB Racks vertical bike rack loaded with bikes on a fall road through Texas Hill Country",
+  //   pill: "Texas Hill Country",
+  // },
+  // {
+  //   type: "image",
+  //   image: "/images/virginia-fall.jpg",
+  //   alt: "Truck with a JB Racks vertical bike rack loaded with bikes on a fall mountain road in Virginia",
+  //   pill: "Virginia Blue Ridge",
+  // },
   // The five slides below all have their headline/copy baked directly into
   // the graphic (designed as standalone social posts), so none of them set
   // a pill/badge — that would just duplicate what's already on the image.
