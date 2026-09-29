@@ -177,8 +177,8 @@ export const tested = {
   eyebrow: "ENGINEERED & TESTED",
   headline: "Built to a standard, not just a budget",
   cells: [
-    { label: "MATERIAL", title: "ASTM A36-comparable structural steel", body: "Selected for strength, consistency, and suitability for structural load-bearing applications." },
-    { label: "FINISH", title: "Powder-coated corrosion resistance", body: "Target: 500-hour salt-spray exposure per ASTM B117 with no visible substrate corrosion." },
+    { label: "MATERIAL", title: "Q235B structural steel", body: "Rated to ~34 ksi yield strength: equivalent to European S235JR, and meets or exceeds the ASTM A1011 SS Grade 33 minimum." },
+    { label: "FINISH", title: "Polyester powder coat", body: "A pure polyester finish over pretreated steel, rated for 250–500 hours of ASTM B117 salt-spray exposure and built to hold its colour through 3–5 years of strong sun." },
     { label: "LOAD", title: "240 lb combined capacity, verified fully loaded", body: "Target: static load test at rated capacity plus a safety margin before sign-off." },
     { label: "DURABILITY", title: "Highway vibration simulation", body: "Target: simulated highway-mile vibration cycle with no hardware loosening." },
   ],
