@@ -342,7 +342,8 @@ export const quizSteps: Record<number, QuizStep> = {
         note: "No problem. We'll assume it's right at the 65-80 lb mark so your fit check is safe, and the next step covers a 30 second way to check the exact weight.",
       },
     ],
-    footerNote: "Tip: the battery is usually 7 to 9 lb and comes off before loading.",
+    footerNote:
+      "Tip: the battery is usually 7 to 9 lb and comes off before loading. Heads up: 65 lbs is the limit per wheel holder — the rack's total combined capacity across every bike is 240 lbs, so keep that in mind too if you're loading more than one heavier bike.",
   },
   21: {
     type: "choice",
@@ -350,7 +351,7 @@ export const quizSteps: Record<number, QuizStep> = {
     icon: AlertTriangle,
     question: "Heads up on that e-bike",
     subtitle: "Still worth knowing before you load it",
-    note: "Each wheel holder is rated to 65 lbs, so this one's right at the edge. Put it in the lowest slot and double-check the strap tension before you drive — that's the one bike we'd want you to keep an eye on.",
+    note: "Each wheel holder is rated to 65 lbs, so this one's right at the edge — and the rack's total combined capacity is 240 lbs across every bike, so weigh that against the rest of your lineup too, not just this one bike. Put it in the lowest slot and double-check the strap tension before you drive.",
     buttons: [{ label: "Got it, continue", next: 11, chainNext: true }],
   },
   22: {
@@ -359,7 +360,7 @@ export const quizSteps: Record<number, QuizStep> = {
     icon: AlertTriangle,
     question: "That one's heavier than we're rated for",
     subtitle: "Worth knowing before you buy",
-    note: "Wheel holders are rated to 65 lbs each — most cargo and moped-style e-bikes run well past that, and we can't guarantee a safe, secure fit for it. If that's the only heavy bike in the mix, it might be worth carrying separately; email reed@jbracks.com and we can talk through options.",
+    note: "Wheel holders are rated to 65 lbs each, and the rack's total combined capacity is 240 lbs across every bike — most cargo and moped-style e-bikes run well past the per-holder limit on their own, and we can't guarantee a safe, secure fit for it. If that's the only heavy bike in the mix, it might be worth carrying separately; email reed@jbracks.com and we can talk through options.",
     buttons: [{ label: "Got it, continue", next: 11, chainNext: true }],
   },
   11: {

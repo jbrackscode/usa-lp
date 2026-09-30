@@ -213,6 +213,19 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   const step = quizSteps[stepId];
   const isRevealStep = step.type === "email" && !submitted;
 
+  // The e-bike weight question (20) only fires once no matter how many
+  // e-bikes are in the inventory, so its safety-warning follow-ups (21/22)
+  // carry generic single-bike copy by default. With more than one e-bike,
+  // that per-holder 65 lb rating can stack up fast against the rack's flat
+  // 240 lb combined cap — worth calling out the actual count explicitly
+  // rather than leaving it as an easy-to-miss abstract number.
+  const stepNote =
+    step.type === "choice" && (stepId === 21 || stepId === 22) && inventory.eBike > 1
+      ? `You've got ${inventory.eBike} e-bikes in the mix — each wheel holder is rated to 65 lbs on its own, but the whole rack tops out at 240 lbs combined, so multiple heavier e-bikes can add up past that fast. ${step.note ?? ""}`
+      : step.type === "choice"
+        ? step.note
+        : undefined;
+
   // Pop confetti the moment the recommendation is actually revealed, not on
   // every re-render while the shopper is typing their name/email into the
   // same step.
@@ -502,10 +515,10 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
                 </div>
               )}
 
-              {step.note && (
+              {stepNote && (
                 <div className="mt-3 flex items-start gap-2 rounded-lg border-l-4 border-brand-green bg-brand-green-light px-3.5 py-2.5 lg:mt-4 lg:px-4 lg:py-3">
                   <Info className="mt-0.5 h-4 w-4 shrink-0 text-brand-green-dark lg:h-5 lg:w-5" strokeWidth={2.2} />
-                  <p className="text-[12.5px] text-brand-green-dark lg:text-sm">{step.note}</p>
+                  <p className="text-[12.5px] text-brand-green-dark lg:text-sm">{stepNote}</p>
                 </div>
               )}
 
