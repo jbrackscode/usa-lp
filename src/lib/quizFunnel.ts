@@ -139,6 +139,11 @@ export type InventoryStep = {
   heading: string;
   subtitle: string;
   cta: string;
+  // A friendly, non-alarming reminder shown above the bike picker — this is
+  // the one step nearly every shopper passes through, so it's the best spot
+  // to set the 65 lb per-holder / 240 lb combined expectation up front,
+  // before it ever needs to become a warning later in the flow.
+  note?: string;
 };
 
 export type EmailStep = {
@@ -287,6 +292,7 @@ export const quizSteps: Record<number, QuizStep> = {
     icon: Bike,
     heading: "What bikes are you carrying?",
     subtitle: "Tap + for each bike. If it has a motor, count it as an e-bike.",
+    note: "Good to know: each wheel holder carries up to 65 lbs on its own, and the whole rack carries up to 240 lbs combined — plenty for most setups, just worth keeping in mind if you're loading a few heavier bikes together.",
     cta: "Next",
   },
   18: {

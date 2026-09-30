@@ -645,6 +645,13 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
               <h2 className="pr-8 text-xl font-extrabold text-brand-black sm:text-2xl lg:text-3xl">{step.heading}</h2>
               <p className="mt-1.5 text-sm text-brand-black/60 lg:mt-2 lg:text-base">{step.subtitle}</p>
 
+              {step.note && (
+                <div className="mt-3.5 flex items-start gap-2 rounded-lg border-l-4 border-brand-green bg-brand-green-light px-3.5 py-2.5 lg:mt-4 lg:px-4 lg:py-3">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-brand-green-dark lg:h-5 lg:w-5" strokeWidth={2.2} />
+                  <p className="text-[12.5px] text-brand-green-dark lg:text-sm">{step.note}</p>
+                </div>
+              )}
+
               <div className="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:mt-6 lg:gap-3">
                 {bikeCategories.map((cat) => {
                   const count = inventory[cat.key];
