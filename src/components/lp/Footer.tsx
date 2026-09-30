@@ -7,6 +7,7 @@ const discoverLinks = [
   { label: "Garage Stand", href: `${storeUrl}/collections/garage-stand` },
   { label: "Accessories", href: `${storeUrl}/collections/accessories` },
   { label: "Bundles", href: `${storeUrl}/collections/bundles` },
+  { label: "Build Guides", href: "/build" },
   { label: "About JB Racks", href: `${storeUrl}/pages/about` },
   { label: "Reviews", href: `${storeUrl}/pages/reviews` },
 ];

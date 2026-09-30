@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { SplitTestTracking } from "@/components/lp/SplitTestTracking";
+import { CartProvider } from "@/components/cart/CartContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -62,7 +63,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </>
         )}
         <SplitTestTracking />
-        {children}
+        <CartProvider>{children}</CartProvider>
       </body>
     </html>
   );
