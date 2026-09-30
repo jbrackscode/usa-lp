@@ -71,55 +71,64 @@ const CUSTOMER_TYPE_KICKER: Record<CustomerType, string> = {
 // Illustration for the hitch-fit step — a real rear-bumper-mounted 2" x 2"
 // receiver (bumper, protruding tube, mounting bolt, tow hook) with the
 // actual opening highlighted and both dimensions called out, matching the
-// shopper's own reference photo of the real part rather than reading as an
-// abstract floating box.
+// shopper's own reference photo. The tube sits at a 3/4 angle (rotated as
+// one rigid group, dimension labels counter-rotated back upright) rather
+// than a flat-on square, so it reads as a photographed part instead of an
+// abstract floating box, and contrasts against the level bumper line.
 function HitchDiagram() {
   return (
     <svg viewBox="0 0 220 170" className="h-32 w-full max-w-[260px] sm:h-36" aria-hidden>
       {/* Rear bumper fascia */}
       <rect x="4" y="14" width="212" height="56" rx="16" fill="#4b4b4f" />
       <rect x="4" y="54" width="212" height="16" rx="8" fill="#3a3a3e" />
-      <circle cx="176" cy="40" r="9" fill="#6e6e72" stroke="#232326" strokeWidth="2" />
-      <circle cx="176" cy="40" r="4" fill="#3a3a3e" />
+      <circle cx="182" cy="40" r="9" fill="#6e6e72" stroke="#232326" strokeWidth="2" />
+      <circle cx="182" cy="40" r="4" fill="#3a3a3e" />
 
-      {/* Recess where the receiver mounts under the bumper */}
-      <rect x="72" y="50" width="82" height="24" rx="6" fill="#1c1c1e" />
+      {/* Recess where the receiver mounts under the bumper — stays level,
+          fixed to the bumper, while the tube emerging from it is angled */}
+      <rect x="68" y="48" width="84" height="26" rx="6" fill="#1c1c1e" />
 
-      {/* Receiver tube, 3/4 view — top sliver + front face + depth side */}
-      <polygon points="78,58 142,58 152,50 88,50" fill="#38383c" />
-      <polygon points="142,58 152,50 152,108 142,116" fill="#151517" />
-      <rect x="78" y="58" width="64" height="58" rx="5" fill="#242427" stroke="#0a0a0b" strokeWidth="2" />
+      <g transform="rotate(-14 110 88)">
+        {/* Receiver tube, 3/4 view — top sliver + front face + depth side */}
+        <polygon points="78,58 142,58 152,50 88,50" fill="#38383c" />
+        <polygon points="142,58 152,50 152,108 142,116" fill="#151517" />
+        <rect x="78" y="58" width="64" height="58" rx="5" fill="#242427" stroke="#0a0a0b" strokeWidth="2" />
 
-      {/* Mounting bolt */}
-      <circle cx="130" cy="63" r="4.5" fill="#d4d4d4" stroke="#8a8a8a" strokeWidth="1" />
-      <rect x="127.5" y="63" width="3" height="10" fill="#8a8a8a" />
+        {/* Mounting bolt */}
+        <circle cx="130" cy="63" r="4.5" fill="#d4d4d4" stroke="#8a8a8a" strokeWidth="1" />
+        <rect x="127.5" y="63" width="3" height="10" fill="#8a8a8a" />
 
-      {/* Tow hook */}
-      <path d="M 82 116 q -4 20 14 24 q 16 3 16 -14" fill="none" stroke="#1a1a1a" strokeWidth="5" strokeLinecap="round" />
+        {/* Tow hook */}
+        <path d="M 82 116 q -4 20 14 24 q 16 3 16 -14" fill="none" stroke="#1a1a1a" strokeWidth="5" strokeLinecap="round" />
 
-      {/* The actual 2" opening — highlighted, not just a flat black square */}
-      <rect x="93" y="70" width="34" height="34" rx="3" fill="#0a0a0b" />
-      <rect x="93" y="70" width="34" height="34" rx="3" fill="none" stroke="#ff6000" strokeWidth="2.5" strokeDasharray="5 3" />
+        {/* The actual 2" opening — highlighted, not just a flat black square */}
+        <rect x="93" y="70" width="34" height="34" rx="3" fill="#0a0a0b" />
+        <rect x="93" y="70" width="34" height="34" rx="3" fill="none" stroke="#ff6000" strokeWidth="2.5" strokeDasharray="5 3" />
 
-      {/* Width callout (top) — anchored to the actual opening, not the housing */}
-      <line x1="93" y1="42" x2="127" y2="42" stroke="#009d31" strokeWidth="2" />
-      <line x1="93" y1="36" x2="93" y2="70" stroke="#009d31" strokeWidth="1.5" />
-      <line x1="127" y1="36" x2="127" y2="70" stroke="#009d31" strokeWidth="1.5" />
-      <polygon points="93,42 102,37 102,47" fill="#009d31" />
-      <polygon points="127,42 118,37 118,47" fill="#009d31" />
-      <text x="110" y="34" textAnchor="middle" fontSize="15" fontWeight="800" fill="#1a1a1a">
-        2&quot;
-      </text>
+        {/* Width callout (top) — anchored to the actual opening, not the housing */}
+        <line x1="93" y1="40" x2="127" y2="40" stroke="#009d31" strokeWidth="2" />
+        <line x1="93" y1="34" x2="93" y2="70" stroke="#009d31" strokeWidth="1.5" />
+        <line x1="127" y1="34" x2="127" y2="70" stroke="#009d31" strokeWidth="1.5" />
+        <polygon points="93,40 102,35 102,45" fill="#009d31" />
+        <polygon points="127,40 118,35 118,45" fill="#009d31" />
+        <g transform="rotate(14 110 32)">
+          <text x="110" y="32" textAnchor="middle" fontSize="15" fontWeight="800" fill="#1a1a1a">
+            2&quot;
+          </text>
+        </g>
 
-      {/* Height callout (left) — anchored to the actual opening, not the housing */}
-      <line x1="65" y1="70" x2="65" y2="104" stroke="#009d31" strokeWidth="2" />
-      <line x1="59" y1="70" x2="93" y2="70" stroke="#009d31" strokeWidth="1.5" />
-      <line x1="59" y1="104" x2="93" y2="104" stroke="#009d31" strokeWidth="1.5" />
-      <polygon points="65,70 60,79 70,79" fill="#009d31" />
-      <polygon points="65,104 60,95 70,95" fill="#009d31" />
-      <text x="38" y="91" textAnchor="middle" fontSize="15" fontWeight="800" fill="#1a1a1a">
-        2&quot;
-      </text>
+        {/* Height callout (left) — anchored to the actual opening, not the housing */}
+        <line x1="63" y1="70" x2="63" y2="104" stroke="#009d31" strokeWidth="2" />
+        <line x1="57" y1="70" x2="93" y2="70" stroke="#009d31" strokeWidth="1.5" />
+        <line x1="57" y1="104" x2="93" y2="104" stroke="#009d31" strokeWidth="1.5" />
+        <polygon points="63,70 58,79 68,79" fill="#009d31" />
+        <polygon points="63,104 58,95 68,95" fill="#009d31" />
+        <g transform="rotate(14 36 89)">
+          <text x="36" y="89" textAnchor="middle" fontSize="15" fontWeight="800" fill="#1a1a1a">
+            2&quot;
+          </text>
+        </g>
+      </g>
     </svg>
   );
 }
