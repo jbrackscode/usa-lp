@@ -782,6 +782,15 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
                           </li>
                         ))}
                       </ul>
+
+                      <a
+                        href={`${storeUrl}/products/${recommendedRack.handle}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-3 inline-block text-sm font-semibold text-brand-green underline underline-offset-4 hover:text-brand-green-dark lg:mt-2.5"
+                      >
+                        View full product details →
+                      </a>
                     </div>
                   </div>
 
