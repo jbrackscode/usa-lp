@@ -68,63 +68,6 @@ const CUSTOMER_TYPE_KICKER: Record<CustomerType, string> = {
   other: "Based on your answers",
 };
 
-// Illustration for the hitch-fit step — a real rear-bumper-mounted 2" x 2"
-// receiver shown in true 3/4 perspective: a lit top face and a shadowed
-// side face give it actual depth (not a 2D-rotated flat square), with the
-// mounting bolt, tow hook, and the real opening highlighted, matching the
-// shopper's own reference photo.
-function HitchDiagram() {
-  return (
-    <svg viewBox="0 0 220 170" className="h-32 w-full max-w-[260px] sm:h-36" aria-hidden>
-      {/* Rear bumper fascia */}
-      <rect x="4" y="10" width="212" height="54" rx="16" fill="#4b4b4f" />
-      <rect x="4" y="48" width="212" height="16" rx="8" fill="#3a3a3e" />
-      <circle cx="184" cy="34" r="9" fill="#6e6e72" stroke="#232326" strokeWidth="2" />
-      <circle cx="184" cy="34" r="4" fill="#3a3a3e" />
-
-      {/* Recess where the receiver mounts under the bumper */}
-      <rect x="62" y="42" width="92" height="26" rx="6" fill="#1a1a1c" />
-
-      {/* Receiver tube, 3/4 view — lit top face + shadowed side face give it
-          real depth, front face stays square-on like the reference photo */}
-      <polygon points="72,54 142,54 174,32 104,32" fill="#57575b" />
-      <polygon points="142,54 142,118 174,96 174,32" fill="#131315" />
-      <rect x="72" y="54" width="70" height="64" rx="5" fill="#242427" stroke="#0a0a0b" strokeWidth="2.5" />
-
-      {/* Mounting bolt */}
-      <circle cx="130" cy="62" r="5" fill="#d8d8d8" stroke="#8a8a8a" strokeWidth="1" />
-      <rect x="127.5" y="62" width="3.5" height="11" fill="#8a8a8a" />
-
-      {/* Tow hook */}
-      <path d="M 92 118 q -5 22 15 26 q 17 3 17 -15" fill="none" stroke="#1a1a1a" strokeWidth="5.5" strokeLinecap="round" />
-
-      {/* The actual 2" opening — highlighted, not just a flat black square */}
-      <rect x="88" y="70" width="38" height="34" rx="3" fill="#070708" />
-      <rect x="88" y="70" width="38" height="34" rx="3" fill="none" stroke="#ff6000" strokeWidth="2.75" strokeDasharray="5.5 3.5" />
-
-      {/* Width callout (top) — anchored to the actual opening, not the housing */}
-      <line x1="88" y1="40" x2="126" y2="40" stroke="#009d31" strokeWidth="2" />
-      <line x1="88" y1="34" x2="88" y2="70" stroke="#009d31" strokeWidth="1.5" />
-      <line x1="126" y1="34" x2="126" y2="70" stroke="#009d31" strokeWidth="1.5" />
-      <polygon points="88,40 97,35 97,45" fill="#009d31" />
-      <polygon points="126,40 117,35 117,45" fill="#009d31" />
-      <text x="107" y="32" textAnchor="middle" fontSize="15" fontWeight="800" fill="#1a1a1a">
-        2&quot;
-      </text>
-
-      {/* Height callout (left) — anchored to the actual opening, not the housing */}
-      <line x1="58" y1="70" x2="58" y2="104" stroke="#009d31" strokeWidth="2" />
-      <line x1="52" y1="70" x2="88" y2="70" stroke="#009d31" strokeWidth="1.5" />
-      <line x1="52" y1="104" x2="88" y2="104" stroke="#009d31" strokeWidth="1.5" />
-      <polygon points="58,70 53,79 63,79" fill="#009d31" />
-      <polygon points="58,104 53,95 63,95" fill="#009d31" />
-      <text x="30" y="91" textAnchor="middle" fontSize="15" fontWeight="800" fill="#1a1a1a">
-        2&quot;
-      </text>
-    </svg>
-  );
-}
-
 // Small icon badge shown above a step's heading — purely visual, gives the
 // funnel a guided-flow feel instead of a plain form. Renders nothing when a
 // step doesn't set one (the email/reveal step has its own banner instead).
@@ -503,7 +446,13 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
 
               {step.showHitchDiagram && (
                 <div className="mt-4 flex justify-center lg:mt-5">
-                  <HitchDiagram />
+                  <Image
+                    src="/images/jb-racks-hitch-receiver.jpg"
+                    alt="A 2 inch Class III hitch receiver mounted under a vehicle's rear bumper"
+                    width={569}
+                    height={422}
+                    className="h-auto w-full max-w-[280px] rounded-lg"
+                  />
                 </div>
               )}
 
