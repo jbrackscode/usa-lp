@@ -57,7 +57,7 @@ export const rackSizes: RackSize[] = [
     label: "4 Bikes",
     sublabel: "Small families",
     handle: "4-e-bike-rack",
-    price: 597,
+    price: 649,
     compareAtPrice: 670,
     imagesByColor: {
       Black: [
@@ -89,13 +89,13 @@ export const rackSizes: RackSize[] = [
     variants: { Black: 46385606951124, "Velo Turquoise": 46381230784724, "Leaf Green": 47193324028116 },
     standBundle: {
       handle: "4-bike-rack-stand-bundle",
-      price: 750,
+      price: 699,
       compareAtPrice: 870,
       variants: { Black: 48572292694228, "Velo Turquoise": 48572292726996, "Leaf Green": 48572292759764 },
     },
     fullBundle: {
       handle: "4-e-bike-rack-stand-strut-bundle",
-      price: 820,
+      price: 799,
       compareAtPrice: 1020,
       variants: { Black: 46431055544532, "Velo Turquoise": 46431055642836, "Leaf Green": 47201059045588 },
     },
@@ -106,7 +106,7 @@ export const rackSizes: RackSize[] = [
     sublabel: "Room to grow",
     badge: "Most Popular",
     handle: "5-e-bike-rack",
-    price: 617,
+    price: 649,
     compareAtPrice: 670,
     imagesByColor: {
       Black: [
@@ -138,13 +138,13 @@ export const rackSizes: RackSize[] = [
     variants: { Black: 46501061165268, "Velo Turquoise": 46501061198036, "Leaf Green": 47193331794132 },
     standBundle: {
       handle: "5-bike-rack-stand-bundle",
-      price: 750,
+      price: 699,
       compareAtPrice: 870,
       variants: { Black: 48572293152980, "Velo Turquoise": 48572293185748, "Leaf Green": 48572293218516 },
     },
     fullBundle: {
       handle: "5-e-bike-rack-stand-strut-bundle",
-      price: 820,
+      price: 799,
       compareAtPrice: 1020,
       variants: { Black: 46431089754324, "Velo Turquoise": 46431089852628, "Leaf Green": 47201059209428 },
     },
@@ -154,7 +154,7 @@ export const rackSizes: RackSize[] = [
     label: "6 Bikes",
     sublabel: "The whole crew",
     handle: "6-e-bike-rack",
-    price: 637,
+    price: 649,
     compareAtPrice: 670,
     imagesByColor: {
       Black: [
@@ -186,13 +186,13 @@ export const rackSizes: RackSize[] = [
     variants: { Black: 46215035060436, "Velo Turquoise": 46215035158740, "Leaf Green": 47193364529364 },
     standBundle: {
       handle: "6-bike-rack-stand-bundle",
-      price: 750,
+      price: 699,
       compareAtPrice: 870,
       variants: { Black: 48572293284052, "Velo Turquoise": 48572293316820, "Leaf Green": 48572293349588 },
     },
     fullBundle: {
       handle: "6-e-bike-rack-stand-strut-bundle",
-      price: 820,
+      price: 799,
       compareAtPrice: 1020,
       variants: { Black: 46431122489556, "Velo Turquoise": 46431122587860, "Leaf Green": 47201059504340 },
     },
@@ -239,9 +239,9 @@ export const addons = {
 // Real aggregate review data for the 4 Bike Rack (Okendo widget, from the
 // live product page's embedded config — not estimated).
 export const reviewStats = {
-  average: 4.7,
-  count: 144,
-  fiveStarCount: 104,
+  average: 4.6,
+  count: 149,
+  fiveStarCount: 107,
   percentRecommended: 94,
 };
 

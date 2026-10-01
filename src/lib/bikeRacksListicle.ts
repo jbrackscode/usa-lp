@@ -19,7 +19,7 @@ export const hero = {
   kicker: "4, 5 & 6 BIKE VERTICAL HITCH RACK",
   headline: "Are You Struggling to Get the Right Bike Rack?",
   sub: "A hitch rack that's rated for the job - not the rack that was cheapest to stock. JB is engineered to carry 65 lbs per wheel holder before the wobble, the scratched frame, or the strap failure ever gets the chance to happen.",
-  ctaPrimary: "Find your size — from $597",
+  ctaPrimary: "Find your size — from $649",
   ctaSecondary: "See why it's different",
   trustStrip: [
     { value: "4-Year", label: "Warranty" },
@@ -224,7 +224,7 @@ export const faqs = [
   },
   {
     question: "What's the rack actually made from?",
-    answer: "Structural steel with mechanical properties comparable to ASTM A36, finished with a durable powder coat for protection against wear, abrasion, and corrosion in everyday use.",
+    answer: "Q235B structural steel (rated to ~34 ksi yield strength, equivalent to European S235JR, and meeting or exceeding the ASTM A1011 SS Grade 33 minimum), finished with a polyester powder coat for protection against wear, abrasion, and corrosion in everyday use.",
   },
   {
     question: "Do I need any tools I don't already have?",
@@ -245,7 +245,7 @@ export const faqs = [
 export const finalCta = {
   headline: "Ready to ride?",
   body: "Free shipping, a 4-year warranty, and a rack built for exactly what you're hauling — pick your size below.",
-  cta: "Find your size — from $597",
+  cta: "Find your size — from $649",
 };
 
 export const stickyCta = {

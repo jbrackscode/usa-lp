@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCart } from "./CartContext";
 import { PaymentIcons } from "@/components/bikeracks/PaymentIcons";
 import { storeUrl } from "@/lib/config";
+import { reviewStats } from "@/lib/bikeRacks";
 
 function TrashIcon() {
   return (
@@ -147,7 +148,7 @@ export function CartView() {
           Check out
         </a>
         <div className="inline-flex items-center gap-1.5 text-sm text-brand-black/60">
-          <span className="tracking-widest text-brand-star">★★★★★</span> 4.6/5 from 20,000+ customers
+          <span className="tracking-widest text-brand-star">★★★★★</span> {reviewStats.average}/5 from 20,000+ customers
         </div>
         <PaymentIcons />
       </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type TouchEvent } from "react";
 import Image from "next/image";
-import { colors, toVariantGid, type Color, type RackSize, type Addons } from "@/lib/bikeRacks";
+import { colors, reviewStats, toVariantGid, type Color, type RackSize, type Addons } from "@/lib/bikeRacks";
 import { storeUrl } from "@/lib/config";
 import { PaymentIcons } from "./PaymentIcons";
 import { SpecsAccordion } from "./SpecsAccordion";
@@ -246,7 +246,7 @@ export function BuyBox({
       <div>
         <div className="inline-flex items-center gap-2 text-sm font-semibold text-brand-black">
           <span className="tracking-widest text-brand-star">★★★★★</span>
-          4.7/5.0 · 20,000+ customers
+          {reviewStats.average}/5.0 · 20,000+ customers
         </div>
         <h2 className="mt-2 text-3xl font-black tracking-tighter text-brand-black sm:text-4xl">The JB Vertical Bike Rack</h2>
         <p className="mt-2 text-[15.5px] leading-relaxed text-brand-black/70">
