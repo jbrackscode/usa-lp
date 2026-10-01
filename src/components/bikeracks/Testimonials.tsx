@@ -27,7 +27,7 @@ export function Testimonials() {
           ))}
         </div>
 
-        <div className="rounded-xl border border-brand-line bg-white p-7 sm:p-9">
+        {/* <div className="rounded-xl border border-brand-line bg-white p-7 sm:p-9">
           <blockquote className="text-2xl font-extrabold leading-[1.25] text-brand-black sm:text-[28px]">
             &ldquo;{videoQuote.quote}&rdquo;
           </blockquote>
@@ -39,7 +39,7 @@ export function Testimonials() {
               {videoQuote.name} <span className="text-brand-black/40">— {videoQuote.role}</span>
             </cite>
           </div>
-        </div>
+        </div> */}
       </div>
     </div>
   );

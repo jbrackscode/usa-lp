@@ -55,7 +55,7 @@ export default async function LpVerticalBikeRacksPage() {
         <KeyFeaturesGrid />
         <QualityBlock />
         <CompareTable />
-        <InfluencerQuote />
+        {/* <InfluencerQuote /> */}
         <RacksInUse />
         <ReviewsCarousel />
         <WarrantyBand />
