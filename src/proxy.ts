@@ -52,5 +52,5 @@ export function proxy(request: NextRequest) {
 // Next.js requires matcher paths to be static string literals here — add
 // each new test's sourcePath as its own entry (see docs/split-testing.md).
 export const config = {
-  matcher: ["/lp-vertical-bike-racks"],
+  matcher: ["/lp-vertical-bike-racks", "/lp-bike-racks"],
 };

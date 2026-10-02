@@ -2,8 +2,8 @@
 
 How to run an A/B/n test between different landing pages, control the
 traffic split, and read the results — without a database. The system is
-`src/proxy.ts` + `src/lib/splitTest.ts`, and it's already running one live
-test (see below).
+`src/proxy.ts` + `src/lib/splitTest.ts`, and it's already running the live
+test(s) below.
 
 ## How it works
 
@@ -44,23 +44,38 @@ These survive completely untouched, for two separate reasons:
   current pages do, but a future one might), it sees the real UTM/gclid
   values too — not just the client-side scripts.
 
-## The live test
+## The live tests
 
 ```ts
 // src/lib/splitTest.ts
 {
   id: "vertical-rack-lp",
   sourcePath: "/lp-vertical-bike-racks",
-  enabled: true,
+  enabled: false, // paused
   variants: [
     { id: "control", path: "/lp-vertical-bike-racks", weight: 1 },
     { id: "variant-1-demo", path: "/lp-demonstration", weight: 1 },
     { id: "variant-2-demo-video", path: "/lp-demonstration-videos", weight: 1 },
   ],
 },
+{
+  id: "bike-racks-headline",
+  sourcePath: "/lp-bike-racks",
+  enabled: true,
+  variants: [
+    { id: "control", path: "/lp-bike-racks", weight: 1 },
+    { id: "variant-2-nobodys-bike", path: "/lp-bike-racks-v2", weight: 1 },
+    { id: "variant-3-move-with-ease", path: "/lp-bike-racks-v3", weight: 1 },
+    { id: "variant-4-new-way", path: "/lp-bike-racks-v4", weight: 1 },
+  ],
+},
 ```
 
-Equal weights (1/1/1) — roughly an even three-way split.
+Equal weights within each test — roughly an even split across that test's
+variants. `bike-racks-headline` tests four hero headlines on otherwise
+identical pages: the control's "Are You Struggling to Get the Right Bike
+Rack?", v2's "Nobody's Bike Stays Home", v3's "Move Your Bikes with Ease",
+and v4's "The New Way to Move Bikes".
 
 ## Controlling the split
 
@@ -100,12 +115,13 @@ here needs that yet.
 
 ## Reading results in GA4
 
-Every page view of a bucketed visitor fires:
+Every page view of a bucketed visitor fires one event per enabled test
+they're bucketed into, e.g.:
 
 ```
 event: split_test_view
-  test_id: "vertical-rack-lp"
-  variant_id: "control" | "variant-1-demo" | "variant-2-demo-video"
+  test_id: "bike-racks-headline"
+  variant_id: "control" | "variant-2-nobodys-bike" | "variant-3-move-with-ease" | "variant-4-new-way"
 ```
 
 - **Quick check**: GA4 → Reports → Realtime → look for `split_test_view`

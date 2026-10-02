@@ -46,6 +46,20 @@ export const splitTests: SplitTest[] = [
       { id: "variant-2-demo-video", path: "/lp-demonstration-videos", weight: 1 },
     ],
   },
+  {
+    // /lp-bike-racks-v2/v3/v4 are otherwise-identical duplicates of
+    // /lp-bike-racks — only the hero headline differs (see each page's
+    // Hero `headline` prop) — so this isolates headline as the one variable.
+    id: "bike-racks-headline",
+    sourcePath: "/lp-bike-racks",
+    enabled: true,
+    variants: [
+      { id: "control", path: "/lp-bike-racks", weight: 1 },
+      { id: "variant-2-nobodys-bike", path: "/lp-bike-racks-v2", weight: 1 },
+      { id: "variant-3-move-with-ease", path: "/lp-bike-racks-v3", weight: 1 },
+      { id: "variant-4-new-way", path: "/lp-bike-racks-v4", weight: 1 },
+    ],
+  },
 ];
 
 /** Weighted-random pick among variants with weight > 0 (falls back to the

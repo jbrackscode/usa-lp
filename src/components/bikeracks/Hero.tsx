@@ -6,9 +6,13 @@ type HeroProps = {
   // Live 4-bike price (rackSizes[0]), same source/pattern as FinalCta —
   // falls back to the static hero.ctaPrimary copy if not provided.
   rackSizes?: RackSize[];
+  // Overrides hero.headline — used by the /lp-bike-racks-v2/v3/v4 split
+  // test variants, which are otherwise identical to /lp-bike-racks, so the
+  // rest of the page's copy doesn't need triplicating just to swap one line.
+  headline?: string;
 };
 
-export function Hero({ rackSizes }: HeroProps) {
+export function Hero({ rackSizes, headline }: HeroProps) {
   const fromPrice = rackSizes?.[0]?.price;
 
   return (
@@ -17,7 +21,7 @@ export function Hero({ rackSizes }: HeroProps) {
         <div className="order-2 lg:order-1">
           <div className="mb-3.5 text-sm font-bold text-brand-green-dark">{hero.kicker}</div>
           <h1 className="text-4xl font-extrabold tracking-tighter text-brand-black sm:text-5xl">
-            {hero.headline}
+            {headline ?? hero.headline}
           </h1>
           <p className="mt-5 max-w-[52ch] text-lg text-brand-black/70">{hero.sub}</p>
 
