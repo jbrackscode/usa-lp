@@ -75,7 +75,7 @@ export default async function LpBikeRacksPage() {
           </div>
         </section>
 
-        <FinalCta rackSizes={rackSizes} />
+        <FinalCta rackSizes={rackSizes} priceLabelStyle="flat" showCountdown={false} />
       </main>
       <Footer />
       <StickyBuyBar />

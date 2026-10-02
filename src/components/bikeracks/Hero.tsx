@@ -27,7 +27,7 @@ export function Hero({ rackSizes }: HeroProps) {
               href="#buy-box"
               className="inline-block rounded-full bg-brand-green px-8 py-4 text-base font-black uppercase tracking-wide text-white shadow-[0_3px_0_rgba(0,0,0,0.15)] hover:opacity-90"
             >
-              {fromPrice ? `Find your size — from $${fromPrice}` : hero.ctaPrimary}
+              {fromPrice ? `For Just $${fromPrice}` : hero.ctaPrimary}
             </a>
             <a href="#reasons" className="text-sm font-semibold text-brand-black underline decoration-brand-line underline-offset-4">
               {hero.ctaSecondary}

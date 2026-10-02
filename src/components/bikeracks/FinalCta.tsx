@@ -24,6 +24,14 @@ const units: { key: keyof ReturnType<typeof getTimeLeft>; label: string }[] = [
 
 type FinalCtaProps = {
   rackSizes?: RackSize[];
+  // "flat" renders "For Just $X" instead of "Find your size — from $X" —
+  // used on /lp-bike-racks since the 4/5/6-bike racks share one price this
+  // month, so "from" would wrongly imply size-based pricing.
+  priceLabelStyle?: "from" | "flat";
+  // /lp-bike-racks hides the countdown entirely (per request) while
+  // /lp-vertical-bike-racks keeps it — same real product.saleEndsAt date
+  // either way, just not always shown.
+  showCountdown?: boolean;
 };
 
 // White card (not black) so it doesn't visually merge into the black footer
@@ -31,9 +39,9 @@ type FinalCtaProps = {
 // already read the reviews, warranty, and comparison table above — so the
 // copy leads with a confident close, not another sales push. The countdown
 // to product.saleEndsAt is real (the same date driving /lp-demonstration's
-// countdown), so it stays, but as a quiet aside near the button rather than
-// an alarm-style badge up top.
-export function FinalCta({ rackSizes }: FinalCtaProps) {
+// countdown), so it stays on, but as a quiet aside near the button rather
+// than an alarm-style badge up top — where it's shown at all.
+export function FinalCta({ rackSizes, priceLabelStyle = "from", showCountdown = true }: FinalCtaProps) {
   const [display, setDisplay] = useState(() => getTimeLeft(product.saleEndsAt));
 
   useEffect(() => {
@@ -42,6 +50,11 @@ export function FinalCta({ rackSizes }: FinalCtaProps) {
   }, []);
 
   const fromPrice = rackSizes?.[0]?.price;
+  const ctaText = fromPrice
+    ? priceLabelStyle === "flat"
+      ? `For Just $${fromPrice}`
+      : `Find your size — from $${fromPrice}`
+    : finalCta.cta;
 
   return (
     <div className="mx-5 mb-10 rounded-xl border border-brand-line bg-white px-6 py-10 text-center shadow-[0_1px_3px_rgba(0,0,0,0.06)] sm:mx-10 sm:px-10 sm:py-12">
@@ -54,31 +67,33 @@ export function FinalCta({ rackSizes }: FinalCtaProps) {
         href="#buy-box"
         className="mt-7 inline-block rounded-full bg-brand-green px-8 py-4 text-base font-black uppercase tracking-wide text-white shadow-[0_3px_0_rgba(0,0,0,0.15)] hover:opacity-90"
       >
-        {fromPrice ? `Find your size — from $${fromPrice}` : finalCta.cta}
+        {ctaText}
       </a>
 
-      <div className="mt-5 flex flex-col items-center gap-2">
-        <span className="text-xs font-medium text-brand-black/40">
-          {fromPrice ? `Current $${fromPrice} pricing holds for:` : "Current pricing holds for:"}
-        </span>
-        <div className="flex items-start gap-1.5" suppressHydrationWarning>
-          {units.map(({ key, label }, i) => (
-            <div key={key} className="flex items-start gap-1">
-              <div className="flex flex-col items-center">
-                <span className="min-w-[2em] rounded-md bg-brand-cream px-2 py-1 text-center text-sm font-bold tabular-nums text-brand-black/70">
-                  {String(display[key]).padStart(2, "0")}
-                </span>
-                <span className="mt-0.5 text-[8px] font-bold uppercase tracking-wide text-brand-black/30">{label}</span>
+      {showCountdown && (
+        <div className="mt-5 flex flex-col items-center gap-2">
+          <span className="text-xs font-medium text-brand-black/40">
+            {fromPrice ? `Current $${fromPrice} pricing holds for:` : "Current pricing holds for:"}
+          </span>
+          <div className="flex items-start gap-1.5" suppressHydrationWarning>
+            {units.map(({ key, label }, i) => (
+              <div key={key} className="flex items-start gap-1">
+                <div className="flex flex-col items-center">
+                  <span className="min-w-[2em] rounded-md bg-brand-cream px-2 py-1 text-center text-sm font-bold tabular-nums text-brand-black/70">
+                    {String(display[key]).padStart(2, "0")}
+                  </span>
+                  <span className="mt-0.5 text-[8px] font-bold uppercase tracking-wide text-brand-black/30">{label}</span>
+                </div>
+                {i < units.length - 1 && (
+                  <span className="-mt-2.5 self-center text-sm font-bold text-brand-black/20" aria-hidden>
+                    :
+                  </span>
+                )}
               </div>
-              {i < units.length - 1 && (
-                <span className="-mt-2.5 self-center text-sm font-bold text-brand-black/20" aria-hidden>
-                  :
-                </span>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

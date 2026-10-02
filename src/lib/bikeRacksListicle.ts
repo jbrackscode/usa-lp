@@ -19,7 +19,7 @@ export const hero = {
   kicker: "4, 5 & 6 BIKE VERTICAL HITCH RACK",
   headline: "Are You Struggling to Get the Right Bike Rack?",
   sub: "A hitch rack that's rated for the job - not the rack that was cheapest to stock. JB is engineered to carry 65 lbs per wheel holder before the wobble, the scratched frame, or the strap failure ever gets the chance to happen.",
-  ctaPrimary: "Find your size — from $649",
+  ctaPrimary: "For Just $649",
   ctaSecondary: "See why it's different",
   trustStrip: [
     { value: "4-Year", label: "Warranty" },
@@ -245,7 +245,7 @@ export const faqs = [
 export const finalCta = {
   headline: "Ready to ride?",
   body: "Free shipping, a 4-year warranty, and a rack built for exactly what you're hauling — pick your size below.",
-  cta: "Find your size — from $649",
+  cta: "For Just $649",
 };
 
 export const stickyCta = {
