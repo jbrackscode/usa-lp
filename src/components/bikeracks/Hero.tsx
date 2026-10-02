@@ -1,5 +1,6 @@
 import { hero } from "@/lib/bikeRacksListicle";
 import { HeroGallery } from "./HeroGallery";
+import { HeroExposureTracking } from "./HeroExposureTracking";
 import type { RackSize } from "@/lib/bikeRacks";
 
 type HeroProps = {
@@ -17,6 +18,7 @@ export function Hero({ rackSizes, headline }: HeroProps) {
 
   return (
     <div className="border-b border-brand-line py-6 sm:py-12">
+      <HeroExposureTracking />
       <div className="mx-auto grid max-w-[1180px] grid-cols-1 items-center gap-8 px-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
         <div className="order-2 lg:order-1">
           <div className="mb-3.5 text-sm font-bold text-brand-green-dark">{hero.kicker}</div>
