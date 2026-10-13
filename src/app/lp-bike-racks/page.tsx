@@ -5,6 +5,7 @@ import { FAQ } from "@/components/lp/FAQ";
 import { Ticker } from "@/components/bikeracks/Ticker";
 import { OfferBanner } from "@/components/bikeracks/OfferBanner";
 import { Hero } from "@/components/bikeracks/Hero";
+import { PostHogExperimentRedirect } from "@/components/bikeracks/PostHogExperimentRedirect";
 import { ProblemBand } from "@/components/bikeracks/ProblemBand";
 import { ReasonsList } from "@/components/bikeracks/ReasonsList";
 import { TestedGrid } from "@/components/bikeracks/TestedGrid";
@@ -35,6 +36,7 @@ export default async function LpBikeRacksPage() {
 
   return (
     <>
+      <PostHogExperimentRedirect />
       <OfferBanner />
       <Header />
       <main className="bg-white pb-16 sm:pb-0">

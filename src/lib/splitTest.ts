@@ -50,9 +50,14 @@ export const splitTests: SplitTest[] = [
     // /lp-bike-racks-v2/v3/v4 are otherwise-identical duplicates of
     // /lp-bike-racks — only the hero headline differs (see each page's
     // Hero `headline` prop) — so this isolates headline as the one variable.
+    // Disabled: bucketing/redirection for this test now happens client-side
+    // via the PostHog Experiment "lp-bike-racks-ab-test" instead (see
+    // src/components/bikeracks/PostHogExperimentRedirect.tsx, rendered on
+    // /lp-bike-racks). Left here, paused, rather than deleted in case this
+    // server-side mechanism is ever preferred again.
     id: "bike-racks-headline",
     sourcePath: "/lp-bike-racks",
-    enabled: true,
+    enabled: false,
     variants: [
       { id: "control", path: "/lp-bike-racks", weight: 1 },
       { id: "variant-2-nobodys-bike", path: "/lp-bike-racks-v2", weight: 1 },

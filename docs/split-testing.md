@@ -61,7 +61,7 @@ These survive completely untouched, for two separate reasons:
 {
   id: "bike-racks-headline",
   sourcePath: "/lp-bike-racks",
-  enabled: true,
+  enabled: false, // paused — see note below
   variants: [
     { id: "control", path: "/lp-bike-racks", weight: 1 },
     { id: "variant-2-nobodys-bike", path: "/lp-bike-racks-v2", weight: 1 },
@@ -76,6 +76,33 @@ variants. `bike-racks-headline` tests four hero headlines on otherwise
 identical pages: the control's "Are You Struggling to Get the Right Bike
 Rack?", v2's "Nobody's Bike Stays Home", v3's "Move Your Bikes with Ease",
 and v4's "The New Way to Move Bikes".
+
+**`bike-racks-headline` is currently paused.** The same four pages
+(`/lp-bike-racks` + `-v2`/`-v3`/`-v4`) are now bucketed by a **PostHog
+Experiment** instead — see the next section — rather than this server-side
+proxy mechanism. The pages and the `splitTest.ts` entry are left in place
+(not deleted) in case the proxy-based approach is ever preferred again.
+
+## PostHog Experiment redirect (bike-racks-headline's current mechanism)
+
+`src/components/bikeracks/PostHogExperimentRedirect.tsx`, rendered only on
+`/lp-bike-racks`'s `page.tsx`, calls `posthog.getFeatureFlag("lp-bike-racks-ab-test")`
+once PostHog's flags have loaded and client-side redirects
+(`window.location.replace`) to `/lp-bike-racks-v2`/`-v3`/`-v4` for those
+flag values; `'control'` (or anything else) does nothing and the visitor
+stays put. PostHog owns bucketing, persistence, and exposure reporting for
+this version of the test (the `$feature_flag_called` event fires
+automatically from `getFeatureFlag()`) — nothing in `splitTest.ts` or
+`proxy.ts` is involved. The experiment itself (traffic allocation, goal
+metric, variants) is configured in the PostHog UI under Experiments, not
+in this repo. Like the rest of the PostHog integration, this only runs
+when `window.location.hostname === "go.jbracks.com"` — see
+`src/instrumentation-client.ts`.
+
+Trade-off worth knowing: this redirect is client-side, so a visitor
+bucketed into v2/v3/v4 briefly sees the control page's HTML before the
+redirect fires, unlike the proxy-based mechanism above (which rewrites
+server-side, before any HTML is sent, with no flash).
 
 ## Controlling the split
 
