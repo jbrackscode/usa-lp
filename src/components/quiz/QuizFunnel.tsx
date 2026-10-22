@@ -24,6 +24,9 @@ type QuizFunnelProps = {
   // Deal step recommends actual real SKUs/prices, never invented ones.
   rackSizes: RackSize[];
   addons: Addons;
+  // Step id from a ?step= deep link (see QuizButton) — the quiz starts there
+  // instead, with the opening step kept in history so Back still works.
+  deepLinkStep?: number | null;
 };
 
 declare global {
@@ -137,9 +140,11 @@ function TireDiagram() {
   );
 }
 
-export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps) {
-  const [stepId, setStepId] = useState(START_STEP);
-  const [history, setHistory] = useState<number[]>([START_STEP]);
+export function QuizFunnel({ open, onClose, rackSizes, addons, deepLinkStep }: QuizFunnelProps) {
+  const [stepId, setStepId] = useState(deepLinkStep ?? START_STEP);
+  const [history, setHistory] = useState<number[]>(
+    deepLinkStep == null || deepLinkStep === START_STEP ? [START_STEP] : [START_STEP, deepLinkStep]
+  );
   // Every answer, keyed by step id — this is exactly what gets POSTed to
   // /api/quiz-submit alongside the email/name/text fields.
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -167,7 +172,6 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
   const [wantsStand, setWantsStand] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
-  const [reasonText, setReasonText] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   // Guards the confetti burst to once per playthrough — reset() clears it
@@ -234,7 +238,6 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     setNeedsHitchAfterBikes(false);
     setName("");
     setEmail("");
-    setReasonText("");
     setSubmitted(false);
     confettiFired.current = false;
   }
@@ -353,14 +356,6 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
     });
     setSubmitting(false);
     setSubmitted(true);
-  }
-
-  async function handleTextSubmit(next: number) {
-    setSubmitting(true);
-    trackGA4("quiz_complete", { quiz_path: history.join(">"), quiz_outcome: "open_text" });
-    await submitToApi({ reasonText });
-    setSubmitting(false);
-    goTo(next);
   }
 
   // How far through a typical path we are, out of the longest realistic
@@ -838,28 +833,6 @@ export function QuizFunnel({ open, onClose, rackSizes, addons }: QuizFunnelProps
                 </div>
               </div>
             ))}
-
-          {step.type === "text" && (
-            <div>
-              <StepIcon icon={step.icon} />
-              <h2 className="pr-8 text-xl font-extrabold text-brand-black sm:text-2xl lg:text-3xl">{step.heading}</h2>
-              <textarea
-                value={reasonText}
-                onChange={(e) => setReasonText(e.target.value)}
-                placeholder={step.placeholder}
-                rows={4}
-                className="mt-5 w-full resize-none rounded-2xl border border-brand-line px-4 py-3 text-[15px] text-brand-black outline-none focus:border-brand-black lg:mt-6 lg:px-6 lg:py-4 lg:text-lg"
-              />
-              <button
-                type="button"
-                onClick={() => handleTextSubmit(step.next)}
-                disabled={submitting || !reasonText.trim()}
-                className="mt-4 w-full rounded-full bg-[#22c55e] px-5 py-3.5 text-[15px] font-black uppercase tracking-wide text-white transition-opacity hover:opacity-90 disabled:opacity-60 lg:mt-5 lg:py-4 lg:text-lg"
-              >
-                {submitting ? "Sending…" : step.cta}
-              </button>
-            </div>
-          )}
 
           {step.type === "end" && (
             <div className="pr-8">

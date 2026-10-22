@@ -28,8 +28,6 @@ import {
   AlertTriangle,
   ChevronsDown,
   Home,
-  MessageSquare,
-  CheckCircle2,
   Compass,
   ShieldCheck,
   BadgeCheck,
@@ -155,16 +153,6 @@ export type EmailStep = {
   declineLabel: string;
 };
 
-export type TextStep = {
-  type: "text";
-  id: number;
-  icon?: LucideIcon;
-  heading: string;
-  placeholder: string;
-  cta: string;
-  next: number;
-};
-
 export type EndStep = {
   type: "end";
   id: number;
@@ -173,7 +161,7 @@ export type EndStep = {
   body: string[];
 };
 
-export type QuizStep = ChoiceStep | InventoryStep | EmailStep | TextStep | EndStep;
+export type QuizStep = ChoiceStep | InventoryStep | EmailStep | EndStep;
 
 export const START_STEP = 0;
 
@@ -212,8 +200,7 @@ export const quizSteps: Record<number, QuizStep> = {
       { label: "Vehicle Fit Confirmation", next: 2 },
       { label: "Bike Compatibility", next: 3 },
       { label: "Comparing Price/Options", next: 4 },
-      { label: "Buying Later (Not Urgent)", next: 10 },
-      { label: "Other", next: 7, variant: "other" },
+      { label: "Other", next: 10, variant: "other" },
     ],
   },
   2: {
@@ -399,22 +386,6 @@ export const quizSteps: Record<number, QuizStep> = {
     body: "Sign up to receive a surprise discount (on top of current discount)",
     cta: "REVEAL THE OFFER",
     declineLabel: "No I'm still not ready",
-  },
-  7: {
-    type: "text",
-    id: 7,
-    icon: MessageSquare,
-    heading: "Tell us in your own words - what's the one thing stopping you?",
-    placeholder: "Tell us...",
-    cta: "SUBMIT REASON",
-    next: 8,
-  },
-  8: {
-    type: "end",
-    id: 8,
-    icon: CheckCircle2,
-    heading: "Thanks for answering our questions. We hope you're more clear on what's needed.",
-    body: ["If you need more help reach out to reed@jbracks.com and he can help you with your pre-purchase questions."],
   },
   9: {
     type: "end",

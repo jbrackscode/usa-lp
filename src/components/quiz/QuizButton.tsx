@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { QuizFunnel } from "./QuizFunnel";
+import { quizSteps } from "@/lib/quizFunnel";
 import type { RackSize, Addons } from "@/lib/bikeRacks";
 
 type QuizButtonProps = {
@@ -21,6 +22,20 @@ type QuizButtonProps = {
 // open state up to a shared parent.
 export function QuizButton({ label, className = "", rackSizes, addons, autoOpen = false }: QuizButtonProps) {
   const [open, setOpen] = useState(autoOpen);
+  // Deep link: on the auto-opening instance, ?step=<id> (e.g. ?step=1)
+  // starts the quiz on that step instead of the opening question. Read via
+  // useSyncExternalStore so the server render (no URL) stays at step 0 and
+  // the client swaps in the linked step right after hydration.
+  const search = useSyncExternalStore(
+    () => () => {},
+    () => window.location.search,
+    () => ""
+  );
+  const stepParam = new URLSearchParams(search).get("step");
+  const deepLinkStep =
+    autoOpen && stepParam !== null && Number.isInteger(Number(stepParam)) && quizSteps[Number(stepParam)]
+      ? Number(stepParam)
+      : null;
 
   return (
     <>
@@ -31,7 +46,15 @@ export function QuizButton({ label, className = "", rackSizes, addons, autoOpen 
       >
         {label}
       </button>
-      <QuizFunnel open={open} onClose={() => setOpen(false)} rackSizes={rackSizes} addons={addons} />
+      <QuizFunnel
+        // Remounts with the linked step once the URL is known on the client.
+        key={deepLinkStep ?? "start"}
+        open={open}
+        onClose={() => setOpen(false)}
+        rackSizes={rackSizes}
+        addons={addons}
+        deepLinkStep={deepLinkStep}
+      />
     </>
   );
 }
