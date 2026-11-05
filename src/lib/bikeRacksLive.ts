@@ -79,7 +79,7 @@ export async function getLiveBikeRackData(): Promise<LiveBikeRackData> {
   // everything else in this file. Their variant now resolves fine via the
   // Storefront API, but that resolves to the product's regular standalone
   // price ($180 / $150) — not the discounted price Essential Upsells offers
-  // when bundled with the rack ($50 / $100), which is a bundle-conditional
+  // when bundled with the rack ($150 / $100), which is a bundle-conditional
   // discount the Storefront API has no way to see (it lives in Essential
   // Upsells' own config / a Shopify automatic discount, not on the variant
   // itself). Live-merging here would silently overwrite the real bundle

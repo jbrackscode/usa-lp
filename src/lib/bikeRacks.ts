@@ -214,7 +214,7 @@ export const addons = {
   garageStand: {
     name: "Garage Stand",
     note: "Stores your rack off the car when it's not in use",
-    price: 50,
+    price: 150,
     compareAtPrice: 180,
     variantId: 44696448663764,
     image: `${CDN}/shed-stand-5_fbc742db-77dd-4964-bd34-aaae51055bb2.webp?v=1773812428`,
