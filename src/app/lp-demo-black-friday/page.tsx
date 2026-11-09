@@ -66,7 +66,11 @@ export default async function LpDemoBlackFridayPage() {
       // the /lp-demonstration pages, so it's swapped here rather than there.
       body={row.body.replaceAll(" — ", " - ")}
       image={row.image}
-      video={row.video}
+      // Light 640x480 (4:3, this page's crop) encodes of the same clips plus
+      // a first-frame poster each, in /videos/bf — ~1 MB total vs ~11.6 MB
+      // for the 1080p originals the other pages use.
+      video={row.video.replace("/videos/", "/videos/bf/")}
+      poster={row.video.replace("/videos/", "/videos/bf/").replace(/\.mp4$/, ".webp")}
       quote={reasonQuotes[i]}
     />
   ));

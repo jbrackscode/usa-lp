@@ -12,12 +12,19 @@ import { reviewPhotos } from "@/lib/reviewPhotos";
 //
 // Native lazy loading only reacts to vertical distance, so tiles sliding in
 // sideways were still mid-download and showed up blank. Instead nothing is
-// mounted until the section is within ~a screen of the viewport, then every
-// photo loads eagerly so the strip is full by the time it's seen — without
-// pulling 40+ images during the initial page load.
+// mounted until the section is within ~a screen of the viewport, then
+// photos mount in order, in batches that stay ahead of the scroll: the
+// strip moves about one tile every ~4.3s at every breakpoint, so a first
+// batch of 12 (≈8 tiles past a desktop viewport) plus 2 more every 4s
+// keeps every tile loaded before it slides in — without pulling all 42 at
+// once, most of which a visitor never scrolls far enough to see.
+const INITIAL_BATCH = 12;
+const BATCH_SIZE = 2;
+const BATCH_INTERVAL_MS = 4000;
+
 export function InUseMarquee() {
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [nearViewport, setNearViewport] = useState(false);
+  const [mountedCount, setMountedCount] = useState(0);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -25,7 +32,7 @@ export function InUseMarquee() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setNearViewport(true);
+          setMountedCount(INITIAL_BATCH);
           observer.disconnect();
         }
       },
@@ -34,6 +41,12 @@ export function InUseMarquee() {
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (mountedCount === 0 || mountedCount >= reviewPhotos.length) return;
+    const id = setTimeout(() => setMountedCount((n) => Math.min(reviewPhotos.length, n + BATCH_SIZE)), BATCH_INTERVAL_MS);
+    return () => clearTimeout(id);
+  }, [mountedCount]);
 
   return (
     <div ref={sectionRef} id="racks-in-use" className="border-t border-brand-line py-12 sm:py-14">
@@ -46,29 +59,32 @@ export function InUseMarquee() {
 
       <div className="group overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
         <div className="flex w-max animate-[bikeracks-ticker_180s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:animate-none">
-          <PhotoSet load={nearViewport} />
-          <PhotoSet load={nearViewport} aria-hidden />
+          <PhotoSet mountedCount={mountedCount} />
+          <PhotoSet mountedCount={mountedCount} aria-hidden />
         </div>
       </div>
     </div>
   );
 }
 
-function PhotoSet({ load, "aria-hidden": ariaHidden }: { load: boolean; "aria-hidden"?: boolean }) {
+function PhotoSet({ mountedCount, "aria-hidden": ariaHidden }: { mountedCount: number; "aria-hidden"?: boolean }) {
   return (
     <div className="flex shrink-0 gap-3 pr-3" aria-hidden={ariaHidden}>
-      {reviewPhotos.map((photo) => (
+      {reviewPhotos.map((photo, i) => (
         <div
           key={photo.src}
           className="relative h-[240px] w-[180px] shrink-0 overflow-hidden rounded-xl bg-brand-cream sm:h-[300px] sm:w-[225px] lg:h-[440px] lg:w-[330px]"
         >
-          {load && (
+          {i < mountedCount && (
             <Image
               src={photo.src}
               alt={ariaHidden ? "" : photo.alt}
               fill
               loading="eager"
-              sizes="(min-width: 1024px) 330px, (min-width: 640px) 225px, 180px"
+              // Phones ask for less than the 180px tile so a 3x screen gets
+              // the 384w file (~2x density, plenty for a moving strip)
+              // instead of 640w at roughly 3x the bytes.
+              sizes="(min-width: 1024px) 330px, (min-width: 640px) 225px, 120px"
               className="object-cover"
             />
           )}
