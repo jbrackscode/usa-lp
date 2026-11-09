@@ -14,7 +14,7 @@ export function ClosingCTA({ price = product.price }: ClosingCTAProps) {
         <span className="text-xl tracking-[2px] text-brand-star" aria-hidden>
           ★★★★★
         </span>
-        <span className="text-lg font-extrabold text-brand-black">4.7/5 — Trusted by 20,000+ Customers</span>
+        <span className="text-lg font-extrabold text-brand-black">4.7/5 - Trusted by 20,000+ Customers</span>
       </div>
       <ClaimRackButton label={`Claim My Rack - $${price}`} full />
       <p className="mt-4 text-sm text-brand-black/70">4-year warranty · Free shipping</p>

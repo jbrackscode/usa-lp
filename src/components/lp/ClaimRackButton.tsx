@@ -40,7 +40,7 @@ export function ClaimRackButton({ label, className = "", full = false }: ClaimRa
       type="button"
       onClick={handleClick}
       disabled={loading}
-      className={`${full ? "block w-full" : "inline-block"} rounded-full bg-brand-green px-8 py-4 text-center text-[19px] font-black uppercase tracking-wide text-white shadow-[0_3px_0_rgba(0,0,0,0.15)] transition-opacity hover:opacity-90 disabled:opacity-70 ${className}`}
+      className={`${full ? "block w-full" : "inline-block"} rounded-full bg-brand-green px-6 py-4 text-center text-[17px] font-black sm:px-8 sm:text-[19px] uppercase tracking-wide text-white shadow-[0_3px_0_rgba(0,0,0,0.15)] transition-opacity hover:opacity-90 disabled:opacity-70 ${className}`}
     >
       {loading ? "Loading checkout…" : error ? "Redirecting to store…" : label}
     </button>

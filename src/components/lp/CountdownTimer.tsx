@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useNow } from "@/lib/useNow";
 
 type CountdownTimerProps = {
   target: string;
@@ -10,8 +10,10 @@ type CountdownTimerProps = {
   compact?: boolean;
 };
 
-function getTimeLeft(target: string) {
-  const diff = Math.max(0, new Date(target).getTime() - Date.now());
+// nowMs is null on the server/hydration pass (see useNow) — renders zeros
+// for that one frame so server and client HTML match.
+function getTimeLeft(target: string, nowMs: number | null) {
+  const diff = nowMs === null ? 0 : Math.max(0, new Date(target).getTime() - nowMs);
   return {
     days: Math.floor(diff / (1000 * 60 * 60 * 24)),
     hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
@@ -28,16 +30,11 @@ const units: { key: keyof ReturnType<typeof getTimeLeft>; label: string }[] = [
 ];
 
 export function CountdownTimer({ target, className = "", compact = false }: CountdownTimerProps) {
-  const [display, setDisplay] = useState(() => getTimeLeft(target));
-
-  useEffect(() => {
-    const id = setInterval(() => setDisplay(getTimeLeft(target)), 1000);
-    return () => clearInterval(id);
-  }, [target]);
+  const display = getTimeLeft(target, useNow());
 
   if (compact) {
     return (
-      <div className={`flex items-baseline gap-1 text-[11.5px] font-bold tabular-nums text-white/85 sm:text-[13px] ${className}`} suppressHydrationWarning>
+      <div className={`flex items-baseline gap-1 text-[11.5px] font-bold tabular-nums text-white/85 sm:text-[13px] ${className}`}>
         {units.map(({ key, label }, i) => (
           <span key={key}>
             {String(display[key]).padStart(2, "0")}
@@ -50,7 +47,7 @@ export function CountdownTimer({ target, className = "", compact = false }: Coun
   }
 
   return (
-    <div className={`flex items-start gap-1.5 ${className}`} suppressHydrationWarning>
+    <div className={`flex items-start gap-1.5 ${className}`}>
       {units.map(({ key, label }, i) => (
         <div key={key} className="flex items-start gap-1.5">
           <div className="flex flex-col items-center">

@@ -3,48 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { productReviews } from "@/lib/verticalRackReviews";
 import { reviewStats } from "@/lib/bikeRacks";
+import { findHighlight } from "@/lib/reviewHighlight";
 
-// Words that flag a sentence as worth calling out — not what gets
-// highlighted itself. We highlight the whole sentence/clause they appear
-// in, so the reader sees a complete thought rather than one bare word.
-const TRIGGER_WORDS = [
-  "recommend",
-  "quality",
-  "sturdy",
-  "solid",
-  "excellent",
-  "impressed",
-  "worth",
-  "perfect",
-  "amazing",
-  "fantastic",
-  "happy",
-  "love",
-  "great",
-  "easy",
-  "value",
-  "smooth",
-  "reliable",
-  "surprised",
-];
-const triggerRegex = new RegExp(`\\b(${TRIGGER_WORDS.join("|")})\\b`, "i");
-
-// Splits on sentence-ending punctuation while keeping the punctuation
-// attached to the sentence it closes.
-function splitIntoSentences(body: string) {
-  const matches = body.match(/[^.!?]+[.!?]*/g);
-  return matches ? matches.map((s) => s.trim()).filter(Boolean) : [body];
-}
-
-function highlightBody(body: string) {
-  const sentences = splitIntoSentences(body);
-
-  // Pick the first sentence that (a) mentions a positive trigger word and
-  // (b) reads as a full clause rather than a stray fragment.
-  const target = sentences.find((s) => {
-    const words = s.split(/\s+/).length;
-    return words >= 5 && words <= 32 && triggerRegex.test(s);
-  });
+function highlightBody(body: string, override?: string) {
+  const target = override ?? findHighlight(body);
 
   if (!target) return body;
 
@@ -63,7 +25,10 @@ function highlightBody(body: string) {
   );
 }
 
-function ReviewCard({ review }: { review: (typeof productReviews)[number] }) {
+// Exported for ReviewsColumn on /lp-demo-black-friday — same card and
+// highlight treatment, just stacked in a single column. `highlight` picks
+// the exact passage to mark instead of the automatic trigger-word pick.
+export function ReviewCard({ review, highlight }: { review: (typeof productReviews)[number]; highlight?: string }) {
   return (
     <div className="flex flex-col rounded-lg border border-brand-line bg-white p-5 lg:p-6">
       <div className="mb-2 tracking-[2px] text-brand-star" aria-hidden>
@@ -72,10 +37,10 @@ function ReviewCard({ review }: { review: (typeof productReviews)[number] }) {
       </div>
       {review.title && <div className="mb-1.5 text-sm font-bold tracking-tight text-brand-black lg:text-base">{review.title}</div>}
       <p className="flex-1 text-[13.5px] leading-relaxed tracking-tight text-brand-black/75 lg:text-base lg:leading-[1.7]">
-        &ldquo;{highlightBody(review.body)}&rdquo;
+        &ldquo;{highlightBody(review.body, highlight)}&rdquo;
       </p>
       <div className="mt-3.5 text-[12.5px] font-bold tracking-tight text-brand-black/50 lg:text-sm">
-        {review.author} — Verified Buyer
+        {review.author} - Verified Buyer
         {review.variant && <span className="font-normal text-brand-black/35"> · {review.variant}</span>}
       </div>
     </div>

@@ -17,6 +17,12 @@ export const product = {
   productUrl: `${storeUrl}/products/4-e-bike-rack`,
   variantId: process.env.NEXT_PUBLIC_SHOPIFY_VARIANT_ID ?? "",
   saleEndsAt: process.env.NEXT_PUBLIC_SALE_ENDS_AT ?? "2026-09-30T00:00:00-07:00",
+  // Black Friday window for /lp-demo-black-friday only — separate from
+  // saleEndsAt so that page can run to its own deadline. The sale started
+  // Oct 22; the end defaults to the end of Cyber Monday (Pacific). Both
+  // drive the countdown and the sale-progress bar (SaleProgress).
+  blackFridayStartsAt: process.env.NEXT_PUBLIC_BLACK_FRIDAY_STARTS_AT ?? "2026-10-22T00:00:00-07:00",
+  blackFridayEndsAt: process.env.NEXT_PUBLIC_BLACK_FRIDAY_ENDS_AT ?? "2026-11-30T23:59:59-08:00",
 };
 
 // Each row also carries a `video` — the best contextual match from
