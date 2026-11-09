@@ -5,9 +5,11 @@ type ComparisonTableProps = {
   // Live 4 Bike Rack price, same source /lp-vertical-bike-racks uses —
   // falls back to the static config price if the caller doesn't have it.
   price?: number;
+  // Passed through to ClaimRackButton — links there instead of checkout.
+  ctaHref?: string;
 };
 
-export function ComparisonTable({ price = product.price }: ComparisonTableProps) {
+export function ComparisonTable({ price = product.price, ctaHref }: ComparisonTableProps) {
   return (
     <div className="mx-auto max-w-[1100px] px-5 pb-[39px] pt-[30px] text-brand-black sm:pb-[52px] sm:pt-10">
       <h2 className="mb-6 text-center text-3xl font-extrabold uppercase tracking-tighter leading-[1.14] sm:text-5xl">
@@ -74,7 +76,7 @@ export function ComparisonTable({ price = product.price }: ComparisonTableProps)
       </div>
 
       <div className="mt-7 flex justify-center">
-        <ClaimRackButton label={`Claim My Rack - $${price}`} />
+        <ClaimRackButton label={`Claim My Rack - $${price}`} href={ctaHref} />
       </div>
       <p className="mt-3 text-center text-sm text-brand-black/70">4-year warranty · Free shipping</p>
     </div>

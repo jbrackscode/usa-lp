@@ -12,7 +12,7 @@ import { ArticleReason } from "@/components/blackfriday/ArticleReason";
 import { EditorsNote } from "@/components/blackfriday/EditorsNote";
 import { BlackFridayOffer } from "@/components/blackfriday/BlackFridayOffer";
 import { SaleChips } from "@/components/blackfriday/SaleChips";
-import { featureRows } from "@/lib/config";
+import { featureRows, product } from "@/lib/config";
 import { getLiveBikeRackData } from "@/lib/bikeRacksLive";
 import { getBlackFridayOffer } from "@/lib/blackFriday";
 
@@ -87,7 +87,7 @@ export default async function LpDemoBlackFridayPage() {
         {reasons.slice(2)}
 
         <div className="mt-14">
-          <ComparisonTable price={offer.price} />
+          <ComparisonTable price={offer.price} ctaHref={product.productUrl} />
         </div>
 
         <BlackFridayOffer offer={offer} />
@@ -105,7 +105,9 @@ export default async function LpDemoBlackFridayPage() {
           </div>
         </section>
 
-        <ClosingCTA price={offer.price} />
+        {/* Every "Claim My Rack" on this page goes to the 4-bike rack's
+            product page on the store rather than straight to checkout. */}
+        <ClosingCTA price={offer.price} ctaHref={product.productUrl} />
       </main>
       <Footer />
     </>

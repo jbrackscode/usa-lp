@@ -60,9 +60,9 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
           ))}
         </ul>
 
-        <ClaimRackButton label={`Claim My Rack - $${offer.price}`} full className="mt-6" />
-        {/* The button checks out the 4-bike rack (the configured variant), so
-            the other sizes in the same offer get their own direct links. */}
+        <ClaimRackButton label={`Claim My Rack - $${offer.price}`} full className="mt-6" href={product.productUrl} />
+        {/* The button goes to the 4-bike rack's product page, so the other
+            sizes in the same offer get their own direct links. */}
         <p className="mt-3 text-[13px] text-[#666]">
           Need more room? {offer.allSamePrice ? `Same $${offer.price} price on the` : "Also on sale: the"}{" "}
           <a href={`${storeUrl}/products/5-e-bike-rack`} className="font-bold text-brand-black underline underline-offset-2">
