@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/lp/Header";
 import { ComparisonTable } from "@/components/lp/ComparisonTable";
 import { InUseMarquee } from "@/components/bikeracks/InUseMarquee";
 import { ReviewsColumn } from "@/components/bikeracks/ReviewsColumn";
@@ -7,6 +6,7 @@ import { FAQ } from "@/components/lp/FAQ";
 import { ClosingCTA } from "@/components/lp/ClosingCTA";
 import { Footer } from "@/components/lp/Footer";
 import { BlackFridayBar } from "@/components/blackfriday/BlackFridayBar";
+import { StoreNavHeader } from "@/components/blackfriday/StoreNavHeader";
 import { ArticleHeader } from "@/components/blackfriday/ArticleHeader";
 import { ArticleReason } from "@/components/blackfriday/ArticleReason";
 import { EditorsNote } from "@/components/blackfriday/EditorsNote";
@@ -78,7 +78,7 @@ export default async function LpDemoBlackFridayPage() {
   return (
     <>
       <BlackFridayBar offer={offer} />
-      <Header />
+      <StoreNavHeader />
       <main className="bg-white">
         <ArticleHeader updated={updated} />
 
