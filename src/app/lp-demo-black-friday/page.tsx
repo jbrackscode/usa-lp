@@ -14,6 +14,7 @@ import { SaleChips } from "@/components/blackfriday/SaleChips";
 import { featureRows, product } from "@/lib/config";
 import { getLiveBikeRackData } from "@/lib/bikeRacksLive";
 import { getBlackFridayOffer } from "@/lib/blackFriday";
+import { getVisibleReviewPhotos } from "@/lib/okendo";
 
 // Black Friday advertorial built from /lp-demonstration-videos' content.
 // Reads as an article first (sentence-case headline, summary, intro, five
@@ -46,7 +47,9 @@ const reasonQuotes = [
 ];
 
 export default async function LpDemoBlackFridayPage() {
-  const { rackSizes } = await getLiveBikeRackData();
+  // Customer photos are checked against Okendo's public feed so any photo
+  // hidden in Okendo never reaches the "racks in use" strip.
+  const [{ rackSizes }, photos] = await Promise.all([getLiveBikeRackData(), getVisibleReviewPhotos()]);
   const offer = getBlackFridayOffer(rackSizes);
 
   const reasons = featureRows.map((row, i) => (
@@ -85,7 +88,7 @@ export default async function LpDemoBlackFridayPage() {
 
         <BlackFridayOffer offer={offer} />
 
-        <InUseMarquee />
+        <InUseMarquee photos={photos} />
         <ReviewsColumn />
         <SaleChips offer={offer} />
 

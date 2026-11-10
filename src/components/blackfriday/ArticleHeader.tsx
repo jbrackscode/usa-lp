@@ -9,10 +9,10 @@ export function ArticleHeader() {
 
       <h1 className="text-[30px] font-black uppercase leading-[1.12] tracking-tight text-nr-ink sm:text-[44px] lg:text-[50px]">
         Tired of wrestling heavy bikes onto your rack? 5 reasons 20,000+ riders{" "}
-        <span className="bg-[linear-gradient(transparent_58%,var(--color-brand-yellow)_58%)] px-0.5">swear by vertical</span>
+        <span className="bg-[linear-gradient(transparent_58%,var(--color-brand-orange)_58%)] px-0.5">swear by vertical</span>
       </h1>
 
-      <div className="mt-7 rounded-r-md border-l-4 border-brand-yellow bg-nr-bg px-[18px] py-[14px] text-base leading-[1.7] text-nr-ink-mid">
+      <div className="mt-7 rounded-r-md border-l-4 border-brand-orange bg-nr-bg px-[18px] py-[14px] text-base leading-[1.7] text-nr-ink-mid">
         <strong className="text-nr-ink">The short version: </strong>
         Vertical hitch racks carry bikes upright instead of side by side on a tray - so they load faster, fit more bikes
         in less space, and keep bikes from knocking into each other. Here&apos;s why riders are switching, and what

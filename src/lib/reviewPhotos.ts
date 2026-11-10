@@ -122,17 +122,7 @@ export const reviewPhotos: ReviewPhoto[] = [
     author: "Stuart C.",
   },
   {
-    src: "https://media-dynamic.okendo.io/images/ab00a254-0ba8-411c-b535-d84dbf0433a4/43fd99c8-65be-4c5f-bd59-534f884a0a14.jpg?d=1600x1600",
-    alt: "JB Racks customer photo",
-    author: "Douglas p.",
-  },
-  {
     src: "https://media-dynamic.okendo.io/images/ab00a254-0ba8-411c-b535-d84dbf0433a4/f96a1b80-304f-453e-b357-a21b62372b3d.jpg?d=1600x1600",
-    alt: "JB Racks customer photo",
-    author: "Douglas p.",
-  },
-  {
-    src: "https://media-dynamic.okendo.io/images/442d4e28-7f23-47f9-ae79-9c376bb2d2c3/37d3a0e5-748b-4cb4-8431-598f914b08c0.jpg?d=1600x1600",
     alt: "JB Racks customer photo",
     author: "Douglas p.",
   },

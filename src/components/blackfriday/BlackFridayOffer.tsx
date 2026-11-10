@@ -18,12 +18,12 @@ const highlights = [
 export function BlackFridayOffer({ offer }: { offer: Offer }) {
   return (
     <div id="offer" className="scroll-mt-4 bg-brand-black px-5 py-12 text-center text-white sm:py-16">
-      <span className="inline-block -rotate-2 rounded bg-brand-yellow px-3 py-1 text-[13px] font-black uppercase tracking-widest text-brand-black sm:text-sm">
+      <span className="inline-block -rotate-2 rounded bg-brand-orange px-3 py-1 text-[13px] font-black uppercase tracking-widest text-brand-black sm:text-sm">
         Black Friday<span className="hidden sm:inline"> · Our biggest sale of the year</span>
       </span>
       <h2 className="mx-auto mt-4 max-w-[800px] text-3xl font-extrabold uppercase tracking-tighter leading-[1.14] sm:text-5xl">
         {offer.allSamePrice ? "Every rack size, one price: " : "Every rack size from "}
-        <span className="text-brand-yellow">${offer.price}</span>
+        <span className="text-brand-orange">${offer.price}</span>
       </h2>
       <p className="mx-auto mt-2.5 max-w-[560px] text-base text-white/65">
         {offerPriceLine(offer)}, down from ${offer.compareAtPrice} - while the Black Friday sale lasts.
@@ -37,7 +37,7 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
         <SaleProgress />
       </div>
 
-      <div className="relative mx-auto mt-10 max-w-[480px] rounded-[14px] border-4 border-brand-yellow bg-white px-6 py-8 text-brand-black">
+      <div className="relative mx-auto mt-10 max-w-[480px] rounded-[14px] border-4 border-brand-orange bg-white px-6 py-8 text-brand-black">
         <span className="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-red px-4 py-1 text-[13px] font-black uppercase tracking-wide text-white">
           {offer.maxPercentOff}% Off · Black Friday
         </span>
@@ -45,14 +45,14 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
           <span className="text-[52px] font-extrabold leading-none">${offer.price}</span>
           <span className="text-[22px] text-[#a3a3a3] line-through">${offer.compareAtPrice}</span>
         </div>
-        <span className="mt-2 inline-block rounded-full bg-brand-yellow px-3 py-1.5 text-[13px] font-black uppercase text-brand-black">
+        <span className="mt-2 inline-block rounded-full bg-brand-orange px-3 py-1.5 text-[13px] font-black uppercase text-brand-black">
           You save ${offer.maxSavings}
         </span>
 
         <ul className="mt-6 space-y-1.5 text-left">
           {highlights.map((line) => (
             <li key={line} className="flex items-center gap-2.5 py-1.5 text-[14.5px] text-[#333]">
-              <span className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-brand-black text-[11px] text-brand-yellow" aria-hidden>
+              <span className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-brand-black text-[11px] text-brand-orange" aria-hidden>
                 ✓
               </span>
               {line}

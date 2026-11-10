@@ -16,7 +16,7 @@ export function SaleChips({ offer }: { offer: BlackFridayOffer }) {
         <span
           key={chip}
           className={`rounded-full px-4 py-2 text-[12.5px] font-black uppercase tracking-wide sm:text-[13px] ${
-            i === 0 ? "bg-brand-yellow text-brand-black" : "bg-brand-black text-white"
+            i === 0 ? "bg-brand-orange text-brand-black" : "bg-brand-black text-white"
           }`}
         >
           {chip}

@@ -32,7 +32,7 @@ export function ArticleReason({ number, title, body, image, video, poster, quote
       <div className="md:col-start-2 md:row-start-3">
         <p className="mt-6 text-[18px] leading-[1.75] text-nr-ink-mid md:mt-0">{body}</p>
         {quote && (
-          <blockquote className="mt-5 border-l-4 border-brand-yellow pl-4">
+          <blockquote className="mt-5 border-l-4 border-brand-orange pl-4">
             <p className="text-[17px] font-semibold italic leading-[1.6] text-nr-ink">&ldquo;{quote.text}&rdquo;</p>
             <footer className="mt-1.5 text-[13px] text-nr-ink-muted">
               <span className="text-brand-star" aria-hidden>

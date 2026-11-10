@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { reviewPhotos } from "@/lib/reviewPhotos";
+import { reviewPhotos, type ReviewPhoto } from "@/lib/reviewPhotos";
 
 // The same real customer photos as RacksInUse, as a continuously scrolling
 // full-bleed strip instead of a carousel/masonry wall. Same two-copy trick
@@ -22,7 +22,9 @@ const INITIAL_BATCH = 12;
 const BATCH_SIZE = 2;
 const BATCH_INTERVAL_MS = 4000;
 
-export function InUseMarquee() {
+// `photos` defaults to the static list; /lp-demo-black-friday passes the
+// Okendo-filtered one (getVisibleReviewPhotos) so hidden photos never show.
+export function InUseMarquee({ photos = reviewPhotos }: { photos?: ReviewPhoto[] }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [mountedCount, setMountedCount] = useState(0);
 
@@ -43,10 +45,10 @@ export function InUseMarquee() {
   }, []);
 
   useEffect(() => {
-    if (mountedCount === 0 || mountedCount >= reviewPhotos.length) return;
-    const id = setTimeout(() => setMountedCount((n) => Math.min(reviewPhotos.length, n + BATCH_SIZE)), BATCH_INTERVAL_MS);
+    if (mountedCount === 0 || mountedCount >= photos.length) return;
+    const id = setTimeout(() => setMountedCount((n) => Math.min(photos.length, n + BATCH_SIZE)), BATCH_INTERVAL_MS);
     return () => clearTimeout(id);
-  }, [mountedCount]);
+  }, [mountedCount, photos.length]);
 
   return (
     <div ref={sectionRef} id="racks-in-use" className="border-t border-brand-line py-12 sm:py-14">
@@ -59,18 +61,18 @@ export function InUseMarquee() {
 
       <div className="group overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
         <div className="flex w-max animate-[bikeracks-ticker_180s_linear_infinite] group-hover:[animation-play-state:paused] motion-reduce:animate-none">
-          <PhotoSet mountedCount={mountedCount} />
-          <PhotoSet mountedCount={mountedCount} aria-hidden />
+          <PhotoSet photos={photos} mountedCount={mountedCount} />
+          <PhotoSet photos={photos} mountedCount={mountedCount} aria-hidden />
         </div>
       </div>
     </div>
   );
 }
 
-function PhotoSet({ mountedCount, "aria-hidden": ariaHidden }: { mountedCount: number; "aria-hidden"?: boolean }) {
+function PhotoSet({ photos, mountedCount, "aria-hidden": ariaHidden }: { photos: ReviewPhoto[]; mountedCount: number; "aria-hidden"?: boolean }) {
   return (
     <div className="flex shrink-0 gap-3 pr-3" aria-hidden={ariaHidden}>
-      {reviewPhotos.map((photo, i) => (
+      {photos.map((photo, i) => (
         <div
           key={photo.src}
           className="relative h-[240px] w-[180px] shrink-0 overflow-hidden rounded-xl bg-brand-cream sm:h-[300px] sm:w-[225px] lg:h-[440px] lg:w-[330px]"

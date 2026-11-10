@@ -23,7 +23,7 @@ export function SaleProgress({ tone = "dark" }: { tone?: "dark" | "light" }) {
           <span aria-hidden>⏳ </span>
           {now === null ? "Black Friday sale" : `${pct}% of the sale is over`}
         </span>
-        <span className={tone === "dark" ? "text-brand-yellow" : "text-brand-red"}>Ends {endLabel}</span>
+        <span className={tone === "dark" ? "text-brand-orange" : "text-brand-red"}>Ends {endLabel}</span>
       </div>
       <div
         className={`h-3.5 overflow-hidden rounded-full ${tone === "dark" ? "bg-white/15" : "bg-brand-black/10"}`}
@@ -34,7 +34,7 @@ export function SaleProgress({ tone = "dark" }: { tone?: "dark" | "light" }) {
         aria-label="Black Friday sale progress"
       >
         <div
-          className="h-full rounded-full bg-gradient-to-r from-brand-yellow to-brand-red transition-[width] duration-700"
+          className="h-full rounded-full bg-gradient-to-r from-brand-orange to-brand-red transition-[width] duration-700"
           style={{ width: `${pct}%` }}
         />
       </div>
