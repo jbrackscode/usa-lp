@@ -1,33 +1,24 @@
-// Advertorial opening for /lp-demo-black-friday: kicker, a sentence-case
-// headline (not the all-caps ad headline the other LPs use), summary box
-// and two intro paragraphs. US copy — the /lp-newsroom components this is
-// modeled on are written for Australia.
+// Advertorial opening for /lp-demo-black-friday, laid out like the Hollow
+// Socks listicle intro: left-aligned in the same 1000px container as the
+// reason rows below (so the headline lines up with their media), a
+// problem-question headline, a regular-weight "N reasons X is the best Y you
+// can buy" line tight underneath, then a summary set off by a dark left bar
+// with a mono "Summary:" label (matching the reasons' inset counts).
 export function ArticleHeader() {
   return (
-    <header className="mx-auto max-w-[760px] px-5 pt-8 sm:pt-12">
-      <div className="mb-3 text-[12px] font-extrabold uppercase tracking-[0.14em] text-brand-green-dark">Riding Guide · 4 min read</div>
-
-      <h1 className="text-[30px] font-black uppercase leading-[1.12] tracking-tight text-nr-ink sm:text-[44px] lg:text-[50px]">
-        Tired of wrestling heavy bikes onto your rack? 5 reasons 20,000+ riders{" "}
-        <span className="bg-[linear-gradient(transparent_58%,var(--color-brand-orange)_28%)] px-0.5">swear by vertical</span>
+    <header className="mx-auto max-w-[1000px] px-5 pt-10 sm:pt-14">
+      <h1 className="text-[30px] font-black uppercase leading-[1.1] tracking-tight text-nr-ink sm:text-[44px] lg:text-[52px]">
+        Tired of wrestling heavy bikes onto your rack?
       </h1>
 
-      <div className="mt-7 rounded-r-md border-l-4 border-brand-orange bg-nr-bg px-[18px] py-[14px] text-base leading-[1.7] text-nr-ink-mid">
-        <strong className="text-nr-ink">The short version: </strong>
-        Vertical hitch racks carry bikes upright instead of side by side on a tray - so they load faster, fit more bikes
-        in less space, and keep bikes from knocking into each other. Here&apos;s why riders are switching, and what
-        owners say after making the move.
-      </div>
+      <p className="mt-3 text-[19px] font-normal leading-[1.35] text-nr-ink sm:text-[24px]">
+        5 Reasons A Vertical Rack Is The Best Bike Rack You Can Buy
+      </p>
 
-      <div className="mt-7 space-y-4 text-[18px] leading-[1.75] text-nr-ink-mid">
-        <p>
-          A bike rack doesn&apos;t usually make headlines. But more and more riders are trading roof racks and
-          tray-style platform racks for vertical hitch racks - and once you&apos;ve loaded one, it&apos;s easy to see why.
-        </p>
-        <p>
-          If you&apos;ve ever lifted a heavy e-bike overhead onto a roof rack, or played Tetris with pedals and
-          handlebars on a platform rack, you already know the problem. Here are five reasons over 20,000 riders made
-          the switch to JB Racks.
+      <div className="mt-8 border-l-4 border-nr-ink py-1 pl-5 sm:mt-10">
+        <p className="mb-1.5 font-mono text-[13px] font-medium uppercase tracking-[0.12em] text-nr-ink-mid">Summary:</p>
+        <p className="text-[17px] font-semibold leading-[1.55] text-nr-ink sm:text-[18px]">
+          The JB Racks vertical hitch rack has 5 big benefits that&apos;ll ruin platform and roof racks for you forever.
         </p>
       </div>
     </header>

@@ -13,6 +13,10 @@ type CountdownTimerProps = {
   // Compact variant only: dark text for light backgrounds (default is white
   // text for the dark promo bars).
   onLight?: boolean;
+  // A single white panel with tall condensed (Tungsten) digits and small
+  // mono labels under each — the Hollow Socks-style bar timer used at the
+  // top of /lp-demo-black-friday. Takes precedence over `compact`.
+  panel?: boolean;
 };
 
 // nowMs is null on the server/hydration pass (see useNow) — renders zeros
@@ -34,8 +38,32 @@ const units: { key: keyof ReturnType<typeof getTimeLeft>; label: string }[] = [
   { key: "seconds", label: "Sec" },
 ];
 
-export function CountdownTimer({ target, className = "", compact = false, large = false, onLight = false }: CountdownTimerProps) {
+export function CountdownTimer({ target, className = "", compact = false, large = false, onLight = false, panel = false }: CountdownTimerProps) {
   const display = getTimeLeft(target, useNow());
+
+  if (panel) {
+    return (
+      <div className={`flex items-start gap-1 rounded-md bg-white px-2.5 pb-1.5 pt-2 text-brand-black sm:gap-1.5 sm:px-3.5 ${className}`}>
+        {units.map(({ key, label }, i) => (
+          <div key={key} className="flex items-start gap-1 sm:gap-1.5">
+            <div className="flex flex-col items-center">
+              {/* Fixed width per pair: Tungsten's digits aren't tabular, so
+                  without it the panel would jitter every second. */}
+              <span className="font-display min-w-[1.15em] text-center text-[26px] uppercase leading-[0.85] sm:text-[34px]">
+                {String(display[key]).padStart(2, "0")}
+              </span>
+              <span className="mt-1 font-mono text-[10px] font-semibold uppercase leading-none tracking-[0.04em] sm:text-[12px]">{label}</span>
+            </div>
+            {i < units.length - 1 && (
+              <span className="font-display text-[20px] leading-[0.85] sm:text-[26px]" aria-hidden>
+                :
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   if (compact) {
     return (

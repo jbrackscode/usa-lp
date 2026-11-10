@@ -3,21 +3,25 @@ import { product } from "@/lib/config";
 import type { BlackFridayOffer } from "@/lib/blackFriday";
 // import { BlackFridayTicker } from "./BlackFridayTicker";
 
-// Replaces the quiet PromoBar on /lp-demo-black-friday: the scrolling
-// orange sale strip, then a black "ends in" row with the live countdown.
-// `offer` only feeds the ticker; kept so it can be uncommented as-is.
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// Top bar on /lp-demo-black-friday, modelled on the Hollow Socks countdown
+// bar: a stacked "BLACK FRIDAY" lockup (tall condensed Tungsten title over a
+// small mono offer line) beside a white panel timer with condensed digits
+// and mono unit labels. The scrolling orange ticker that used to sit above
+// it is commented out below.
 export function BlackFridayBar({ offer }: { offer: BlackFridayOffer }) {
   return (
     <div>
       {/* Scrolling orange ticker hidden for now - uncomment this and the
           import above to bring it back. */}
       {/* <BlackFridayTicker offer={offer} /> */}
-      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-brand-black px-4 py-2.5 text-center">
-        <span className="whitespace-nowrap text-[15px] font-black uppercase tracking-wide text-brand-orange sm:text-[17px]">
-          Black Friday sale ends in
-        </span>
-        <CountdownTimer target={product.blackFridayEndsAt} compact large />
+      <div className="flex items-center justify-center gap-3 bg-[#282828] px-4 py-2.5 sm:gap-5 sm:py-3">
+        <div className="flex flex-col items-center">
+          <span className="font-display text-[30px] uppercase leading-[0.85] text-white sm:text-[40px]">Black Friday</span>
+          <span className="mt-1 font-mono text-[10.5px] font-medium uppercase leading-none tracking-[0.14em] text-brand-orange sm:text-[13px]">
+            {offer.allSamePrice ? `All sizes $${offer.price}` : `From $${offer.price}`}
+          </span>
+        </div>
+        <CountdownTimer target={product.blackFridayEndsAt} panel />
       </div>
     </div>
   );

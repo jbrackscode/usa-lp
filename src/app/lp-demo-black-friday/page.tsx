@@ -9,7 +9,7 @@ import { ArticleHeader } from "@/components/blackfriday/ArticleHeader";
 import { ArticleReason } from "@/components/blackfriday/ArticleReason";
 import { EditorsNote } from "@/components/blackfriday/EditorsNote";
 import { BlackFridayOffer } from "@/components/blackfriday/BlackFridayOffer";
-import { SaleChips } from "@/components/blackfriday/SaleChips";
+// import { SaleChips } from "@/components/blackfriday/SaleChips";
 import { BlackFridayClosing } from "@/components/blackfriday/BlackFridayClosing";
 import { featureRows, product } from "@/lib/config";
 import { getLiveBikeRackData } from "@/lib/bikeRacksLive";
@@ -17,7 +17,7 @@ import { getBlackFridayOffer } from "@/lib/blackFriday";
 import { getVisibleReviewPhotos } from "@/lib/okendo";
 
 // Black Friday advertorial built from /lp-demonstration-videos' content.
-// Reads as an article first (sentence-case headline, summary, intro, five
+// Reads as an article first (problem headline, "5 reasons" line, summary, five
 // numbered reasons with the same videos and real owner
 // quotes), with the sale kept to the top strip, a soft editor's note
 // mid-article, and the full offer (countdown + sale-progress bar) low on
@@ -95,7 +95,10 @@ export default async function LpDemoBlackFridayPage() {
 
         <InUseMarquee photos={photos} />
         <ReviewsColumn />
-        <SaleChips offer={offer} />
+        {/* Sale chips row hidden - the price/shipping/warranty points are
+            already covered elsewhere on the page. Uncomment this and the
+            import above to bring it back. */}
+        {/* <SaleChips offer={offer} /> */}
 
         <section className="pb-[39px] pt-[30px] sm:pb-[52px] sm:pt-10">
           <div className="mx-auto max-w-[1000px] px-5">

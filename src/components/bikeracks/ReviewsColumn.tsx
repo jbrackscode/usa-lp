@@ -40,7 +40,9 @@ const curatedReviews = picks.flatMap((p) => {
 
 export function ReviewsColumn() {
   return (
-    <div className="border-t border-brand-line py-12 sm:py-14">
+    // Cream band (same brand-cream as the closing CTA) so the white review
+    // cards stand off the background.
+    <div className="bg-brand-cream py-12 sm:py-16">
       <div className="mx-auto max-w-[1000px] px-5">
         <div className="mx-auto mb-3 max-w-[62ch] text-center">
           <div className="mb-2.5 text-sm font-bold text-brand-green-dark">VERIFIED REVIEWS</div>
@@ -48,7 +50,7 @@ export function ReviewsColumn() {
             What riders are saying
           </h2>
         </div>
-        <p className="mb-8 text-center text-sm text-brand-black/60">
+        <p className="mb-8 text-center text-sm text-brand-black/70">
           <span className="text-brand-star">★★★★★</span> {reviewStats.average}/5 average · {reviewStats.percentRecommended}% would
           recommend
         </p>
