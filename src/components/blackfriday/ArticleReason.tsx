@@ -21,7 +21,7 @@ export function ArticleReason({ number, title, body, image, video, poster, quote
   return (
     <section className="mx-auto grid max-w-[1000px] grid-cols-1 gap-x-10 px-5 pt-12 sm:pt-14 md:grid-cols-2 md:grid-rows-[1fr_auto_auto_1fr]">
       <div className="md:col-start-1 md:row-span-4 md:row-start-1 md:self-center">
-        <FeatureMedia image={image} video={video} poster={poster} lazy aspect="aspect-[4/3]" />
+        <FeatureMedia image={image} video={video} poster={poster} lazy />
       </div>
 
       <h2 className="order-first mb-5 flex items-baseline gap-3 text-[26px] font-black leading-[1.15] tracking-tight text-nr-ink sm:text-[34px] md:order-none md:col-start-2 md:row-start-2 md:mb-4 md:text-[30px] lg:text-[34px]">

@@ -17,8 +17,8 @@ import { getLiveBikeRackData } from "@/lib/bikeRacksLive";
 import { getBlackFridayOffer } from "@/lib/blackFriday";
 
 // Black Friday advertorial built from /lp-demonstration-videos' content.
-// Reads as an article first (newsroom masthead, byline, sentence-case
-// headline, five numbered reasons with the same videos and real owner
+// Reads as an article first (sentence-case headline, summary, intro, five
+// numbered reasons with the same videos and real owner
 // quotes), with the sale kept to the top strip, a soft editor's note
 // mid-article, and the full offer (countdown + sale-progress bar) low on
 // the page — then customer photos, reviews and the FAQ. Every offer number
@@ -49,13 +49,6 @@ const reasonQuotes = [
 export default async function LpDemoBlackFridayPage() {
   const { rackSizes } = await getLiveBikeRackData();
   const offer = getBlackFridayOffer(rackSizes);
-  // Server-rendered (and refreshed by ISR), so no hydration mismatch.
-  const updated = new Date().toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "America/Los_Angeles",
-  });
 
   const reasons = featureRows.map((row, i) => (
     <ArticleReason
@@ -66,9 +59,9 @@ export default async function LpDemoBlackFridayPage() {
       // the /lp-demonstration pages, so it's swapped here rather than there.
       body={row.body.replaceAll(" — ", " - ")}
       image={row.image}
-      // Light 640x480 (4:3, this page's crop) encodes of the same clips plus
-      // a first-frame poster each, in /videos/bf — ~1 MB total vs ~11.6 MB
-      // for the 1080p originals the other pages use.
+      // Light 560x560 encodes of the same square clips plus a first-frame
+      // poster each, in /videos/bf — ~1.1 MB total vs ~11.6 MB for the
+      // 1080p originals the other pages use.
       video={row.video.replace("/videos/", "/videos/bf/")}
       poster={row.video.replace("/videos/", "/videos/bf/").replace(/\.mp4$/, ".webp")}
       quote={reasonQuotes[i]}
@@ -80,7 +73,7 @@ export default async function LpDemoBlackFridayPage() {
       <BlackFridayBar offer={offer} />
       <StoreNavHeader />
       <main className="bg-white">
-        <ArticleHeader updated={updated} />
+        <ArticleHeader />
 
         {reasons.slice(0, 2)}
         <EditorsNote offer={offer} />
