@@ -18,7 +18,7 @@ const highlights = [
 export function BlackFridayOffer({ offer }: { offer: Offer }) {
   return (
     <div id="offer" className="scroll-mt-4 bg-brand-black px-5 py-12 text-center text-white sm:py-16">
-      <span className="inline-block -rotate-2 rounded bg-brand-orange px-3 py-1 text-[13px] font-black uppercase tracking-widest text-brand-black sm:text-sm">
+      <span className="inline-block -rotate-2 rounded bg-brand-orange px-3 py-1 text-[13px] font-black uppercase tracking-widest text-white sm:text-sm">
         Black Friday<span className="hidden sm:inline"> · Our biggest sale of the year</span>
       </span>
       <h2 className="mx-auto mt-4 max-w-[800px] text-3xl font-extrabold uppercase tracking-tighter leading-[1.14] sm:text-5xl">

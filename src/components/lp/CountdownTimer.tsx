@@ -10,6 +10,9 @@ type CountdownTimerProps = {
   compact?: boolean;
   // ~30% larger digits/labels in either variant (/lp-demo-black-friday).
   large?: boolean;
+  // Compact variant only: dark text for light backgrounds (default is white
+  // text for the dark promo bars).
+  onLight?: boolean;
 };
 
 // nowMs is null on the server/hydration pass (see useNow) — renders zeros
@@ -31,19 +34,21 @@ const units: { key: keyof ReturnType<typeof getTimeLeft>; label: string }[] = [
   { key: "seconds", label: "Sec" },
 ];
 
-export function CountdownTimer({ target, className = "", compact = false, large = false }: CountdownTimerProps) {
+export function CountdownTimer({ target, className = "", compact = false, large = false, onLight = false }: CountdownTimerProps) {
   const display = getTimeLeft(target, useNow());
 
   if (compact) {
     return (
       <div
-        className={`flex items-baseline gap-1 font-bold tabular-nums text-white/85 ${large ? "text-[15px] sm:text-[17px]" : "text-[11.5px] sm:text-[13px]"} ${className}`}
+        className={`flex items-baseline gap-1 font-bold tabular-nums ${onLight ? "text-brand-black" : "text-white/85"} ${large ? "text-[15px] sm:text-[17px]" : "text-[11.5px] sm:text-[13px]"} ${className}`}
       >
         {units.map(({ key, label }, i) => (
           <span key={key}>
             {String(display[key]).padStart(2, "0")}
-            <span className={`font-semibold text-white/50 ${large ? "text-[12px]" : "text-[9px]"}`}>{label.charAt(0).toLowerCase()}</span>
-            {i < units.length - 1 && <span className="text-white/40"> : </span>}
+            <span className={`font-semibold ${onLight ? "text-brand-black/55" : "text-white/50"} ${large ? "text-[12px]" : "text-[9px]"}`}>
+              {label.charAt(0).toLowerCase()}
+            </span>
+            {i < units.length - 1 && <span className={onLight ? "text-brand-black/30" : "text-white/40"}> : </span>}
           </span>
         ))}
       </div>

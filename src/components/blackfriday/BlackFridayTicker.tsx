@@ -14,7 +14,7 @@ export function BlackFridayTicker({ offer }: { offer: BlackFridayOffer }) {
   ];
 
   return (
-    <div className="overflow-hidden whitespace-nowrap bg-brand-orange py-2.5 text-[13px] font-black uppercase tracking-wide text-brand-black sm:text-sm">
+    <div className="overflow-hidden whitespace-nowrap bg-brand-orange py-2.5 text-[13px] font-black uppercase tracking-wide text-white sm:text-sm">
       <div className="flex w-max animate-[bikeracks-ticker_32s_linear_infinite] motion-reduce:animate-none">
         <TickerSet items={items} />
         <TickerSet items={items} aria-hidden />

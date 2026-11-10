@@ -8,7 +8,12 @@ import { product } from "@/lib/config";
 // blackFridayEndsAt), not by units sold — there's no live stock/sales feed
 // behind it — so the copy says "of the sale is over" rather than "% sold".
 // Renders empty for the hydration frame (useNow is null), then fills.
+// "light" is the quieter supporting version for light backgrounds (the
+// closing CTA card): smaller dark labels — no orange/red small text on
+// white, which fails contrast — and a thinner bar, so it never competes
+// with the button above it.
 export function SaleProgress({ tone = "dark" }: { tone?: "dark" | "light" }) {
+  const light = tone === "light";
   const now = useNow();
   const start = new Date(product.blackFridayStartsAt).getTime();
   const end = new Date(product.blackFridayEndsAt).getTime();
@@ -18,15 +23,20 @@ export function SaleProgress({ tone = "dark" }: { tone?: "dark" | "light" }) {
 
   return (
     <div className="mx-auto w-full max-w-[480px]">
-      <div className={`mb-2 flex items-baseline justify-between text-[13px] font-black uppercase tracking-wide ${tone === "dark" ? "text-white" : "text-brand-black"}`}>
-        <span>
+      <div
+        className={`flex items-baseline justify-between uppercase tracking-wide ${light ? "mb-1.5 text-[12px] font-bold text-brand-black/70" : "mb-2 text-[13px] font-black text-white"}`}
+      >
+        <span className="whitespace-nowrap">
           <span aria-hidden>⏳ </span>
           {now === null ? "Black Friday sale" : `${pct}% of the sale is over`}
         </span>
-        <span className={tone === "dark" ? "text-brand-orange" : "text-brand-red"}>Ends {endLabel}</span>
+        {/* The light version always sits under its own countdown, which
+            already says when the sale ends — and on phones the extra label
+            forced both onto two lines. */}
+        {!light && <span className="text-brand-orange">Ends {endLabel}</span>}
       </div>
       <div
-        className={`h-3.5 overflow-hidden rounded-full ${tone === "dark" ? "bg-white/15" : "bg-brand-black/10"}`}
+        className={`overflow-hidden rounded-full ${light ? "h-2 bg-brand-black/10" : "h-3.5 bg-white/15"}`}
         role="progressbar"
         aria-valuenow={pct}
         aria-valuemin={0}
