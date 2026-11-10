@@ -6,7 +6,6 @@ import { FAQ } from "@/components/lp/FAQ";
 import { ClosingCTA } from "@/components/lp/ClosingCTA";
 import { Footer } from "@/components/lp/Footer";
 import { BlackFridayBar } from "@/components/blackfriday/BlackFridayBar";
-import { StoreNavHeader } from "@/components/blackfriday/StoreNavHeader";
 import { ArticleHeader } from "@/components/blackfriday/ArticleHeader";
 import { ArticleReason } from "@/components/blackfriday/ArticleReason";
 import { EditorsNote } from "@/components/blackfriday/EditorsNote";
@@ -71,7 +70,8 @@ export default async function LpDemoBlackFridayPage() {
   return (
     <>
       <BlackFridayBar offer={offer} />
-      <StoreNavHeader />
+      {/* Header/nav bar hidden on this page for now — re-add
+          <StoreNavHeader /> (components/blackfriday) here to bring it back. */}
       <main className="bg-white">
         <ArticleHeader />
 

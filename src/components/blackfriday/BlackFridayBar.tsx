@@ -9,11 +9,11 @@ export function BlackFridayBar({ offer }: { offer: BlackFridayOffer }) {
   return (
     <div>
       <BlackFridayTicker offer={offer} />
-      <div className="flex flex-wrap items-center justify-center gap-2.5 bg-brand-black px-4 py-2 text-center sm:gap-3">
-        <span className="whitespace-nowrap text-[11.5px] font-black uppercase tracking-wide text-brand-yellow sm:text-[13px]">
+      <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-brand-black px-4 py-2.5 text-center">
+        <span className="whitespace-nowrap text-[15px] font-black uppercase tracking-wide text-brand-yellow sm:text-[17px]">
           Black Friday sale ends in
         </span>
-        <CountdownTimer target={product.blackFridayEndsAt} compact />
+        <CountdownTimer target={product.blackFridayEndsAt} compact large />
       </div>
     </div>
   );

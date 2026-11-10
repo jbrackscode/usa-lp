@@ -31,7 +31,7 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
 
       <div className="mx-auto mt-7 flex flex-col items-center gap-2">
         <span className="text-[11px] font-extrabold uppercase tracking-widest text-white/60">Sale ends in</span>
-        <CountdownTimer target={product.blackFridayEndsAt} />
+        <CountdownTimer target={product.blackFridayEndsAt} large />
       </div>
       <div className="mt-6">
         <SaleProgress />
