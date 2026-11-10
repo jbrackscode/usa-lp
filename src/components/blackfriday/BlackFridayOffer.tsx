@@ -56,7 +56,8 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
         <ul className="mt-6 space-y-1.5 text-left">
           {highlights.map((line) => (
             <li key={line} className="flex items-center gap-2.5 py-1.5 text-[14.5px] text-[#333]">
-              <span className="inline-flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full bg-brand-black text-[11px] text-brand-orange" aria-hidden>
+              {/* Same tick as the ComparisonTable's JB column. */}
+              <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-green text-[11px] font-black text-white" aria-hidden>
                 ✓
               </span>
               {line}
