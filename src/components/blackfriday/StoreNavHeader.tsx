@@ -58,7 +58,7 @@ export function StoreNavHeader() {
                 <NavLink
                   item={item}
                   position={i + 1}
-                  className="block whitespace-nowrap rounded-full px-2 py-2 text-[14px] font-semibold text-brand-black/80 hover:bg-brand-cream hover:text-brand-black xl:px-3"
+                  className="block whitespace-nowrap rounded-full px-1.5 py-2 text-[13px] font-semibold uppercase tracking-normal xl:tracking-[0.04em] text-brand-black/80 hover:bg-brand-cream hover:text-brand-black xl:px-3"
                 />
               </li>
             ))}
@@ -70,7 +70,7 @@ export function StoreNavHeader() {
                     aria-expanded={exploreOpen}
                     aria-controls="store-nav-explore"
                     onClick={() => setExploreOpen((o) => !o)}
-                    className="flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-2 text-[14px] xl:px-3 font-semibold text-brand-black/80 hover:bg-brand-cream hover:text-brand-black"
+                    className="flex items-center gap-1 whitespace-nowrap rounded-full px-1.5 py-2 text-[13px] font-semibold uppercase tracking-normal xl:tracking-[0.04em] xl:px-3 text-brand-black/80 hover:bg-brand-cream hover:text-brand-black"
                   >
                     Explore
                     <Chevron open={exploreOpen} />
@@ -85,7 +85,7 @@ export function StoreNavHeader() {
                           <NavLink
                             item={item}
                             position={STORE_NAV_INLINE_COUNT + i + 1}
-                            className="block rounded-lg px-3 py-2.5 text-[14px] font-semibold text-brand-black/80 hover:bg-brand-cream hover:text-brand-black"
+                            className="block rounded-lg px-3 py-2.5 text-[13px] font-semibold uppercase tracking-[0.04em] text-brand-black/80 hover:bg-brand-cream hover:text-brand-black"
                           />
                         </li>
                       ))}
@@ -119,7 +119,7 @@ export function StoreNavHeader() {
           <ul className="mx-auto grid max-w-6xl grid-cols-2 gap-1 px-3 py-3 sm:px-5">
             {storeNavItems.map((item, i) => (
               <li key={item.id}>
-                <NavLink item={item} position={i + 1} className="block rounded-lg px-3 py-3 text-[15px] font-semibold text-brand-black hover:bg-brand-cream" />
+                <NavLink item={item} position={i + 1} className="block rounded-lg px-3 py-3 text-[14px] font-semibold uppercase tracking-[0.04em] text-brand-black hover:bg-brand-cream" />
               </li>
             ))}
           </ul>

@@ -24,7 +24,7 @@ export function ArticleReason({ number, title, body, image, video, poster, quote
         <FeatureMedia image={image} video={video} poster={poster} lazy />
       </div>
 
-      <h2 className="order-first mb-5 flex items-baseline gap-3 text-[26px] font-black leading-[1.15] tracking-tight text-nr-ink sm:text-[34px] md:order-none md:col-start-2 md:row-start-2 md:mb-4 md:text-[30px] lg:text-[34px]">
+      <h2 className="order-first mb-5 flex items-baseline gap-3 text-[26px] font-black uppercase leading-[1.15] tracking-tight text-nr-ink sm:text-[34px] md:order-none md:col-start-2 md:row-start-2 md:mb-4 md:text-[30px] lg:text-[34px]">
         <span className="shrink-0 text-[40px] leading-none text-brand-green sm:text-[52px] md:text-[44px] lg:text-[52px]">{number}.</span>
         <span>{title}</span>
       </h2>

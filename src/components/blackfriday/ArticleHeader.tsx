@@ -7,7 +7,7 @@ export function ArticleHeader() {
     <header className="mx-auto max-w-[760px] px-5 pt-8 sm:pt-12">
       <div className="mb-3 text-[12px] font-extrabold uppercase tracking-[0.14em] text-brand-green-dark">Riding Guide · 4 min read</div>
 
-      <h1 className="text-[30px] font-black leading-[1.12] tracking-tight text-nr-ink sm:text-[44px] lg:text-[50px]">
+      <h1 className="text-[30px] font-black uppercase leading-[1.12] tracking-tight text-nr-ink sm:text-[44px] lg:text-[50px]">
         Tired of wrestling heavy bikes onto your rack? 5 reasons 20,000+ riders{" "}
         <span className="bg-[linear-gradient(transparent_58%,var(--color-brand-yellow)_58%)] px-0.5">swear by vertical</span>
       </h1>
