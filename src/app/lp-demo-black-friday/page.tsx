@@ -46,6 +46,10 @@ const reasonQuotes = [
   },
 ];
 
+// Short topic labels for each reason's inset count ("01 / FAST LOADING"),
+// in featureRows order.
+const reasonKickers = ["Fast loading", "Value", "Bike protection", "Vehicle fit", "More ride time"];
+
 export default async function LpDemoBlackFridayPage() {
   // Customer photos are checked against Okendo's public feed so any photo
   // hidden in Okendo never reaches the "racks in use" strip.
@@ -56,6 +60,7 @@ export default async function LpDemoBlackFridayPage() {
     <ArticleReason
       key={row.title}
       number={i + 1}
+      kicker={reasonKickers[i]}
       title={row.title}
       // This page uses hyphens, not em dashes; featureRows is shared with
       // the /lp-demonstration pages, so it's swapped here rather than there.
