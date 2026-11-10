@@ -9,6 +9,7 @@ import { ArticleHeader } from "@/components/blackfriday/ArticleHeader";
 import { ArticleReason } from "@/components/blackfriday/ArticleReason";
 import { EditorsNote } from "@/components/blackfriday/EditorsNote";
 import { BlackFridayOffer } from "@/components/blackfriday/BlackFridayOffer";
+import { BlackFridayMarquee } from "@/components/blackfriday/BlackFridayMarquee";
 // import { SaleChips } from "@/components/blackfriday/SaleChips";
 import { BlackFridayClosing } from "@/components/blackfriday/BlackFridayClosing";
 import { featureRows, product } from "@/lib/config";
@@ -91,6 +92,9 @@ export default async function LpDemoBlackFridayPage() {
           <ComparisonTable price={offer.price} ctaHref={product.productUrl} />
         </div>
 
+        {/* The article hands over to the sale here: the store's Black
+            Friday logo band leads straight into the offer block. */}
+        <BlackFridayMarquee />
         <BlackFridayOffer offer={offer} />
 
         <InUseMarquee photos={photos} />

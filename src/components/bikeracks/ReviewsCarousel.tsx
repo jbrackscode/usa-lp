@@ -28,9 +28,19 @@ function highlightBody(body: string, override?: string) {
 // Exported for ReviewsColumn on /lp-demo-black-friday — same card and
 // highlight treatment, just stacked in a single column. `highlight` picks
 // the exact passage to mark instead of the automatic trigger-word pick.
-export function ReviewCard({ review, highlight }: { review: (typeof productReviews)[number]; highlight?: string }) {
+// `tinted` gives the card a brand-cream fill (no border) for use on a white
+// section; the author line darkens slightly so it stays readable on cream.
+export function ReviewCard({
+  review,
+  highlight,
+  tinted = false,
+}: {
+  review: (typeof productReviews)[number];
+  highlight?: string;
+  tinted?: boolean;
+}) {
   return (
-    <div className="flex flex-col rounded-lg border border-brand-line bg-white p-5 lg:p-6">
+    <div className={`flex flex-col rounded-lg p-5 lg:p-6 ${tinted ? "bg-brand-cream" : "border border-brand-line bg-white"}`}>
       <div className="mb-2 tracking-[2px] text-brand-star" aria-hidden>
         {"★".repeat(review.rating)}
         {"☆".repeat(5 - review.rating)}
@@ -39,9 +49,9 @@ export function ReviewCard({ review, highlight }: { review: (typeof productRevie
       <p className="flex-1 text-[13.5px] leading-relaxed tracking-tight text-brand-black/75 lg:text-base lg:leading-[1.7]">
         &ldquo;{highlightBody(review.body, highlight)}&rdquo;
       </p>
-      <div className="mt-3.5 text-[12.5px] font-bold tracking-tight text-brand-black/50 lg:text-sm">
+      <div className={`mt-3.5 text-[12.5px] font-bold tracking-tight lg:text-sm ${tinted ? "text-brand-black/60" : "text-brand-black/50"}`}>
         {review.author} - Verified Buyer
-        {review.variant && <span className="font-normal text-brand-black/35"> · {review.variant}</span>}
+        {review.variant && <span className={`font-normal ${tinted ? "text-brand-black/45" : "text-brand-black/35"}`}> · {review.variant}</span>}
       </div>
     </div>
   );

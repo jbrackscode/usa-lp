@@ -40,9 +40,9 @@ const curatedReviews = picks.flatMap((p) => {
 
 export function ReviewsColumn() {
   return (
-    // Cream band (same brand-cream as the closing CTA) so the white review
-    // cards stand off the background.
-    <div className="bg-brand-cream py-12 sm:py-16">
+    // White section with brand-cream cards (same cream as the closing CTA),
+    // so each review reads as its own block.
+    <div className="border-t border-brand-line bg-white py-12 sm:py-16">
       <div className="mx-auto max-w-[1000px] px-5">
         <div className="mx-auto mb-3 max-w-[62ch] text-center">
           <div className="mb-2.5 text-sm font-bold text-brand-green-dark">VERIFIED REVIEWS</div>
@@ -57,7 +57,7 @@ export function ReviewsColumn() {
 
         <div className="flex flex-col gap-4">
           {curatedReviews.map(({ review, highlight }) => (
-            <ReviewCard key={`${review.author}-${review.title}`} review={review} highlight={highlight} />
+            <ReviewCard key={`${review.author}-${review.title}`} review={review} highlight={highlight} tinted />
           ))}
         </div>
       </div>

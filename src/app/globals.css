@@ -155,6 +155,35 @@ body {
   }
 }
 
+/* Black Friday logo marquee band (BlackFridayMarquee) — the same .bf-marquee
+   styling as the jbracks.com store: black-ruled band with a slowly drifting
+   orange-to-yellow gradient. */
+.bf-marquee {
+  position: relative;
+  overflow: hidden;
+  padding: 22px 0;
+  border-top: 4px solid #000;
+  border-bottom: 4px solid #000;
+  background: linear-gradient(115deg, #fe5b11 0%, #ff7608 18%, #ffb800 36%, #f5ff0a 50%, #ffb800 64%, #ff7608 82%, #fe5b11 100%);
+  background-size: 300% 100%;
+  animation: bfGradient 6s ease-in-out infinite alternate;
+}
+
+@keyframes bfGradient {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-marquee {
+    animation: none;
+  }
+}
+
 /* Subtle attention pulse for urgency/savings badges — matches the same
    treatment used on jbracks.com.au's product page savings badge. */
 @keyframes pulse-subtle {
