@@ -46,10 +46,9 @@ export function StoreNavHeader() {
 
   return (
     <header className="relative z-30 border-b border-brand-line bg-white">
-      {/* 1280px rather than the LP Header's max-w-6xl (1152px): six inline
-          items plus badges need ~1190px. Between lg and xl the inline badges
-          are hidden and padding tightens so the row still fits at 1024px. */}
-      <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
+      {/* Link padding tightens between lg and xl so six items + Explore
+          still fit on one line at 1024px. */}
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
         <Logo className="w-28 shrink-0 sm:w-32" />
 
         <nav aria-label="Store" className="hidden lg:block">
@@ -59,8 +58,7 @@ export function StoreNavHeader() {
                 <NavLink
                   item={item}
                   position={i + 1}
-                  badgeClassName="hidden xl:inline-block"
-                  className="flex items-center gap-1.5 whitespace-nowrap rounded-full px-2 py-2 text-[14px] font-semibold text-brand-black/80 hover:bg-brand-cream hover:text-brand-black xl:px-3"
+                  className="block whitespace-nowrap rounded-full px-2 py-2 text-[14px] font-semibold text-brand-black/80 hover:bg-brand-cream hover:text-brand-black xl:px-3"
                 />
               </li>
             ))}
@@ -87,7 +85,7 @@ export function StoreNavHeader() {
                           <NavLink
                             item={item}
                             position={STORE_NAV_INLINE_COUNT + i + 1}
-                            className="flex items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-[14px] font-semibold text-brand-black/80 hover:bg-brand-cream hover:text-brand-black"
+                            className="block rounded-lg px-3 py-2.5 text-[14px] font-semibold text-brand-black/80 hover:bg-brand-cream hover:text-brand-black"
                           />
                         </li>
                       ))}
@@ -121,7 +119,7 @@ export function StoreNavHeader() {
           <ul className="mx-auto grid max-w-6xl grid-cols-2 gap-1 px-3 py-3 sm:px-5">
             {storeNavItems.map((item, i) => (
               <li key={item.id}>
-                <NavLink item={item} position={i + 1} className="flex items-center gap-1.5 rounded-lg px-3 py-3 text-[15px] font-semibold text-brand-black hover:bg-brand-cream" />
+                <NavLink item={item} position={i + 1} className="block rounded-lg px-3 py-3 text-[15px] font-semibold text-brand-black hover:bg-brand-cream" />
               </li>
             ))}
           </ul>
@@ -131,24 +129,7 @@ export function StoreNavHeader() {
   );
 }
 
-const badgeTone: Record<NonNullable<StoreNavItem["badge"]>["tone"], string> = {
-  orange: "bg-[#C2410C] text-white",
-  black: "bg-brand-black text-white",
-  green: "bg-[#166534] text-white",
-};
-
-function NavLink({
-  item,
-  position,
-  className,
-  badgeClassName = "",
-}: {
-  item: StoreNavItem;
-  position: number;
-  className: string;
-  // Extra classes for the badge (the inline row hides it below xl).
-  badgeClassName?: string;
-}) {
+function NavLink({ item, position, className }: { item: StoreNavItem; position: number; className: string }) {
   return (
     <a
       href={item.href}
@@ -156,20 +137,7 @@ function NavLink({
       onClick={() => window.gtag?.("event", "nav_click", { nav_item: item.id, nav_position: position, nav_destination: item.href })}
       className={className}
     >
-      <span className="flex items-center gap-1.5">
-        {item.live && (
-          <span className="relative flex h-2 w-2" aria-hidden>
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E8500F] opacity-70 motion-reduce:animate-none" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-[#E8500F]" />
-          </span>
-        )}
-        {item.label}
-      </span>
-      {item.badge && (
-        <span className={`whitespace-nowrap rounded px-1.5 py-px text-[10px] font-extrabold uppercase leading-[1.5] tracking-[0.06em] ${badgeTone[item.badge.tone]} ${badgeClassName}`}>
-          {item.badge.text}
-        </span>
-      )}
+      {item.label}
     </a>
   );
 }
