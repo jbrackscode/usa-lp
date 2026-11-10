@@ -7,9 +7,11 @@ type ComparisonTableProps = {
   price?: number;
   // Passed through to ClaimRackButton — links there instead of checkout.
   ctaHref?: string;
+  // Button wording before the price; defaults to "Claim My Rack".
+  ctaLabel?: string;
 };
 
-export function ComparisonTable({ price = product.price, ctaHref }: ComparisonTableProps) {
+export function ComparisonTable({ price = product.price, ctaHref, ctaLabel = "Claim My Rack" }: ComparisonTableProps) {
   return (
     <div className="mx-auto max-w-[1100px] px-5 pb-[39px] pt-[30px] text-brand-black sm:pb-[52px] sm:pt-10">
       <h2 className="mb-6 text-center text-3xl font-extrabold uppercase tracking-tighter leading-[1.14] sm:text-5xl">
@@ -76,7 +78,7 @@ export function ComparisonTable({ price = product.price, ctaHref }: ComparisonTa
       </div>
 
       <div className="mt-7 flex justify-center">
-        <ClaimRackButton label={`Claim My Rack - $${price}`} href={ctaHref} />
+        <ClaimRackButton label={`${ctaLabel} - $${price}`} href={ctaHref} />
       </div>
       <p className="mt-3 text-center text-sm text-brand-black/70">4-year warranty · Free shipping</p>
     </div>

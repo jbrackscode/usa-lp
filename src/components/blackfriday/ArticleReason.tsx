@@ -28,7 +28,7 @@ export function ArticleReason({ number, kicker, title, body, image, video, poste
       </div>
 
       <div className="order-first mb-5 md:order-none md:col-start-2 md:row-start-2 md:mb-4">
-        <p className="mb-2 font-mono text-[14px] font-medium uppercase tracking-[0.12em] text-nr-ink sm:text-[16px]">
+        <p className="mb-2 font-mono text-[14px] font-bold uppercase tracking-[0.12em] text-nr-ink sm:text-[16px]">
           {String(number).padStart(2, "0")} / {kicker}
         </p>
         <h2 className="text-[26px] font-black uppercase leading-[1.15] tracking-tight text-nr-ink sm:text-[34px] md:text-[30px] lg:text-[34px]">

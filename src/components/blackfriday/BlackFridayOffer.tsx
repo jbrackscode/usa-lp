@@ -3,6 +3,7 @@ import { ClaimRackButton } from "@/components/lp/ClaimRackButton";
 import { product, storeUrl } from "@/lib/config";
 import { offerPriceLine, type BlackFridayOffer as Offer } from "@/lib/blackFriday";
 import { SaleProgress } from "./SaleProgress";
+import { BlackFridayBadge } from "./BlackFridayBadge";
 
 // Black Friday version of PricingSection — full-bleed black band, low in
 // the article, with the countdown + sale-progress bar and the offer card.
@@ -11,17 +12,18 @@ import { SaleProgress } from "./SaleProgress";
 const highlights = [
   "E-bike rated - 65 lbs per wheel holder, 240 lbs total capacity",
   "4-Year warranty on every rack",
-  "Free shipping to city & suburban areas",
+  "Free shipping anywhere in the mainland US",
   "Trusted by 20,000+ customers",
 ];
 
 export function BlackFridayOffer({ offer }: { offer: Offer }) {
   return (
     <div id="offer" className="scroll-mt-4 bg-brand-black px-5 py-12 text-center text-white sm:py-16">
-      <span className="inline-block -rotate-2 rounded bg-brand-orange px-3 py-1 text-[13px] font-black uppercase tracking-widest text-white sm:text-sm">
-        Black Friday<span className="hidden sm:inline"> · Our biggest sale of the year</span>
-      </span>
-      <h2 className="mx-auto mt-4 max-w-[800px] text-3xl font-extrabold uppercase tracking-tighter leading-[1.14] sm:text-5xl">
+      <BlackFridayBadge />
+      <p className="mt-3 font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-orange sm:text-[13px]">
+        Our biggest sale of the year
+      </p>
+      <h2 className="mx-auto mt-3 max-w-[800px] text-3xl font-extrabold uppercase tracking-tighter leading-[1.14] sm:text-5xl">
         {offer.allSamePrice ? "Every rack size, one price: " : "Every rack size from "}
         <span className="text-brand-orange">${offer.price}</span>
       </h2>
@@ -29,9 +31,11 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
         {offerPriceLine(offer)}, down from ${offer.compareAtPrice} - while the Black Friday sale lasts.
       </p>
 
-      <div className="mx-auto mt-7 flex flex-col items-center gap-2">
-        <span className="text-[11px] font-extrabold uppercase tracking-widest text-white/60">Sale ends in</span>
-        <CountdownTimer target={product.blackFridayEndsAt} large />
+      {/* Same timer treatment as the top bar and closing card: mono orange
+          label over the white condensed-digit panel. */}
+      <div className="mx-auto mt-7 flex flex-col items-center gap-3">
+        <span className="font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-orange sm:text-[13px]">Sale price ends in</span>
+        <CountdownTimer target={product.blackFridayEndsAt} panel />
       </div>
       <div className="mt-6">
         <SaleProgress />
@@ -60,7 +64,7 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
           ))}
         </ul>
 
-        <ClaimRackButton label={`Claim My Rack - $${offer.price}`} full className="mt-6" href={product.productUrl} />
+        <ClaimRackButton label={`Shop The Rack - $${offer.price}`} full className="mt-6" href={product.productUrl} />
         {/* The button goes to the 4-bike rack's product page, so the other
             sizes in the same offer get their own direct links. */}
         <p className="mt-3 text-[13px] text-[#666]">

@@ -24,7 +24,9 @@ export function SaleProgress({ tone = "dark" }: { tone?: "dark" | "light" }) {
   return (
     <div className="mx-auto w-full max-w-[480px]">
       <div
-        className={`flex items-baseline justify-between uppercase tracking-wide ${light ? "mb-1.5 text-[12px] font-bold text-brand-black/70" : "mb-2 text-[13px] font-black text-white"}`}
+        // flex-wrap + gap: in narrow containers (the closing card on phones)
+        // "Ends Nov 30" drops to its own line instead of colliding.
+        className={`flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 uppercase tracking-wide ${light ? "mb-1.5 text-[12px] font-bold text-brand-black/70" : "mb-2 text-[12px] font-black text-white sm:text-[13px]"}`}
       >
         <span className="whitespace-nowrap">
           <span aria-hidden>⏳ </span>
@@ -33,7 +35,7 @@ export function SaleProgress({ tone = "dark" }: { tone?: "dark" | "light" }) {
         {/* The light version always sits under its own countdown, which
             already says when the sale ends — and on phones the extra label
             forced both onto two lines. */}
-        {!light && <span className="text-brand-orange">Ends {endLabel}</span>}
+        {!light && <span className="whitespace-nowrap text-brand-orange">Ends {endLabel}</span>}
       </div>
       <div
         className={`overflow-hidden rounded-full ${light ? "h-2 bg-brand-black/10" : "h-3.5 bg-white/15"}`}

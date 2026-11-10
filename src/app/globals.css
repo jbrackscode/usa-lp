@@ -178,8 +178,17 @@ body {
   }
 }
 
+/* Just the .bf-marquee gradient + drift, for smaller elements such as the
+   BlackFridayBadge tiles. */
+.bf-gradient {
+  background: linear-gradient(115deg, #fe5b11 0%, #ff7608 18%, #ffb800 36%, #f5ff0a 50%, #ffb800 64%, #ff7608 82%, #fe5b11 100%);
+  background-size: 300% 100%;
+  animation: bfGradient 6s ease-in-out infinite alternate;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .bf-marquee {
+  .bf-marquee,
+  .bf-gradient {
     animation: none;
   }
 }

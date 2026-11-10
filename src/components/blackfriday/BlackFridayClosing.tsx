@@ -4,17 +4,16 @@ import { product } from "@/lib/config";
 import { reviewStats } from "@/lib/bikeRacks";
 import { offerPriceLine, type BlackFridayOffer } from "@/lib/blackFriday";
 import { SaleProgress } from "./SaleProgress";
+import { BlackFridayBadge } from "./BlackFridayBadge";
 
 // Final CTA for /lp-demo-black-friday, built for one clear action. Reading
-// order is offer → action → reassurance: tag + heading, a big price with
-// the compare-at struck through, then the green button — the only large
-// saturated element in the card, so it's the obvious next step — with the
-// shipping/warranty small print right under it. Urgency (countdown +
-// sale-progress) sits below in a muted panel with dark text, as support
-// rather than a competing focal point, and the rating closes it out.
-// Contrast: orange is only used as a fill (tag, accent bar, progress bar),
-// never as small text on white, and all grey text is ≥ 4.5:1. The tag's
-// white-on-orange matches the page's ticker and offer tag.
+// order is offer → action → reassurance: the Black Friday SVG badge +
+// heading, a big price with the compare-at struck through, then the green
+// button — the obvious next step — with the shipping/warranty small print
+// right under it. Urgency sits below in the top bar's style (charcoal panel,
+// white condensed-digit timer, dark progress bar), and the rating closes it
+// out. Orange is never used as small text on white, and all grey text on
+// white is ≥ 4.5:1.
 export function BlackFridayClosing({ offer }: { offer: BlackFridayOffer }) {
   return (
     <section className="bg-brand-cream px-5 py-14 sm:py-20">
@@ -22,10 +21,8 @@ export function BlackFridayClosing({ offer }: { offer: BlackFridayOffer }) {
         <div className="h-1.5 bg-brand-orange" aria-hidden />
 
         <div className="px-6 pb-7 pt-8 text-center sm:px-10 sm:pb-9 sm:pt-10">
-          <span className="inline-block -rotate-2 rounded bg-brand-orange px-3 py-1 text-[12px] font-black uppercase tracking-widest text-white">
-            Black Friday
-          </span>
-          <h2 className="mt-4 text-[28px] font-extrabold uppercase leading-[1.1] tracking-tighter text-brand-black sm:text-[36px]">
+          <BlackFridayBadge size="sm" />
+          <h2 className="mt-5 text-[28px] font-extrabold uppercase leading-[1.1] tracking-tighter text-brand-black sm:text-[36px]">
             Ready to make the switch?
           </h2>
           <p className="mx-auto mt-2 max-w-[380px] text-[15px] leading-snug text-brand-black/70">
@@ -40,18 +37,24 @@ export function BlackFridayClosing({ offer }: { offer: BlackFridayOffer }) {
             {offer.allSamePrice ? "You save" : "Save up to"} ${offer.maxSavings}
           </span>
 
-          <ClaimRackButton label={`Claim My Rack - $${offer.price}`} full href={product.productUrl} className="mt-7" />
-          {/* Non-breaking spaces keep each phrase whole when it wraps. */}
+          <ClaimRackButton label={`Shop The Rack - $${offer.price}`} full href={product.productUrl} className="mt-7" />
+          {/* Non-breaking spaces and a non-breaking hyphen (U+2011) keep
+              each phrase whole when it wraps — a plain "-" is a line-break
+              opportunity, which split "4- / year". */}
           <p className="mt-3 text-balance text-[13px] text-brand-black/65">
-            Free&nbsp;shipping · 4-year&nbsp;warranty · No&nbsp;code&nbsp;needed
+            Free&nbsp;shipping · 4&#8209;year&nbsp;warranty · No&nbsp;code&nbsp;needed
           </p>
 
-          <div className="mt-8 rounded-xl bg-brand-cream px-4 py-4 text-left sm:px-5">
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
-              <span className="text-[12px] font-bold uppercase tracking-wide text-brand-black/70">Sale price ends in</span>
-              <CountdownTimer target={product.blackFridayEndsAt} compact large onLight />
+          {/* Same treatment as the top bar: charcoal panel, mono label, the
+              white condensed-digit timer, then the dark progress bar. */}
+          <div className="mt-8 rounded-xl bg-[#282828] px-4 pb-5 pt-4 sm:px-6">
+            <p className="font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-orange sm:text-[13px]">Sale price ends in</p>
+            <div className="mt-3 flex justify-center">
+              <CountdownTimer target={product.blackFridayEndsAt} panel />
             </div>
-            <SaleProgress tone="light" />
+            <div className="mt-5 text-left">
+              <SaleProgress />
+            </div>
           </div>
         </div>
       </div>

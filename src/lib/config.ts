@@ -55,7 +55,7 @@ export const featureRows = [
     image: "/images/jb-racks_fits_almost_any_vehicle.jpg",
     video: "/videos/rack_install_clip.mp4",
     title: "Versatile Hitch Fit",
-    body: "The 18″ hitch bar clears spare tires and extended trays on almost any vehicle, and fits 2″ Class III receivers — the most common hitch in the US.",
+    body: "The 18″ hitch bar clears spare tires and extended trays on almost any vehicle, and fits 2″ Class III receivers",
     size: "medium",
   },
   {
@@ -80,7 +80,7 @@ export const comparisonRows = [
 export const pricingHighlights = [
   "E-bike rated — 65 lbs per wheel holder, 240 lbs total capacity",
   "4-Year warranty on every rack",
-  "Free shipping to city & suburban areas",
+  "Free shipping anywhere in the mainland US",
   "Trusted by 20,000+ customers",
   "Pay in 4 with Affirm — as low as $149/mo",
 ];
@@ -135,7 +135,7 @@ export const faqs = [
   },
   {
     question: "Is shipping really free?",
-    answer: "Yes — free shipping to city and suburban areas, with delivery typically in 4-7 business days. Reach out to our team for a quote if you're outside those zones.",
+    answer: "Yes - shipping is free anywhere in the mainland US, with delivery typically in 4-7 business days. Orders to Alaska and Hawaii require a shipping fee - reach out to our team for a quote.",
   },
   {
     question: "How long does assembly take?",

@@ -149,7 +149,7 @@ export const reasons = [
   {
     number: "04",
     title: "Versatile Hitch Fit",
-    body: "The 18\" hitch bar clears spare tires and extended trays on almost any vehicle, and fits 2\" Class III receivers — the most common hitch in the US.",
+    body: "The 18\" hitch bar clears spare tires and extended trays on almost any vehicle, and fits 2\" Class III receivers",
     image: "/images/jb-racks_fits_almost_any_vehicle.jpg",
   },
   {
@@ -216,7 +216,7 @@ export const warranty = {
 export const faqs = [
   {
     question: "How long does shipping take?",
-    answer: "Free shipping typically takes 4-7 business days depending on your location. Shipping is free in major metro areas — contact support for a quote outside those zones.",
+    answer: "Free shipping typically takes 4-7 business days depending on your location. Shipping is free anywhere in the mainland US — orders to Alaska and Hawaii require a shipping fee, so contact support for a quote.",
   },
   {
     question: "Will this fit a car with a spare wheel on the back?",

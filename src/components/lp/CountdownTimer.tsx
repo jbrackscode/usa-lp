@@ -52,7 +52,7 @@ export function CountdownTimer({ target, className = "", compact = false, large 
               <span className="font-display min-w-[1.15em] text-center text-[26px] uppercase leading-[0.85] sm:text-[34px]">
                 {String(display[key]).padStart(2, "0")}
               </span>
-              <span className="mt-1 font-mono text-[10px] font-semibold uppercase leading-none tracking-[0.04em] sm:text-[12px]">{label}</span>
+              <span className="mt-1 font-mono text-[10px] font-bold uppercase leading-none tracking-[0.04em] sm:text-[12px]">{label}</span>
             </div>
             {i < units.length - 1 && (
               <span className="font-display text-[20px] leading-[0.85] sm:text-[26px]" aria-hidden>

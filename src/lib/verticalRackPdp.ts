@@ -127,7 +127,7 @@ export const pdpFaqs = [
   },
   {
     question: "What are the shipping costs?",
-    answer: "Shipping is free in major metropolitan areas. Contact us for a shipping quote outside these areas.",
+    answer: "Shipping is free anywhere in the mainland US. Orders to Alaska and Hawaii require a shipping fee — contact us for a quote.",
   },
   {
     question: "Do your racks fit cars with spare wheels?",

@@ -270,7 +270,7 @@ export const faqs = [
   },
   {
     question: "Is shipping really free?",
-    answer: "Yes — free shipping to city and suburban areas, with delivery typically in 4-7 business days.",
+    answer: "Yes — shipping is free anywhere in the mainland US, with delivery typically in 4-7 business days. Orders to Alaska and Hawaii require a shipping fee — reach out to our team for a quote.",
   },
   {
     question: "How long does assembly take?",

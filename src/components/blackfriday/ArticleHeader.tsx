@@ -16,7 +16,7 @@ export function ArticleHeader() {
       </p>
 
       <div className="mt-8 border-l-4 border-nr-ink py-1 pl-5 sm:mt-10">
-        <p className="mb-1.5 font-mono text-[13px] font-medium uppercase tracking-[0.12em] text-nr-ink-mid">Summary:</p>
+        <p className="mb-1.5 font-mono text-[13px] font-bold uppercase tracking-[0.12em] text-nr-ink-mid">Summary:</p>
         <p className="text-[17px] font-semibold leading-[1.55] text-nr-ink sm:text-[18px]">
           The JB Racks vertical hitch rack has 5 big benefits that&apos;ll ruin platform and roof racks for you forever.
         </p>

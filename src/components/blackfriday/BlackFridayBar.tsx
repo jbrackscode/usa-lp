@@ -17,8 +17,11 @@ export function BlackFridayBar({ offer }: { offer: BlackFridayOffer }) {
       <div className="flex items-center justify-center gap-3 bg-[#282828] px-4 py-2.5 sm:gap-5 sm:py-3">
         <div className="flex flex-col items-center">
           <span className="font-display text-[30px] uppercase leading-[0.85] text-white sm:text-[40px]">Black Friday</span>
-          <span className="mt-1 font-mono text-[10.5px] font-medium uppercase leading-none tracking-[0.14em] text-brand-orange sm:text-[13px]">
-            {offer.allSamePrice ? `All sizes $${offer.price}` : `From $${offer.price}`}
+          {/* Longer than the title, so on phones it's capped to roughly the
+              title's width and wraps under it instead of squeezing the timer;
+              one line from sm up. */}
+          <span className="mt-1 max-w-[150px] text-center font-mono text-[10.5px] font-bold uppercase leading-[1.2] tracking-[0.1em] text-brand-orange sm:max-w-none sm:whitespace-nowrap sm:text-[13px] sm:tracking-[0.14em]">
+            {offer.allSamePrice ? `All vertical rack sizes $${offer.price}` : `Vertical racks from $${offer.price}`}
           </span>
         </div>
         <CountdownTimer target={product.blackFridayEndsAt} panel />
