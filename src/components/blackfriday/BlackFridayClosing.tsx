@@ -4,6 +4,7 @@ import { product } from "@/lib/config";
 import { reviewStats } from "@/lib/bikeRacks";
 import { offerPriceLine, type BlackFridayOffer } from "@/lib/blackFriday";
 import { SaleProgress } from "./SaleProgress";
+import { FinalWeekOnly } from "./FinalWeekOnly";
 import { BlackFridayBadge } from "./BlackFridayBadge";
 
 // Final CTA for /lp-demo-black-friday, built for one clear action. Reading
@@ -37,7 +38,7 @@ export function BlackFridayClosing({ offer }: { offer: BlackFridayOffer }) {
             {offer.allSamePrice ? "You save" : "Save up to"} ${offer.maxSavings}
           </span>
 
-          <ClaimRackButton label={`Shop The Rack - $${offer.price}`} full href={product.productUrl} className="mt-7" />
+          <ClaimRackButton label="Learn More" full href={product.productUrl} className="mt-7" />
           {/* Non-breaking spaces and a non-breaking hyphen (U+2011) keep
               each phrase whole when it wraps — a plain "-" is a line-break
               opportunity, which split "4- / year". */}
@@ -46,16 +47,19 @@ export function BlackFridayClosing({ offer }: { offer: BlackFridayOffer }) {
           </p>
 
           {/* Same treatment as the top bar: charcoal panel, mono label, the
-              white condensed-digit timer, then the dark progress bar. */}
-          <div className="mt-8 rounded-xl bg-[#282828] px-4 pb-5 pt-4 sm:px-6">
-            <p className="font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-orange sm:text-[13px]">Sale price ends in</p>
-            <div className="mt-3 flex justify-center">
-              <CountdownTimer target={product.blackFridayEndsAt} panel />
+              white condensed-digit timer, then the dark progress bar. The
+              whole panel only appears in the sale's final 7 days. */}
+          <FinalWeekOnly>
+            <div className="mt-8 rounded-xl bg-[#282828] px-4 pb-5 pt-4 sm:px-6">
+              <p className="font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-orange sm:text-[13px]">Sale price ends in</p>
+              <div className="mt-3 flex justify-center">
+                <CountdownTimer target={product.blackFridayEndsAt} panel />
+              </div>
+              <div className="mt-5 text-left">
+                <SaleProgress />
+              </div>
             </div>
-            <div className="mt-5 text-left">
-              <SaleProgress />
-            </div>
-          </div>
+          </FinalWeekOnly>
         </div>
       </div>
 

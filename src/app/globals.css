@@ -193,6 +193,39 @@ body {
   }
 }
 
+/* Mobile comparison (ComparisonMobile.tsx): rows rise in one after another
+   once the list scrolls into view, and each tick pops in just after its
+   row. "armed" is only set client-side once the list is known to be off
+   screen, so without JS (or before hydration) everything is visible. */
+.cmp-list[data-state="armed"] .cmp-row {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.cmp-list[data-state="armed"] .cmp-tick {
+  transform: scale(0.4);
+  opacity: 0;
+}
+.cmp-list[data-state="shown"] .cmp-row {
+  transition:
+    opacity 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: calc(var(--i) * 90ms);
+}
+.cmp-list[data-state="shown"] .cmp-tick {
+  transition:
+    opacity 0.3s ease-out,
+    transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition-delay: calc(var(--i) * 90ms + 220ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cmp-list[data-state] .cmp-row,
+  .cmp-list[data-state] .cmp-tick {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Subtle attention pulse for urgency/savings badges — matches the same
    treatment used on jbracks.com.au's product page savings badge. */
 @keyframes pulse-subtle {

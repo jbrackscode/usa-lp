@@ -1,5 +1,6 @@
 import { comparisonRows, product } from "@/lib/config";
 import { ClaimRackButton } from "./ClaimRackButton";
+import { ComparisonMobile } from "./ComparisonMobile";
 
 type ComparisonTableProps = {
   // Live 4 Bike Rack price, same source /lp-vertical-bike-racks uses —
@@ -9,17 +10,19 @@ type ComparisonTableProps = {
   ctaHref?: string;
   // Button wording before the price; defaults to "Claim My Rack".
   ctaLabel?: string;
+  // false drops the " - $price" suffix (e.g. a plain "Learn More").
+  ctaShowPrice?: boolean;
 };
 
-export function ComparisonTable({ price = product.price, ctaHref, ctaLabel = "Claim My Rack" }: ComparisonTableProps) {
+export function ComparisonTable({ price = product.price, ctaHref, ctaLabel = "Claim My Rack", ctaShowPrice = true }: ComparisonTableProps) {
   return (
     <div className="mx-auto max-w-[1100px] px-5 pb-[39px] pt-[30px] text-brand-black sm:pb-[52px] sm:pt-10">
       <h2 className="mb-6 text-center text-3xl font-extrabold uppercase tracking-tighter leading-[1.14] sm:text-5xl">
-        Why Riders Go Vertical
+        Why Riders Are Going Vertical
       </h2>
 
-      <div className="overflow-hidden rounded-xl border border-brand-line bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-        <table className="hidden w-full border-collapse text-left sm:table">
+      <div className="hidden overflow-hidden rounded-xl border border-brand-line bg-white shadow-[0_1px_3px_rgba(0,0,0,0.06)] sm:block">
+        <table className="w-full border-collapse text-left sm:table">
           <thead>
             <tr>
               <th className="border-b-2 border-brand-line p-4"></th>
@@ -53,32 +56,13 @@ export function ComparisonTable({ price = product.price, ctaHref, ctaLabel = "Cl
             ))}
           </tbody>
         </table>
-
-        <div className="sm:hidden">
-          {comparisonRows.map((row, i) => (
-            <div key={row.label} className={`p-4 ${i > 0 ? "border-t border-[#ececec]" : ""}`}>
-              <div className="mb-2.5 text-xs font-extrabold uppercase tracking-wide text-brand-black">
-                {row.label}
-              </div>
-              <div className="mb-1.5 flex items-center gap-2.5 rounded-md bg-[#f2fbf6] px-2.5 py-1.5 text-sm font-bold text-brand-black">
-                <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-green text-[11px] font-black text-white">
-                  ✓
-                </span>
-                JB: {row.vertical}
-              </div>
-              <div className="flex items-center gap-2.5 rounded-md bg-[#fafafa] px-2.5 py-1.5 text-sm text-[#9a9a9a]">
-                <span className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#d6d6d6] text-[11px] font-black text-white">
-                  ✕
-                </span>
-                Others: {row.traditional}
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
+      {/* Outside the overflow-hidden card so its header can stay sticky. */}
+      <ComparisonMobile />
+
       <div className="mt-7 flex justify-center">
-        <ClaimRackButton label={`${ctaLabel} - $${price}`} href={ctaHref} />
+        <ClaimRackButton label={ctaShowPrice ? `${ctaLabel} - $${price}` : ctaLabel} href={ctaHref} />
       </div>
       <p className="mt-3 text-center text-sm text-brand-black/70">4-year warranty · Free shipping</p>
     </div>

@@ -89,7 +89,7 @@ export default async function LpDemoBlackFridayPage() {
         {reasons.slice(2)}
 
         <div className="mt-14">
-          <ComparisonTable price={offer.price} ctaHref={product.productUrl} ctaLabel="Shop The Rack" />
+          <ComparisonTable price={offer.price} ctaHref={product.productUrl} ctaLabel="Learn More" ctaShowPrice={false} />
         </div>
 
         {/* The article hands over to the sale here: the store's Black
@@ -113,7 +113,7 @@ export default async function LpDemoBlackFridayPage() {
           </div>
         </section>
 
-        {/* Every "Shop The Rack" button on this page goes to the 4-bike rack's
+        {/* Every "Learn More" button on this page goes to the 4-bike rack's
             product page on the store rather than straight to checkout. */}
         <BlackFridayClosing offer={offer} />
       </main>

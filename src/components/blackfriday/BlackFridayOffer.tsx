@@ -4,6 +4,7 @@ import { product, storeUrl } from "@/lib/config";
 import { offerPriceLine, type BlackFridayOffer as Offer } from "@/lib/blackFriday";
 import { SaleProgress } from "./SaleProgress";
 import { BlackFridayBadge } from "./BlackFridayBadge";
+import { FinalWeekOnly } from "./FinalWeekOnly";
 
 // Black Friday version of PricingSection — full-bleed black band, low in
 // the article, with the countdown + sale-progress bar and the offer card.
@@ -32,14 +33,17 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
       </p>
 
       {/* Same timer treatment as the top bar and closing card: mono orange
-          label over the white condensed-digit panel. */}
-      <div className="mx-auto mt-7 flex flex-col items-center gap-3">
-        <span className="font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-orange sm:text-[13px]">Sale price ends in</span>
-        <CountdownTimer target={product.blackFridayEndsAt} panel />
-      </div>
-      <div className="mt-6">
-        <SaleProgress />
-      </div>
+          label over the white condensed-digit panel, then the progress bar.
+          Both only shown in the sale's final 7 days. */}
+      <FinalWeekOnly>
+        <div className="mx-auto mt-7 flex flex-col items-center gap-3">
+          <span className="font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-orange sm:text-[13px]">Sale price ends in</span>
+          <CountdownTimer target={product.blackFridayEndsAt} panel />
+        </div>
+        <div className="mt-6">
+          <SaleProgress />
+        </div>
+      </FinalWeekOnly>
 
       <div className="relative mx-auto mt-10 max-w-[480px] rounded-[14px] border-4 border-brand-orange bg-white px-6 py-8 text-brand-black">
         <span className="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-red px-4 py-1 text-[13px] font-black uppercase tracking-wide text-white">
@@ -65,7 +69,7 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
           ))}
         </ul>
 
-        <ClaimRackButton label={`Shop The Rack - $${offer.price}`} full className="mt-6" href={product.productUrl} />
+        <ClaimRackButton label="Learn More" full className="mt-6" href={product.productUrl} />
         {/* The button goes to the 4-bike rack's product page, so the other
             sizes in the same offer get their own direct links. */}
         <p className="mt-3 text-[13px] text-[#666]">
