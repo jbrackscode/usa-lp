@@ -24,7 +24,7 @@ export function BlackFridayClosing({ offer }: { offer: BlackFridayOffer }) {
         <div className="px-6 pb-7 pt-8 text-center sm:px-10 sm:pb-9 sm:pt-10">
           <BlackFridayBadge size="sm" />
           <h2 className="mt-5 text-[28px] font-extrabold uppercase leading-[1.1] tracking-tighter text-brand-black sm:text-[36px]">
-            Ready to make the switch?
+            Less wrestling with bikes. More riding.
           </h2>
           <p className="mx-auto mt-2 max-w-[380px] text-[15px] leading-snug text-brand-black/70">
             {offerPriceLine(offer)} - our biggest sale of the year.

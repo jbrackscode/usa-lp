@@ -312,7 +312,7 @@ export function QuizFunnel({ open, onClose, rackSizes, addons, deepLinkStep }: Q
           ? "cycling"
           : "other");
 
-  // Falls back to the 5-bike ("Most Popular") size if somehow reached
+  // Falls back to the "Most Popular" (4-bike) size if somehow reached
   // without a bike-count answer, rather than showing nothing.
   const recommendedRack = rackSizes.find((r) => r.bikes === bikeCount) ?? rackSizes.find((r) => r.badge) ?? rackSizes[0];
   const savings = recommendedRack.compareAtPrice - recommendedRack.price;

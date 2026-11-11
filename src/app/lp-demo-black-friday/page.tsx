@@ -12,6 +12,7 @@ import { BlackFridayOffer } from "@/components/blackfriday/BlackFridayOffer";
 import { BlackFridayMarquee } from "@/components/blackfriday/BlackFridayMarquee";
 // import { SaleChips } from "@/components/blackfriday/SaleChips";
 import { BlackFridayClosing } from "@/components/blackfriday/BlackFridayClosing";
+import { NextSteps } from "@/components/blackfriday/NextSteps";
 import { featureRows, product } from "@/lib/config";
 import { getLiveBikeRackData } from "@/lib/bikeRacksLive";
 import { getBlackFridayOffer } from "@/lib/blackFriday";
@@ -112,6 +113,10 @@ export default async function LpDemoBlackFridayPage() {
             <FAQ />
           </div>
         </section>
+
+        {/* How to order: size → color → add to cart, right before the
+            final CTA sends them to the product page. */}
+        <NextSteps rackSizes={rackSizes} offer={offer} />
 
         {/* Every "Learn More" button on this page goes to the 4-bike rack's
             product page on the store rather than straight to checkout. */}
