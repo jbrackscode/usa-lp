@@ -1,6 +1,7 @@
 import { CountdownTimer } from "@/components/lp/CountdownTimer";
 import { product } from "@/lib/config";
 import type { BlackFridayOffer } from "@/lib/blackFriday";
+import { FinalWeekOnly } from "./FinalWeekOnly";
 // import { BlackFridayTicker } from "./BlackFridayTicker";
 
 // Top bar on /lp-demo-black-friday, modelled on the Hollow Socks countdown
@@ -24,7 +25,11 @@ export function BlackFridayBar({ offer }: { offer: BlackFridayOffer }) {
             {offer.allSamePrice ? `All vertical rack sizes $${offer.price}` : `Vertical racks from $${offer.price}`}
           </span>
         </div>
-        <CountdownTimer target={product.blackFridayEndsAt} panel />
+        {/* Like the other timers on the page, only in the final 7 days;
+            the lockup stays centred on its own until then. */}
+        <FinalWeekOnly>
+          <CountdownTimer target={product.blackFridayEndsAt} panel />
+        </FinalWeekOnly>
       </div>
     </div>
   );
