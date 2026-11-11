@@ -1,17 +1,20 @@
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { storeUrl } from "@/lib/config";
-import type { RackSize } from "@/lib/bikeRacks";
+import { colors, type RackSize } from "@/lib/bikeRacks";
 import type { BlackFridayOffer } from "@/lib/blackFriday";
-import { RackColorPicker } from "./RackColorPicker";
 
-// "What happens next" section just above the closing CTA on
+// "How to order" section just above the closing CTA on
 // /lp-demo-black-friday. Walks a first-time visitor through the product
-// page they're about to land on: it only asks for a size and a color, then
-// Add to Cart. Mirrors the real page (jbracks.com/products/4-e-bike-rack):
-// sizes 4/5/6, colors Black / Velo Turquoise / Leaf Green, free delivery in
-// 4-7 business days, 30-day change-of-mind returns, 4-year warranty. Prices
-// are the live Shopify ones passed in from the page.
+// page they're about to land on: pick a size, pick a color, Add to Cart.
+// Mirrors the real page (jbracks.com/products/4-e-bike-rack): sizes 4/5/6,
+// colors Black / Velo Turquoise / Leaf Green, Shop Pay "pay in 4", free
+// tracked delivery in 4-7 business days, customer assembly with the video
+// + fitment guide (the page quotes 45-60 minutes), 30-day change-of-mind
+// returns and the 4-year warranty. Prices are the live Shopify ones.
+//
+// Every step uses the same layout: kicker, title, one intro paragraph, then
+// a row of identical cards (stacked as full-width rows on phones).
 
 function BikeIcon({ className = "" }: { className?: string }) {
   return (
@@ -23,7 +26,7 @@ function BikeIcon({ className = "" }: { className?: string }) {
   );
 }
 
-function Step({ n, kicker, title, children, last = false }: { n: string; kicker: string; title: string; children: ReactNode; last?: boolean }) {
+function Step({ n, kicker, title, intro, children, last = false }: { n: string; kicker: string; title: string; intro: ReactNode; children: ReactNode; last?: boolean }) {
   return (
     <li className="relative grid grid-cols-[40px_1fr] gap-4 sm:grid-cols-[56px_1fr] sm:gap-7">
       {/* Number + the rail joining it to the next step. */}
@@ -33,20 +36,65 @@ function Step({ n, kicker, title, children, last = false }: { n: string; kicker:
         </span>
         {!last && <span className="mt-2 w-0.5 flex-1 bg-[repeating-linear-gradient(to_bottom,#d9d9d9_0_6px,transparent_6px_12px)]" aria-hidden />}
       </div>
-      <div className={last ? "" : "pb-12 sm:pb-16"}>
+      <div className={`min-w-0 ${last ? "" : "pb-12 sm:pb-16"}`}>
         <p className="font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-orange sm:text-[13px]">{kicker}</p>
         <h3 className="mt-1.5 text-[24px] font-extrabold uppercase leading-[1.1] tracking-tighter text-brand-black sm:text-[32px]">{title}</h3>
-        <div className="mt-5">{children}</div>
+        <p className="mt-3 max-w-[640px] text-[16px] leading-relaxed text-brand-black/75">{intro}</p>
+        <div className="mt-6">{children}</div>
       </div>
     </li>
   );
 }
 
+// The one card shape every step shares: media on top (left on phones),
+// then a small "eyebrow" row, a condensed title, a line of detail and an
+// optional footer.
+const cardShell =
+  "group relative flex overflow-hidden rounded-xl border-2 border-brand-line bg-white sm:flex-col";
+const cardBody = "flex min-w-0 flex-1 flex-col justify-center px-4 py-3.5 sm:justify-start sm:px-5 sm:pb-5 sm:pt-4";
+const cardTitle = "font-display text-[32px] uppercase leading-none text-brand-black sm:text-[38px]";
+const cardDetail = "mt-1.5 text-[14px] leading-snug text-brand-black/65";
+
+function CardImage({ src, alt, badge }: { src: string; alt: string; badge?: string }) {
+  return (
+    <div className="relative aspect-square w-[112px] shrink-0 bg-brand-cream sm:w-auto">
+      {badge && (
+        <span className="absolute left-2 top-2 z-10 whitespace-nowrap rounded-full bg-brand-black px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-white sm:left-3 sm:top-3 sm:text-[10px]">
+          {badge}
+        </span>
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        sizes="(min-width: 640px) 300px, 112px"
+        loading="lazy"
+        className="object-contain p-2 transition-transform duration-300 group-hover:scale-[1.03] sm:p-4"
+      />
+    </div>
+  );
+}
+
+const colorNotes: Record<string, string> = {
+  Black: "Blends in with any vehicle",
+  "Velo Turquoise": "Easy to spot at the trailhead",
+  "Leaf Green": "An earthy, outdoorsy look",
+};
+
 const afterOrder = [
-  { title: "Free delivery", body: "Arrives in 4-7 business days, tracked to your door (mainland US)." },
-  { title: "Simple assembly", body: "A step-by-step assembly video and fitment guide come with every rack." },
-  { title: "30-day returns", body: "Not the right fit? Send it back within 30 days of delivery for a full refund." },
-  { title: "4-year warranty", body: "Every rack is covered, backed by our support team." },
+  {
+    title: "Check out",
+    body: "Pay in full, or split it into 4 payments with Shop Pay. Free mainland US shipping is applied automatically - no code needed.",
+  },
+  { title: "Your rack ships", body: "Free, tracked delivery to your door, typically in 4‑7 business days." },
+  {
+    title: "You assemble it",
+    body: "The rack needs assembling when it arrives - allow about an hour, following the step-by-step video and fitment guide.",
+  },
+  {
+    title: "Load up and ride",
+    body: "Covered by 30-day change-of-mind returns and a 4-year warranty, with our support team a message away.",
+  },
 ];
 
 export function NextSteps({ rackSizes, offer }: { rackSizes: RackSize[]; offer: BlackFridayOffer }) {
@@ -57,7 +105,7 @@ export function NextSteps({ rackSizes, offer }: { rackSizes: RackSize[]; offer: 
       <div className="mx-auto max-w-[1000px]">
         <p className="font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-black/55 sm:text-[13px]">How to order</p>
         <h2 className="mt-2 text-3xl font-extrabold uppercase leading-[1.1] tracking-tighter text-brand-black sm:text-5xl">
-          Two choices and you&apos;re done
+          A few steps and you&apos;re done
         </h2>
         <p className="mt-3 max-w-[640px] text-[17px] leading-relaxed text-brand-black/70">
           The product page only asks you for two things - how many bikes, and which color. Here&apos;s how to get both right before you click through.
@@ -75,46 +123,32 @@ export function NextSteps({ rackSizes, offer }: { rackSizes: RackSize[]; offer: 
         </div>
 
         <ol className="mt-12">
-          <Step n="1" kicker="Step 1 / Size" title="How many bikes do you carry?">
-            <p className="max-w-[640px] text-[16px] leading-relaxed text-brand-black/75">
-              Count the bikes on your busiest trip, not your average one - a bigger rack still carries fewer bikes, but a smaller one can&apos;t stretch.
-              {offer.allSamePrice && ` Right now every size is the same $${offer.price}, so sizing up costs nothing extra.`}
-            </p>
-            <div className="mt-6 grid gap-2.5 sm:grid-cols-3 sm:gap-5">
+          <Step
+            n="1"
+            kicker="Step 1 / Size"
+            title="How many bikes do you carry?"
+            intro={
+              <>
+                Count the bikes on your busiest trip, not your average one - a bigger rack still carries fewer bikes, but a smaller one can&apos;t stretch.
+                {offer.allSamePrice && ` Right now every size is the same $${offer.price}, so sizing up costs nothing extra.`}
+              </>
+            }
+          >
+            <div className="grid gap-3 sm:grid-cols-3 sm:gap-4">
               {rackSizes.map((r) => (
-                <a
-                  key={r.bikes}
-                  href={`${storeUrl}/products/${r.handle}`}
-                  className="group relative flex overflow-hidden sm:flex-col rounded-xl border-2 border-brand-line bg-white transition-colors hover:border-brand-black"
-                >
-                  {r.badge && (
-                    <span className="absolute left-2 top-2 z-10 whitespace-nowrap sm:left-1/2 sm:-translate-x-1/2 rounded-full bg-brand-black px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-[0.1em] text-white sm:text-[10px]">
-                      {r.badge}
-                    </span>
-                  )}
-                  <div className="relative aspect-square w-[118px] shrink-0 bg-brand-cream sm:w-auto">
-                    <Image
-                      src={r.imagesByColor.Black[0]}
-                      alt={`JB Racks ${r.bikes}-bike vertical rack`}
-                      fill
-                      sizes="(min-width: 640px) 300px, 30vw"
-                      loading="lazy"
-                      className="object-contain p-2 transition-transform duration-300 group-hover:scale-[1.03] sm:p-4"
-                    />
-                  </div>
-                  <div className="flex flex-1 flex-col justify-center px-4 py-3 sm:items-center sm:px-3 sm:pb-5 sm:pt-3 sm:text-center">
-                    <div className="flex gap-0.5 text-brand-black sm:gap-1">
+                <a key={r.bikes} href={`${storeUrl}/products/${r.handle}`} className={`${cardShell} transition-colors hover:border-brand-black`}>
+                  <CardImage src={r.imagesByColor.Black[0]} alt={`JB Racks ${r.bikes}-bike vertical rack`} badge={r.badge} />
+                  <div className={cardBody}>
+                    <div className="flex h-4 items-center gap-0.5 text-brand-black sm:gap-1">
                       {Array.from({ length: r.bikes }, (_, i) => (
                         <BikeIcon key={i} className="h-3 w-[18px] sm:h-3.5 sm:w-5" />
                       ))}
                     </div>
-                    <p className="mt-2 font-display text-[36px] uppercase leading-none text-brand-black sm:text-[44px]">{r.bikes} Bikes</p>
-                    <p className="mt-1 text-[14px] leading-tight text-brand-black/60">{r.sublabel}</p>
-                    <p className="mt-2 text-[17px] font-extrabold text-brand-black">
+                    <p className={`mt-2 ${cardTitle}`}>{r.bikes} Bikes</p>
+                    <p className={cardDetail}>{r.sublabel}</p>
+                    <p className="mt-2 text-[16px] font-extrabold text-brand-black">
                       ${r.price}
-                      {r.compareAtPrice > r.price && (
-                        <span className="ml-1.5 text-[14px] font-semibold text-brand-black/40 line-through">${r.compareAtPrice}</span>
-                      )}
+                      {r.compareAtPrice > r.price && <span className="ml-1.5 text-[14px] font-semibold text-brand-black/40 line-through">${r.compareAtPrice}</span>}
                     </p>
                   </div>
                 </a>
@@ -122,24 +156,54 @@ export function NextSteps({ rackSizes, offer }: { rackSizes: RackSize[]; offer: 
             </div>
           </Step>
 
-          <Step n="2" kicker="Step 2 / Color" title="Pick the color you love">
-            <RackColorPicker rack={four} />
-          </Step>
-
-          <Step n="3" kicker="Step 3 / Done" title="Add to cart - we handle the rest" last>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {afterOrder.map((item) => (
-                <div key={item.title} className="flex gap-3 rounded-xl border border-brand-line px-4 py-4">
-                  <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-green text-[11px] font-black text-white" aria-hidden>
-                    ✓
-                  </span>
-                  <div>
-                    <p className="text-[16px] font-extrabold text-brand-black">{item.title}</p>
-                    <p className="mt-0.5 text-[14.5px] leading-snug text-brand-black/70">{item.body}</p>
+          <Step
+            n="2"
+            kicker="Step 2 / Color"
+            title="Pick the color you love"
+            intro="Same rack, same capacity and the same price in every color - it's purely down to looks. Tap one to open the rack in that color."
+          >
+            <div className="grid gap-3 sm:grid-cols-3 sm:gap-4">
+              {colors.map((c) => (
+                <a
+                  key={c.name}
+                  href={`${storeUrl}/products/${four.handle}?variant=${four.variants[c.name]}`}
+                  className={`${cardShell} transition-colors hover:border-brand-black`}
+                >
+                  <CardImage src={four.imagesByColor[c.name][0]} alt={`JB Racks vertical rack in ${c.name}`} />
+                  <div className={cardBody}>
+                    <div className="flex h-4 items-center">
+                      <span className="h-4 w-4 rounded-full ring-1 ring-black/10" style={{ backgroundColor: c.hex }} aria-hidden />
+                    </div>
+                    <p className={`mt-2 ${cardTitle}`}>{c.name}</p>
+                    <p className={cardDetail}>{colorNotes[c.name]}</p>
+                    <p className="mt-2 text-[16px] font-extrabold text-brand-black">${four.price}</p>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
+          </Step>
+
+          <Step
+            n="3"
+            kicker="Step 3 / Checkout"
+            title="Add to cart - here's what happens next"
+            intro="Once you've picked a size and color, here's what to expect from checkout to your first ride."
+            last
+          >
+            <ol className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+              {afterOrder.map((item, i) => (
+                <li key={item.title} className={cardShell}>
+                  {/* Letter tile in place of a photo, same footprint. */}
+                  <div className="flex w-[64px] shrink-0 items-center justify-center bg-brand-cream sm:h-20 sm:w-auto">
+                    <span className="font-display text-[34px] uppercase leading-none text-brand-orange sm:text-[40px]">{String.fromCharCode(65 + i)}</span>
+                  </div>
+                  <div className={cardBody}>
+                    <p className="whitespace-nowrap font-display text-[28px] uppercase leading-none text-brand-black sm:text-[26px] lg:text-[24px]">{item.title}</p>
+                    <p className={cardDetail}>{item.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </Step>
         </ol>
       </div>
