@@ -93,7 +93,7 @@ const afterOrder = [
   },
   {
     title: "Load up and ride",
-    body: "Covered by 30-day change-of-mind returns and a 4-year warranty, with our support team a message away.",
+    body: "Covered by 30‑day change‑of‑mind returns and a 4‑year warranty, with our support team a message away.",
   },
 ];
 
@@ -190,17 +190,33 @@ export function NextSteps({ rackSizes, offer }: { rackSizes: RackSize[]; offer: 
             intro="Once you've picked a size and color, here's what to expect from checkout to your first ride."
             last
           >
-            <ol className="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+            {/* A → B → C → D: an arrow badge sits in the gap between each
+                card, pointing down on phones (stacked) and right on desktop
+                (one row), centred on the letter tiles. Hidden on the 2-column
+                tablet layout, where the order would zig-zag. */}
+            <ol className="grid gap-5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4 lg:gap-6">
               {afterOrder.map((item, i) => (
-                <li key={item.title} className={cardShell}>
-                  {/* Letter tile in place of a photo, same footprint. */}
-                  <div className="flex w-[64px] shrink-0 items-center justify-center bg-brand-cream sm:h-20 sm:w-auto">
-                    <span className="font-display text-[34px] uppercase leading-none text-brand-orange sm:text-[40px]">{String.fromCharCode(65 + i)}</span>
+                <li key={item.title} className="relative">
+                  <div className={`${cardShell} h-full`}>
+                    {/* Letter tile in place of a photo, same footprint. */}
+                    <div className="flex w-[64px] shrink-0 items-center justify-center bg-brand-cream sm:h-20 sm:w-auto">
+                      <span className="font-display text-[34px] uppercase leading-none text-brand-orange sm:text-[40px]">{String.fromCharCode(65 + i)}</span>
+                    </div>
+                    <div className={cardBody}>
+                      <p className="whitespace-nowrap font-display text-[28px] uppercase leading-none text-brand-black sm:text-[26px] lg:text-[24px]">{item.title}</p>
+                      <p className={cardDetail}>{item.body}</p>
+                    </div>
                   </div>
-                  <div className={cardBody}>
-                    <p className="whitespace-nowrap font-display text-[28px] uppercase leading-none text-brand-black sm:text-[26px] lg:text-[24px]">{item.title}</p>
-                    <p className={cardDetail}>{item.body}</p>
-                  </div>
+                  {i < afterOrder.length - 1 && (
+                    <span
+                      className="absolute -bottom-6 left-[20px] z-10 flex h-7 w-7 rotate-90 items-center justify-center rounded-full bg-brand-orange text-white shadow-[0_0_0_4px_#fff] sm:hidden lg:-right-[26px] lg:bottom-auto lg:left-auto lg:top-[28px] lg:flex lg:rotate-0"
+                      aria-hidden
+                    >
+                      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5">
+                        <path d="M3 8h10M9 4l4 4-4 4" />
+                      </svg>
+                    </span>
+                  )}
                 </li>
               ))}
             </ol>
