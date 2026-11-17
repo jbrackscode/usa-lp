@@ -139,7 +139,7 @@ export const faqs = [
   },
   {
     question: "How long does assembly take?",
-    answer: "Most riders finish assembly in 30-45 minutes. We provide a full assembly video and a printable fitment/build PDF to walk you through it step by step.",
+    answer: "Allow 45-60 minutes for assembly. We provide a full assembly video and a printable fitment/build PDF to walk you through it step by step.",
   },
   {
     question: "Will it fit my bike?",

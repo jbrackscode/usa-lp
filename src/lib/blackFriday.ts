@@ -42,6 +42,19 @@ export function getBlackFridayOffer(rackSizes: RackSize[]): BlackFridayOffer {
   };
 }
 
+// The one CTA label used by every button on the page (hero, sticky bar,
+// comparison table, offer block, closing card), so a copy test only needs
+// changing here.
+export function saleCtaLabel(offer: BlackFridayOffer) {
+  return `Shop the Sale - $${offer.price}`;
+}
+
+// "Nov 30" in the sale's own (Pacific) time zone, for the "Ends Nov 30"
+// notes shown next to every price.
+export function saleEndLabel() {
+  return new Date(product.blackFridayEndsAt).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Los_Angeles" });
+}
+
 // "4, 5 & 6-bike racks - all $499" or, if sizes ever diverge, "from $X".
 export function offerPriceLine(offer: BlackFridayOffer) {
   return offer.allSamePrice ? `4, 5 & 6-bike racks - all $${offer.price}` : `4, 5 & 6-bike racks from $${offer.price}`;

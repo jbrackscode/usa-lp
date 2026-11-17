@@ -13,9 +13,10 @@ import { BlackFridayMarquee } from "@/components/blackfriday/BlackFridayMarquee"
 // import { SaleChips } from "@/components/blackfriday/SaleChips";
 import { BlackFridayClosing } from "@/components/blackfriday/BlackFridayClosing";
 import { NextSteps } from "@/components/blackfriday/NextSteps";
-import { featureRows, product } from "@/lib/config";
+import { StickySaleBar } from "@/components/blackfriday/StickySaleBar";
+import { featureRows, product, testimonials } from "@/lib/config";
 import { getLiveBikeRackData } from "@/lib/bikeRacksLive";
-import { getBlackFridayOffer } from "@/lib/blackFriday";
+import { getBlackFridayOffer, saleCtaLabel } from "@/lib/blackFriday";
 import { getVisibleReviewPhotos } from "@/lib/okendo";
 
 // Black Friday advertorial built from /lp-demonstration-videos' content.
@@ -42,15 +43,34 @@ const reasonQuotes = [
   { text: "Great bike rack, quality build and excellent value for money.", author: "Angus B." },
   { text: "Bike went on easy, they did not touch each other.", author: "Sandy M." },
   { text: "Fits well. No issues. Perfect design.", author: "Russell W." },
+  // Reason 05 is the e-bike reason (see reasonRows below). No 5-star
+  // review in verticalRackReviews.ts talks about e-bikes, so this is Helen
+  // M.'s testimonial from jbracks.com's own marketing (config.ts
+  // testimonials), quoted verbatim.
   {
-    text: "…it is super easy to load and take off the bikes; there is no adjusting and readjusting to get the bikes to fit.",
-    author: "Michael O.",
+    text: testimonials.find((t) => t.name === "Helen M.")?.quote ?? "",
+    author: "Helen M.",
   },
 ];
 
 // Short topic labels for each reason's inset count ("01 / FAST LOADING"),
 // in featureRows order.
-const reasonKickers = ["Fast loading", "Value", "Bike protection", "Vehicle fit", "More ride time"];
+const reasonKickers = ["Fast loading", "Value", "Bike protection", "Vehicle fit", "E-bike ready"];
+
+// featureRows' fifth row ("Arrive. Unload. Ride.") repeats the first
+// ("Unload Fast. Ride Sooner."), so this page swaps it for e-bike capacity
+// (teardown fix #5). Specs are the product page's: 65 lbs per wheel holder,
+// 240 lbs total. Same clip as before. featureRows itself is shared with the
+// /lp-demonstration pages, so the swap happens here.
+const reasonRows = featureRows.map((row, i) =>
+  i === 4
+    ? {
+        ...row,
+        title: "Built for Heavy E-Bikes",
+        body: "Each wheel holder is rated to 65 lbs, with 240 lbs of total capacity across the rack - enough for e-bikes and adult mountain bikes. And you roll each bike onto its holder, so there's no hoisting a heavy e-bike above your head.",
+      }
+    : row,
+);
 
 export default async function LpDemoBlackFridayPage() {
   // Customer photos are checked against Okendo's public feed so any photo
@@ -58,7 +78,7 @@ export default async function LpDemoBlackFridayPage() {
   const [{ rackSizes }, photos] = await Promise.all([getLiveBikeRackData(), getVisibleReviewPhotos()]);
   const offer = getBlackFridayOffer(rackSizes);
 
-  const reasons = featureRows.map((row, i) => (
+  const reasons = reasonRows.map((row, i) => (
     <ArticleReason
       key={row.title}
       number={i + 1}
@@ -83,14 +103,14 @@ export default async function LpDemoBlackFridayPage() {
       {/* Header/nav bar hidden on this page for now — re-add
           <StoreNavHeader /> (components/blackfriday) here to bring it back. */}
       <main className="bg-white">
-        <ArticleHeader />
+        <ArticleHeader offer={offer} />
 
         {reasons.slice(0, 2)}
         <EditorsNote offer={offer} />
         {reasons.slice(2)}
 
         <div className="mt-14">
-          <ComparisonTable price={offer.price} ctaHref={product.productUrl} ctaLabel="Learn More" ctaShowPrice={false} />
+          <ComparisonTable price={offer.price} ctaHref={product.productUrl} ctaLabel={saleCtaLabel(offer)} ctaShowPrice={false} />
         </div>
 
         {/* The article hands over to the sale here: the store's Black
@@ -118,11 +138,15 @@ export default async function LpDemoBlackFridayPage() {
             final CTA sends them to the product page. */}
         <NextSteps rackSizes={rackSizes} offer={offer} />
 
-        {/* Every "Learn More" button on this page goes to the 4-bike rack's
+        {/* Every "Shop the Sale" button on this page goes to the 4-bike rack's
             product page on the store rather than straight to checkout. */}
         <BlackFridayClosing offer={offer} />
       </main>
       <Footer />
+      {/* Mobile sticky offer bar, plus room under the footer so the bar
+          never covers its last line. */}
+      <StickySaleBar offer={offer} />
+      <div className="h-20 bg-brand-black sm:hidden" aria-hidden />
     </>
   );
 }

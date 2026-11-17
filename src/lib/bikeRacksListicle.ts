@@ -228,7 +228,7 @@ export const faqs = [
   },
   {
     question: "Do I need any tools I don't already have?",
-    answer: "Assembly takes about 30-45 minutes with basic hand tools. A full video walkthrough and printable fitment guide are included for every size.",
+    answer: "Assembly takes about 45-60 minutes with basic hand tools. A full video walkthrough and printable fitment guide are included for every size.",
   },
   {
     question: "What if something's not right?",

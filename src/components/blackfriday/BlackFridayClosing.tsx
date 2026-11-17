@@ -2,7 +2,7 @@ import { CountdownTimer } from "@/components/lp/CountdownTimer";
 import { ClaimRackButton } from "@/components/lp/ClaimRackButton";
 import { product } from "@/lib/config";
 import { reviewStats } from "@/lib/bikeRacks";
-import { offerPriceLine, type BlackFridayOffer } from "@/lib/blackFriday";
+import { offerPriceLine, saleCtaLabel, saleEndLabel, type BlackFridayOffer } from "@/lib/blackFriday";
 import { SaleProgress } from "./SaleProgress";
 import { FinalWeekOnly } from "./FinalWeekOnly";
 import { BlackFridayBadge } from "./BlackFridayBadge";
@@ -17,7 +17,7 @@ import { BlackFridayBadge } from "./BlackFridayBadge";
 // white is ≥ 4.5:1.
 export function BlackFridayClosing({ offer }: { offer: BlackFridayOffer }) {
   return (
-    <section className="bg-brand-cream px-5 py-14 sm:py-20">
+    <section id="closing" className="bg-brand-cream px-5 py-14 sm:py-20">
       <div className="mx-auto max-w-[540px] overflow-hidden rounded-2xl border border-brand-line bg-white shadow-[0_10px_40px_rgba(0,0,0,0.08)]">
         <div className="h-1.5 bg-brand-orange" aria-hidden />
 
@@ -27,7 +27,7 @@ export function BlackFridayClosing({ offer }: { offer: BlackFridayOffer }) {
             Less wrestling with bikes. More riding.
           </h2>
           <p className="mx-auto mt-2 max-w-[380px] text-[15px] leading-snug text-brand-black/70">
-            {offerPriceLine(offer)} - our biggest sale of the year.
+            {offerPriceLine(offer)} - our biggest sale of the year, ending {saleEndLabel()}.
           </p>
 
           <div className="mt-6 flex items-baseline justify-center gap-3">
@@ -38,7 +38,7 @@ export function BlackFridayClosing({ offer }: { offer: BlackFridayOffer }) {
             {offer.allSamePrice ? "You save" : "Save up to"} ${offer.maxSavings}
           </span>
 
-          <ClaimRackButton label="Learn More" full href={product.productUrl} className="mt-7" />
+          <ClaimRackButton label={saleCtaLabel(offer)} full href={product.productUrl} className="mt-7" />
           {/* Non-breaking spaces and a non-breaking hyphen (U+2011) keep
               each phrase whole when it wraps — a plain "-" is a line-break
               opportunity, which split "4- / year". */}

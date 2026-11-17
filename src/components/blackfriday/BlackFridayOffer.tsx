@@ -1,7 +1,7 @@
 import { CountdownTimer } from "@/components/lp/CountdownTimer";
 import { ClaimRackButton } from "@/components/lp/ClaimRackButton";
 import { product, storeUrl } from "@/lib/config";
-import { offerPriceLine, type BlackFridayOffer as Offer } from "@/lib/blackFriday";
+import { offerPriceLine, saleCtaLabel, saleEndLabel, type BlackFridayOffer as Offer } from "@/lib/blackFriday";
 import { SaleProgress } from "./SaleProgress";
 import { BlackFridayBadge } from "./BlackFridayBadge";
 import { FinalWeekOnly } from "./FinalWeekOnly";
@@ -29,7 +29,7 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
         <span className="text-brand-orange">${offer.price}</span>
       </h2>
       <p className="mx-auto mt-2.5 max-w-[560px] text-base text-white/65">
-        {offerPriceLine(offer)}, down from ${offer.compareAtPrice} - while the Black Friday sale lasts.
+        {offerPriceLine(offer)}, down from ${offer.compareAtPrice} - sale ends {saleEndLabel()}.
       </p>
 
       {/* Same timer treatment as the top bar and closing card: mono orange
@@ -56,6 +56,7 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
         <span className="mt-2 inline-block rounded-full bg-brand-orange px-3 py-1.5 text-[13px] font-black uppercase text-brand-black">
           You save ${offer.maxSavings}
         </span>
+        <p className="mt-2 font-mono text-[12px] font-bold uppercase tracking-[0.1em] text-brand-black/60">Sale ends {saleEndLabel()}</p>
 
         <ul className="mt-6 space-y-1.5 text-left">
           {highlights.map((line) => (
@@ -69,7 +70,7 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
           ))}
         </ul>
 
-        <ClaimRackButton label="Learn More" full className="mt-6" href={product.productUrl} />
+        <ClaimRackButton label={saleCtaLabel(offer)} full className="mt-6" href={product.productUrl} />
         {/* The button goes to the 4-bike rack's product page, so the other
             sizes in the same offer get their own direct links. */}
         <p className="mt-3 text-[13px] text-[#666]">

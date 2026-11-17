@@ -274,7 +274,7 @@ export const faqs = [
   },
   {
     question: "How long does assembly take?",
-    answer: "Most riders finish in 30-45 minutes. We provide a full assembly video to walk you through it.",
+    answer: "Allow 45-60 minutes for assembly. We provide a full assembly video to walk you through it.",
   },
   {
     question: "What if something's not right?",
