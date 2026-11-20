@@ -22,7 +22,7 @@ export function BlackFridayBar({ offer }: { offer: BlackFridayOffer }) {
               title's width and wraps under it instead of squeezing the timer;
               one line from sm up. */}
           <span className="mt-1 max-w-[150px] text-center font-mono text-[10.5px] font-bold uppercase leading-[1.2] tracking-[0.1em] text-brand-orange sm:max-w-none sm:whitespace-nowrap sm:text-[13px] sm:tracking-[0.14em]">
-            {offer.allSamePrice ? `All vertical rack sizes $${offer.price}` : `Vertical racks from $${offer.price}`}
+            {offer.allSamePrice ? `All rack sizes $${offer.price}` : `Racks from $${offer.price}`} + free strut
           </span>
         </div>
         {/* Like the other timers on the page, only in the final 7 days;

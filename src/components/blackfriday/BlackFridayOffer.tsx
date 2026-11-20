@@ -5,6 +5,7 @@ import { offerPriceLine, saleCtaLabel, saleEndLabel, type BlackFridayOffer as Of
 import { SaleProgress } from "./SaleProgress";
 import { BlackFridayBadge } from "./BlackFridayBadge";
 import { FinalWeekOnly } from "./FinalWeekOnly";
+import { FreeGiftBadge, FreeGiftCard } from "./FreeGift";
 
 // Black Friday version of PricingSection — full-bleed black band, low in
 // the article, with the countdown + sale-progress bar and the offer card.
@@ -31,6 +32,7 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
       <p className="mx-auto mt-2.5 max-w-[560px] text-base text-white/65">
         {offerPriceLine(offer)}, down from ${offer.compareAtPrice} - sale ends {saleEndLabel()}.
       </p>
+      <FreeGiftBadge className="mt-5" />
 
       {/* Same timer treatment as the top bar and closing card: mono orange
           label over the white condensed-digit panel, then the progress bar.
@@ -57,6 +59,8 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
           You save ${offer.maxSavings}
         </span>
         <p className="mt-2 font-mono text-[12px] font-bold uppercase tracking-[0.1em] text-brand-black/60">Sale ends {saleEndLabel()}</p>
+
+        <FreeGiftCard className="mt-6" />
 
         <ul className="mt-6 space-y-1.5 text-left">
           {highlights.map((line) => (

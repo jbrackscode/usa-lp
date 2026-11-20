@@ -55,7 +55,7 @@ export function StickySaleBar({ offer }: { offer: BlackFridayOffer }) {
             {offer.allSamePrice ? "Every size" : "From"} <span className="text-brand-orange">${offer.price}</span>
           </p>
           <p className="mt-1 truncate font-mono text-[10px] font-bold uppercase tracking-[0.08em] text-white/65">
-            <span className="line-through">${offer.compareAtPrice}</span> · Ends {saleEndLabel()}
+            <span className="text-brand-orange">+ Free strut</span> · Ends {saleEndLabel()}
           </p>
         </div>
         <a

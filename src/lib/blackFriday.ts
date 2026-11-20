@@ -1,4 +1,4 @@
-import type { RackSize } from "./bikeRacks";
+import { addons, type RackSize } from "./bikeRacks";
 import { product } from "./config";
 
 export type BlackFridayOffer = {
@@ -54,6 +54,17 @@ export function saleCtaLabel(offer: BlackFridayOffer) {
 export function saleEndLabel() {
   return new Date(product.blackFridayEndsAt).toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "America/Los_Angeles" });
 }
+
+// The Black Friday gift-with-purchase, as the product page shows it: the
+// Slow-Fold Strut Twin Pack is pre-ticked in "Complete the setup" at $0,
+// with a "FREE STRUT INCLUDED · $100 VALUE" badge under the price. The
+// gift is applied by the store's upsell app, so the Storefront API can't
+// see it - keep `value` in sync with the product page by hand.
+export const freeGift = {
+  name: "Slow-Fold Strut Twin Pack",
+  value: 100,
+  image: addons.slowFoldStrut.image,
+};
 
 // "4, 5 & 6-bike racks - all $499" or, if sizes ever diverge, "from $X".
 export function offerPriceLine(offer: BlackFridayOffer) {

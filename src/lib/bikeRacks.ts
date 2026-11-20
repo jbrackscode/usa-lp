@@ -58,7 +58,7 @@ export const rackSizes: RackSize[] = [
     sublabel: "Small families",
     badge: "Most Popular",
     handle: "4-e-bike-rack",
-    price: 649,
+    price: 499,
     compareAtPrice: 670,
     imagesByColor: {
       Black: [
@@ -106,7 +106,7 @@ export const rackSizes: RackSize[] = [
     label: "5 Bikes",
     sublabel: "Room to grow",
     handle: "5-e-bike-rack",
-    price: 649,
+    price: 499,
     compareAtPrice: 670,
     imagesByColor: {
       Black: [
@@ -154,7 +154,7 @@ export const rackSizes: RackSize[] = [
     label: "6 Bikes",
     sublabel: "The whole crew",
     handle: "6-e-bike-rack",
-    price: 649,
+    price: 499,
     compareAtPrice: 670,
     imagesByColor: {
       Black: [

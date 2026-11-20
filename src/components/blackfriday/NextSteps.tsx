@@ -1,5 +1,5 @@
 import type { RackSize } from "@/lib/bikeRacks";
-import type { BlackFridayOffer } from "@/lib/blackFriday";
+import { freeGift, type BlackFridayOffer } from "@/lib/blackFriday";
 import { Step, cardBody, cardDetail, cardShell } from "./nextStepsParts";
 import { SizeColorSteps } from "./SizeColorSteps";
 
@@ -21,7 +21,7 @@ import { SizeColorSteps } from "./SizeColorSteps";
 const afterOrder = [
   {
     title: "Check out",
-    body: "Pay in full, or split it into 4 payments with Shop Pay. Free mainland US shipping is applied automatically - no code needed.",
+    body: "Your free Strut Twin Pack rides along at $0. Pay in full, or split it into 4 payments with Shop Pay - free mainland US shipping, no code needed.",
   },
   { title: "Your rack ships", body: "Free, tracked delivery to your door, typically in 4‑7 business days." },
   {
@@ -64,7 +64,12 @@ export function NextSteps({ rackSizes, offer }: { rackSizes: RackSize[]; offer: 
             n="3"
             kicker="Step 3 / Checkout"
             title="Add to cart - here's what happens next"
-            intro="Once you've picked a size and color, here's what to expect from checkout to your first ride."
+            intro={
+              <>
+                Once you&apos;ve picked a size and color, check the free <strong className="text-brand-black">{freeGift.name}</strong> is ticked under
+                &ldquo;Complete the setup&rdquo; - it&apos;s on by default - then hit Add to Cart. Here&apos;s what to expect from there.
+              </>
+            }
             last
           >
             {/* A → B → C → D: an arrow badge sits in the gap between each

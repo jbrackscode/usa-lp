@@ -6,6 +6,7 @@ import { offerPriceLine, saleCtaLabel, saleEndLabel, type BlackFridayOffer } fro
 import { SaleProgress } from "./SaleProgress";
 import { FinalWeekOnly } from "./FinalWeekOnly";
 import { BlackFridayBadge } from "./BlackFridayBadge";
+import { FreeGiftBadge } from "./FreeGift";
 
 // Final CTA for /lp-demo-black-friday, built for one clear action. Reading
 // order is offer → action → reassurance: the Black Friday SVG badge +
@@ -37,6 +38,9 @@ export function BlackFridayClosing({ offer }: { offer: BlackFridayOffer }) {
           <span className="mt-3 inline-block rounded-full bg-brand-black px-3.5 py-1.5 text-[13px] font-black uppercase tracking-wide text-white">
             {offer.allSamePrice ? "You save" : "Save up to"} ${offer.maxSavings}
           </span>
+          <div className="mt-5">
+            <FreeGiftBadge />
+          </div>
 
           <ClaimRackButton label={saleCtaLabel(offer)} full href={product.productUrl} className="mt-7" />
           {/* Non-breaking spaces and a non-breaking hyphen (U+2011) keep

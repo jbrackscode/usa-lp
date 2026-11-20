@@ -29,7 +29,7 @@ import { getVisibleReviewPhotos } from "@/lib/okendo";
 export const metadata: Metadata = {
   title: "5 Reasons 20,000+ Riders Swear by Vertical Bike Racks - JB Racks",
   description:
-    "Why riders are switching to vertical hitch racks - plus JB Racks' Black Friday sale on every rack size. E-bike rated, 4-year warranty, free shipping.",
+    "Why riders are switching to vertical hitch racks - plus JB Racks' Black Friday sale on every rack size, plus a free Slow-Fold Strut Twin Pack. E-bike rated, 4-year warranty, free shipping.",
 };
 
 // Same 5-minute ISR as the other buy-box pages — pricing comes from the same

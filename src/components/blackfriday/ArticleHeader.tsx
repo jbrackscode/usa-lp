@@ -6,8 +6,9 @@
 // with a mono "Summary:" label (matching the reasons' inset counts).
 import { ClaimRackButton } from "@/components/lp/ClaimRackButton";
 import { product } from "@/lib/config";
-import { saleCtaLabel, saleEndLabel, type BlackFridayOffer } from "@/lib/blackFriday";
+import { freeGift, saleCtaLabel, saleEndLabel, type BlackFridayOffer } from "@/lib/blackFriday";
 import { BlackFridayBadge } from "./BlackFridayBadge";
+import { GiftIcon } from "./FreeGift";
 
 export function ArticleHeader({ offer }: { offer: BlackFridayOffer }) {
   return (
@@ -37,8 +38,17 @@ export function ArticleHeader({ offer }: { offer: BlackFridayOffer }) {
             <p className="mt-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.1em] text-white/70 sm:text-[12px]">
               Was ${offer.compareAtPrice} · Sale ends {saleEndLabel()}
             </p>
+            {/* Desktop: under the price. Phones get the full-width version
+                below instead - beside the badge it wraps awkwardly. */}
+            <p className="mt-2 hidden items-center gap-1.5 text-[14px] font-black uppercase tracking-wide text-brand-orange sm:inline-flex">
+              <GiftIcon className="h-4 w-4 shrink-0" />+ Free strut (${freeGift.value} value)
+            </p>
           </div>
         </div>
+        <p className="-my-1 flex items-center justify-center gap-1.5 rounded-lg border border-brand-orange/50 bg-brand-orange/10 px-3 py-2 text-[13px] font-black uppercase tracking-wide text-brand-orange sm:hidden">
+          <GiftIcon className="h-4 w-4 shrink-0" />
+          <span className="whitespace-nowrap">+ Free strut · ${freeGift.value} value</span>
+        </p>
         <ClaimRackButton label={saleCtaLabel(offer)} href={product.productUrl} className="w-full sm:w-auto sm:shrink-0" />
       </div>
 
