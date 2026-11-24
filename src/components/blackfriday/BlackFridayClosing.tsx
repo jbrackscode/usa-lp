@@ -1,10 +1,7 @@
-import { CountdownTimer } from "@/components/lp/CountdownTimer";
 import { ClaimRackButton } from "@/components/lp/ClaimRackButton";
 import { product } from "@/lib/config";
 import { reviewStats } from "@/lib/bikeRacks";
 import { offerPriceLine, saleCtaLabel, saleEndLabel, type BlackFridayOffer } from "@/lib/blackFriday";
-import { SaleProgress } from "./SaleProgress";
-import { FinalWeekOnly } from "./FinalWeekOnly";
 import { BlackFridayBadge } from "./BlackFridayBadge";
 import { FreeGiftBadge } from "./FreeGift";
 
@@ -50,20 +47,6 @@ export function BlackFridayClosing({ offer }: { offer: BlackFridayOffer }) {
             Free&nbsp;shipping · 4&#8209;year&nbsp;warranty · No&nbsp;code&nbsp;needed
           </p>
 
-          {/* Same treatment as the top bar: charcoal panel, mono label, the
-              white condensed-digit timer, then the dark progress bar. The
-              whole panel only appears in the sale's final 7 days. */}
-          <FinalWeekOnly>
-            <div className="mt-8 rounded-xl bg-[#282828] px-4 pb-5 pt-4 sm:px-6">
-              <p className="font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-orange sm:text-[13px]">Sale price ends in</p>
-              <div className="mt-3 flex justify-center">
-                <CountdownTimer target={product.blackFridayEndsAt} panel />
-              </div>
-              <div className="mt-5 text-left">
-                <SaleProgress />
-              </div>
-            </div>
-          </FinalWeekOnly>
         </div>
       </div>
 

@@ -1,10 +1,7 @@
-import { CountdownTimer } from "@/components/lp/CountdownTimer";
 import { ClaimRackButton } from "@/components/lp/ClaimRackButton";
 import { product, storeUrl } from "@/lib/config";
 import { offerPriceLine, saleCtaLabel, saleEndLabel, type BlackFridayOffer as Offer } from "@/lib/blackFriday";
-import { SaleProgress } from "./SaleProgress";
 import { BlackFridayBadge } from "./BlackFridayBadge";
-import { FinalWeekOnly } from "./FinalWeekOnly";
 import { FreeGiftBadge, FreeGiftCard } from "./FreeGift";
 
 // Black Friday version of PricingSection — full-bleed black band, low in
@@ -20,7 +17,7 @@ const highlights = [
 
 export function BlackFridayOffer({ offer }: { offer: Offer }) {
   return (
-    <div id="offer" className="scroll-mt-4 bg-brand-black px-5 py-12 text-center text-white sm:py-16">
+    <div id="offer" className="scroll-mt-24 bg-brand-black px-5 py-12 text-center text-white sm:py-16">
       <BlackFridayBadge />
       <p className="mt-3 font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-orange sm:text-[13px]">
         Our biggest sale of the year
@@ -33,19 +30,6 @@ export function BlackFridayOffer({ offer }: { offer: Offer }) {
         {offerPriceLine(offer)}, down from ${offer.compareAtPrice} - sale ends {saleEndLabel()}.
       </p>
       <FreeGiftBadge className="mt-5" />
-
-      {/* Same timer treatment as the top bar and closing card: mono orange
-          label over the white condensed-digit panel, then the progress bar.
-          Both only shown in the sale's final 7 days. */}
-      <FinalWeekOnly>
-        <div className="mx-auto mt-7 flex flex-col items-center gap-3">
-          <span className="font-mono text-[12px] font-bold uppercase tracking-[0.14em] text-brand-orange sm:text-[13px]">Sale price ends in</span>
-          <CountdownTimer target={product.blackFridayEndsAt} panel />
-        </div>
-        <div className="mt-6">
-          <SaleProgress />
-        </div>
-      </FinalWeekOnly>
 
       <div className="relative mx-auto mt-10 max-w-[480px] rounded-[14px] border-4 border-brand-orange bg-white px-6 py-8 text-brand-black">
         <span className="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-red px-4 py-1 text-[13px] font-black uppercase tracking-wide text-white">

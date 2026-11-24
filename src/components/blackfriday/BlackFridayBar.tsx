@@ -1,7 +1,6 @@
 import { CountdownTimer } from "@/components/lp/CountdownTimer";
 import { product } from "@/lib/config";
 import type { BlackFridayOffer } from "@/lib/blackFriday";
-import { FinalWeekOnly } from "./FinalWeekOnly";
 // import { BlackFridayTicker } from "./BlackFridayTicker";
 
 // Top bar on /lp-demo-black-friday, modelled on the Hollow Socks countdown
@@ -11,7 +10,7 @@ import { FinalWeekOnly } from "./FinalWeekOnly";
 // it is commented out below.
 export function BlackFridayBar({ offer }: { offer: BlackFridayOffer }) {
   return (
-    <div>
+    <div className="sticky top-0 z-50">
       {/* Scrolling orange ticker hidden for now - uncomment this and the
           import above to bring it back. */}
       {/* <BlackFridayTicker offer={offer} /> */}
@@ -25,11 +24,9 @@ export function BlackFridayBar({ offer }: { offer: BlackFridayOffer }) {
             {offer.allSamePrice ? `All rack sizes $${offer.price}` : `Racks from $${offer.price}`} + free strut
           </span>
         </div>
-        {/* Like the other timers on the page, only in the final 7 days;
-            the lockup stays centred on its own until then. */}
-        <FinalWeekOnly>
-          <CountdownTimer target={product.blackFridayEndsAt} panel />
-        </FinalWeekOnly>
+        {/* The page's only countdown - the bar stays pinned to the top
+            while scrolling, so it's always in view. */}
+        <CountdownTimer target={product.blackFridayEndsAt} panel />
       </div>
     </div>
   );
